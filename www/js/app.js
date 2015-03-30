@@ -6,6 +6,7 @@
 angular.module('starter', ['ionic'])
 
 .run(function($ionicPlatform) {
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -17,25 +18,59 @@ angular.module('starter', ['ionic'])
     }
   });
 })
-.controller
-("SettingsController", function($scope, Geo) {
+.controller("SettingsController", function($scope, $ionicLoading, GeoService, getMoviesService) {
 
         var d = new Date();
         var n = d.getTimezoneOffset();
         var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
         var lat, lng, zip;
 
-        Geo.getLocation()
+        $scope.viewdate = adate;
+        $scope.viewzip = "11111";
+        $scope.viewmiles = "10";
+        $scope.viewbegintime = "";
+        $scope.viewendtime = "";
+        $scope.viewLat = $scope.viewLon = "";
+        $scope.viewstartsWith = "";
+
+        $scope.btnSubmit = function() {
+            var o = {
+                viewDate:        $scope.viewdate,
+                viewZip:         $scope.viewzip,
+                viewmiles:       $scope.viewmiles,
+                viewbegintime:   $scope.viewbegintime,
+                viewendtime:     $scope.viewendtime,
+                titlestartswith: $scope.viewstartsWith,
+                viewLat:         $scope.viewLat,
+                viewLon:         $scope.viewLon
+
+            };
+
+            $ionicLoading.show({template: "Loading...."});
+
+            getMoviesService.getMovies(o)
+                .success(function(data, status, headers, config) {
+                    console.log('here');
+                    $ionicLoading.hide();
+                 })
+                .error(function(data, status, headers, config) {
+                    console.log('here');
+                    $ionicLoading.hide();
+                });
+
+        };
+
+        GeoService.getLocation()
             .then(
                 function(position) {
                     lat = position.coords.latitude;
                     lng = position.coords.longitude;
-                    Geo.reverseGeocode(lat, lng)
+                    GeoService.reverseGeocode(lat, lng)
                         .then(
                             function (locString) {
                                 console.log(locString);
-                                zip = locString;
-                                $scope.viewzip = zip;
+                                $scope.viewzip = locString;
+
                             },
                             function (error) {
                                 console.log(error);
@@ -45,44 +80,24 @@ angular.module('starter', ['ionic'])
                 function(error) {
                     console.log(error);
                     zip = "10522";
-                });
-
-        $scope.viewdate = adate;
-        $scope.viewzip = "11111";
-        $scope.viewmiles = "10";
-
+                }
+            );
     })
 
-    .factory("getMovies", [$q, $http,
-        function($q, $http) {
-
-            var mtURL = "http://" + window.location.host + "/api/values";
-            //var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values";
-
-            return {
-
-                getMovies: function (obj) {
-                    $http.jsonp(mtURL,  { method: "GET", url: "", params: " "})
-                }
-            }
-        }
-    ])
-
-
-    .factory('Geo', function ($q) {
+    .factory('GeoService', function ($q) {
         return {
             getLocation: function () {
                 var q = $q.defer();
-                var geoOptions = { enableHighAccuracy: false, timeout: 300000, maximumAge: 0 };
+                var geoOptions = {enableHighAccuracy: false, timeout: 300000, maximumAge: 0};
 
                 navigator.geolocation.getCurrentPosition(
                     function (position) {
                         q.resolve(position);
                     },
-                    function (error)    {
+                    function (error) {
                         q.reject(error);
                     }
-                    ,geoOptions
+                    , geoOptions
                 );
 
                 return q.promise;
@@ -100,13 +115,11 @@ angular.module('starter', ['ionic'])
 
                         var zip;
 
-                        if (status != google.maps.GeocoderStatus.OK)
-                        {
+                        if (status != google.maps.GeocoderStatus.OK) {
                             console.log('reverse fail', geoResults, status);
                             q.reject(geoResults);
                         }
-                        else
-                        {
+                        else {
                             console.log('Reverse', geoResults);
 
                             for (var i = 0; i < geoResults.length; i++) {
@@ -156,5 +169,37 @@ angular.module('starter', ['ionic'])
                 return q.promise;
             }
 
-        };
-    });
+        }
+    })
+
+    .factory("getMoviesService", ['$q', '$http',
+        function($q, $http) {
+
+            //var mtURL = "http://" + window.location.host + "/api/values";
+            var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
+
+            return {
+
+                getMovies: function (obj) {
+                    return $http.jsonp(mtURL,  {
+                        method: "GET",
+                        //data: obj,
+                        params: obj,
+                        //transformRequest: function(data, headersGetter) {
+                        //    console.log("here");
+                        //},
+                        //transformResponse: function(data, headersGetter) {
+                        //    console.log('here');
+                        //}
+                    });
+                    //.success(function(data, status, headers, config) {
+                    //        console.log('here');
+                    //})
+                    //.error(function(data, status, headers, config) {
+                    //        console.log('here');
+                    //});
+                }
+            }
+        }
+    ]);
+
