@@ -17,7 +17,8 @@ angular.module('starter', ['ionic'])
     }
   });
 })
-.controller("SettingsController", function($scope, Geo) {
+.controller
+("SettingsController", function($scope, Geo) {
 
         var d = new Date();
         var n = d.getTimezoneOffset();
@@ -51,6 +52,22 @@ angular.module('starter', ['ionic'])
         $scope.viewmiles = "10";
 
     })
+
+    .factory("getMovies", [$q, $http,
+        function($q, $http) {
+
+            var mtURL = "http://" + window.location.host + "/api/values";
+            //var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values";
+
+            return {
+
+                getMovies: function (obj) {
+                    $http.jsonp(mtURL,  { method: "GET", url: "", params: " "})
+                }
+            }
+        }
+    ])
+
 
     .factory('Geo', function ($q) {
         return {
