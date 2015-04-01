@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html ng-app="starter">
+<html ng-app="MovieApp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+    <title>Movie Times</title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -21,30 +21,22 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+
 </head>
-<body ng-controller="SettingsController" >
+<body ng-controller="MainCtrl" >
 
-<!--<ion-pane>-->
-<ion-header-bar class="bar-stable">
-    <h1 class="title">Settings for Movie Times</h1>
-</ion-header-bar>
-<ion-content padding="true">
+<ion-nav-bar class="bar-energized" delegate-handle="root">
+    <ion-nav-back-button>
+    </ion-nav-back-button>
+    <ion-nav-buttons side="primary">
+        <button class="button button-icon icon ion-wifi" ng-click="defaultPrimaryButtonClick()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="secondary">
+        <button class="button button-icon icon ion-information-circled" ng-click="defaultSecondaryButtonClick()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
 
-    <div class="list">
-        <label class="item item-input"><span class="input-label">Date</span><input type="text" placeholder="Date" ng-model="viewdate" id="viewdate" name="viewdate"/> </label>
-        <label class="item item-input"><span class="input-label">Zip</span><input type="text" placeholder="Zip" ng-model="viewzip" id="viewzip" name="viewzip"/> </label>
-        <label class="item item-input"><span class="input-label">Miles</span><input type="text" placeholder="Miles" ng-model="viewmiles" id="viewmiles" name="viewmiles"/> </label>
-        <label class="item item-input"><span class="input-label">Time Begin</span><input type="text" placeholder="Begin Time" ng-model="viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
-        <label class="item item-input"><span class="input-label">Time End</span><input type="text" placeholder="End Time" ng-model="viewendtime" id="viewendtime" name="viewendtime"/> </label>
-        <label class="item item-input"><span class="input-label">Tile</span><input type="text" placeholder="Title Starts With" ng-model="viewstartsWtuh" id="titlestartsWith" name="titlestartsWith"/> </label>
-        <label class="item item-input"><span class="input-label">Zone</span><input type="text" placeholder="Zone" ng-model="viewZone" id="timeZone" name="timeZone"/> </label>
-    </div>
+<ion-nav-view name="root"></ion-nav-view>
 
-        <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSubmit" name="btnSubmit">Find Time</button>
-        <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSubmit1" name="btnSubmit1">Find Time1</button>
-        <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSortTitle" name="btnSortTitle" >Sort by Title</button>
-        <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSortTheater" name="btnSortTheater" >Sort by Theater</button>
-</ion-content>
-<!--</ion-pane>-->
 </body>
 </html>

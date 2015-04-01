@@ -1,0 +1,26 @@
+<ion-view view-title="{{navTitle}}">
+
+    <ion-header-bar class="bar-subheader">
+        <div>Settings</div>
+    </ion-header-bar>
+
+    <ion-content delegate-handle="root1-scroll-handle">
+
+            <div class="list">
+                <label class="item item-input"><span class="input-label">Date</span><input type="text" placeholder="Date" ng-model="viewdate" id="viewdate" name="viewdate"/> </label>
+                <label class="item item-input"><span class="input-label">Zip</span><input type="text" placeholder="Zip" ng-model="viewzip" id="viewzip" name="viewzip"/> </label>
+                <label class="item item-input"><span class="input-label">Miles</span><input type="text" placeholder="Miles" ng-model="viewmiles" id="viewmiles" name="viewmiles"/> </label>
+                <label class="item item-input"><span class="input-label">Time Begin</span><input type="text" placeholder="Begin Time" ng-model="viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
+                <label class="item item-input"><span class="input-label">Time End</span><input type="text" placeholder="End Time" ng-model="viewendtime" id="viewendtime" name="viewendtime"/> </label>
+                <label class="item item-input"><span class="input-label">Tile</span><input type="text" placeholder="Title Starts With" ng-model="viewstartsWtuh" id="titlestartsWith" name="titlestartsWith"/> </label>
+                <label class="item item-input"><span class="input-label">Zone</span><input type="text" placeholder="Zone" ng-model="viewZone" id="timeZone" name="timeZone"/> </label>
+            </div>
+        <a class="item" ui-sref="root2">Root2</a>
+          <!--  <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSubmit" name="btnSubmit">Find Time</button>
+            <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSubmit1" name="btnSubmit1">Find Time1</button>
+            <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSortTitle" name="btnSortTitle" >Sort by Title</button>
+            <button ng-click="btnSubmit()" class="button button-block button-positive" id="btnSortTheater" name="btnSortTheater" >Sort by Theater</button>
+-->
+    </ion-content>
+
+</ion-view>
