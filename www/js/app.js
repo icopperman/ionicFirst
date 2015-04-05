@@ -5,18 +5,22 @@ angular.module('MovieApp', ['ionic'])
         $httpProvider.interceptors.push(function($rootScope, $q) {
             return {
                 request: function(config) {
+                    console.log("request interceptor:" + config.url);
                     $rootScope.$broadcast('loading:show');
                     return config;
 
                 },
                 requestError: function(rejection) {
+                    console.log("requesterror interceptor:" + rejection);
                     return $q.reject(rejection);
                 },
                 response: function(response) {
+                    console.log("response interceptor:" + response.config.url /*+ "," + response.data*/ );
                     $rootScope.$broadcast('loading:hide');
                     return response;
                 },
                 responseError: function(rejection) {
+                    console.log("response error interceptor:" + rejection);
                     return $q.reject(rejection);
                 }
 
@@ -37,49 +41,77 @@ angular.module('MovieApp', ['ionic'])
         //    menus: { transition: 'win32-menu'}
         //});
 
-        $urlRouterProvider.otherwise('/root1');
-
         $stateProvider
             .state('root1', {
-                url: '/root1',
-                views: {
-                    'root': {
-                        templateUrl: 'templates/root1.html',
-                        controller: 'MovieMainController',
-                        resolve: {
-                            getZip: function (GeoService) {
-                                return GeoService.getZip()
-                            }
-                        }
-                    }
-                }
+                url: '/root1'
+               ,templateUrl: 'templates/root1.html'
+               ,controller: 'MovieMainController'
+               ,onEnter: function () {
+                    console.log("root1 onenter");
+               }
+               ,onExit: function () {
+                    console.log("root1 onexit");
+               }
+               //,resolve: {
+               //             getZip: function (GeoService) {
+               //                 return GeoService.getZip()
+               //             }
+               //         }
+
+
             })
             .state('root2', {
                 url: '/root2',
-                views: {
-                    'root': {
                         templateUrl: 'templates/root2.html',
                         controller: 'MovieTimesController1',
-                        resolve: {getMovies: "getMoviesService"},
-                        onEnter: function (title) {
-                            console.log("here");
+                        //resolve: {getMovies: "getMoviesService"},
+                        onEnter: function () {
+                            console.log("root2 onenter");
                         },
-                        onExit: function (title) {
-                            console.log("here");
+                        onExit: function () {
+                            console.log("root2 onexit");
                         }
-                    }
-                }
-            })
+
+            });
+
+        $urlRouterProvider.otherwise('/root1');
     })
     .run(function($ionicPlatform, $rootScope, $ionicLoading) {
 
         $rootScope.$on('loading:show', function() {
+            console.log("loading show");
             $ionicLoading.show({template: "Loading..."})
         });
 
         $rootScope.$on('loading:hide', function() {
+            console.log("loading hide");
             $ionicLoading.hide()
         });
+
+        $rootScope.$on('$stateChangeStart',
+            function(event, toState, toParams, fromState, fromParams)
+            {
+               console.log("here");
+            });
+
+        $rootScope.$on('$stateNotFound',
+            function(event, unfoundState, fromState, fromParams){
+                console.log("here"); // "lazy.state"
+
+            });
+
+        $rootScope.$on('$stateChangeSuccess',
+            function(event, toState, toParams, fromState, fromParams)
+            {
+                console.log("here");
+            });
+
+        $rootScope.$on('$stateChangeError',
+            function(event, toState, toParams, fromState, fromParams, error)
+            {
+               console.log('here');
+            });
+
 
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -118,22 +150,22 @@ angular.module('MovieApp', ['ionic'])
 
     .controller("MovieTimesController1", function($scope, $ionicLoading, $ionicPopup,
                                                 $ionicActionSheet, GeoService, getMoviesService) {
+         $scope.navTitle = 'Root 2';
+        /*     var d = new Date();
+         var n = d.getTimezoneOffset();
+         var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+         var lat, lng, zip;
 
-   /*     var d = new Date();
-        var n = d.getTimezoneOffset();
-        var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-        var lat, lng, zip;
 
-        $scope.navTitle = 'Root 2';
+         $scope.viewdate = adate;
+         $scope.viewzip = "11111";
+         $scope.viewmiles = "10";
+         $scope.viewbegintime = "";
+         $scope.viewendtime = "";
+         $scope.viewLat = $scope.viewLon = "";
+         $scope.viewstartsWith = "";
+         */
 
-        $scope.viewdate = adate;
-        $scope.viewzip = "11111";
-        $scope.viewmiles = "10";
-        $scope.viewbegintime = "";
-        $scope.viewendtime = "";
-        $scope.viewLat = $scope.viewLon = "";
-        $scope.viewstartsWith = "";
-*/
 /*
         $scope.btnSubmit = function() {
             var o = {
@@ -187,23 +219,69 @@ angular.module('MovieApp', ['ionic'])
         );*/
     })
 
-    .controller("MovieMainController", function($scope, $ionicLoading, $ionicPopup,
-                                                $ionicActionSheet, GeoService, getMoviesService, getZip) {
-
+    .controller("MovieMainController", function($scope, $ionicLoading, $ionicPopup, $q,$window,
+                                                $ionicActionSheet, GeoService, getMoviesService) {
+        console.log("main controller");
         var d = new Date();
         var n = d.getTimezoneOffset();
         var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
         var lat, lng, zip;
 
-        $scope.navTitle = 'Root 2';
+        $scope.navTitle = 'Root 1';
+        //var aZip = GeoService.getZip();
 
         $scope.viewdate = adate;
-        $scope.viewzip = getZip;
+        //$scope.viewzip = aZip;
         $scope.viewmiles = "10";
         $scope.viewbegintime = "";
         $scope.viewendtime = "";
         $scope.viewLat = $scope.viewLon = "";
         $scope.viewstartsWith = "";
+
+        _getLocation();
+        //var promise1 = GeoService.getZip();
+        //promise1.then(
+        //   function(azip) {
+        //       $scope.viewzip = azip;
+        //   },
+        //   function(error) {
+        //       $scope.viewzip = "99999";
+        //   } );
+
+        function _getLocation() {
+
+            //var q = $q.defer();
+
+            var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
+
+            console.log("getlocation");
+
+            $window.navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    console.log("getlocation success: " + position);
+                    var apromise = GeoService.reverseGeo(position);
+                    apromise.then(function(azip) {
+                        $scope.viewzip = azip;
+                    }, function(error) {
+                        console.log('here');
+                    });
+
+
+              //      q.resolve(position);
+                },
+                function (error) {
+                    console.log("getlocation error: " + error);
+                //    q.reject(error);
+                }
+                , geoOptions
+            );
+
+            //return q.promise;
+        }
+
+
+
+
     })
    /*     GeoService.getLocation()
             .then(
@@ -255,139 +333,5 @@ angular.module('MovieApp', ['ionic'])
 
         };*/
 
-    .factory('GeoService', function ($q) {
 
-        function _reverseGeocode(position) {
-
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-
-            var q = $q.defer();
-
-            var geocoder = new google.maps.Geocoder();
-
-            geocoder.geocode({
-                    'latLng': new google.maps.LatLng(lat, lng)
-                },
-                function (geoResults, status) {
-
-                    var zip;
-
-                    if (status != google.maps.GeocoderStatus.OK) {
-                        console.log('reverse fail', geoResults, status);
-                        q.reject(geoResults);
-                    }
-                    else {
-                        console.log('Reverse', geoResults);
-
-                        for (var i = 0; i < geoResults.length; i++) {
-
-                            var ageoResult = null;
-
-                            for (var j = 0; j < geoResults[i].types.length; j++) {
-
-                                if (geoResults[i].types[j] == "postal_code") {
-                                    ageoResult = geoResults[i];
-                                    break;
-                                } //end for loop over a georesult type array
-                            }
-
-                            if (ageoResult == null) continue;
-
-                            for (var k = 0; k < ageoResult.address_components.length; k++) {
-
-                                var aAddrCompo = null;
-
-                                for (var l = 0; l < ageoResult.address_components[k].types.length; l++) {
-
-                                    if (ageoResult.address_components[k].types[l] == "postal_code") {
-                                        aAddrCompo = ageoResult.address_components[k];
-                                        break;
-                                    }
-                                } //end for loop over a georesult type array
-
-                                if (aAddrCompo == null) continue;
-
-                                zip = aAddrCompo.short_name;
-                                //$("#viewzip").val(zip);
-
-                                break;
-
-                            }
-
-                        } //end for loop over geoResults
-
-                        console.log('Reverse', zip);
-                        q.resolve(zip);
-
-                    } //end if geocoder ok
-                } //end function result,status
-            ); //end geocode
-
-            return q.promise;
-        };
-
-        function _getLocation() {
-            var q = $q.defer();
-            var geoOptions = {enableHighAccuracy: false, timeout: 300000, maximumAge: 0};
-
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    q.resolve(position);
-                },
-                function (error) {
-                    q.reject(error);
-                }
-                , geoOptions
-            );
-
-            return q.promise;
-        };
-
-        return {
-
-            getZip: function () {
-
-                 _getLocation()
-                    .then(_reverseGeocode(position))
-                    .catch(function(reason) {
-                            console.log("here");
-                        })
-                    .finally(function(zip) {
-                        console.log("here");
-                        //return zip
-                    })
-            }
-        }
-    })
-    .factory("getMoviesService", ['$q', '$http',
-        function($q, $http) {
-
-            //var mtURL = "http://" + window.location.host + "/api/values";
-            var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
-
-            return {
-
-                getMovies: function (obj) {
-                    return $http.jsonp(mtURL,  {
-                        method: "GET",
-                        //data: obj,
-                        params: obj
-                        //transformRequest: function(data, headersGetter) {
-                        //    console.log("here");
-                        //},
-                        //transformResponse: function(data, headersGetter) {
-                        //    console.log('here');
-                        //}
-                    });
-                    //.success(function(data, status, headers, config) {
-                    //        console.log('here');
-                    //})
-                    //.error(function(data, status, headers, config) {
-                    //        console.log('here');
-                    //});
-                }
-            }
-        }
-    ]);
 
