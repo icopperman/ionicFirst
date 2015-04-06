@@ -1,4 +1,4 @@
-var app = angular.app('MovieApp')
+var app = angular.module('MovieApp')
 .factory('$localstorage', ['$window', function($window) {
     return {
         set: function(key, value) {

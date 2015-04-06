@@ -149,8 +149,13 @@ angular.module('MovieApp', ['ionic'])
     })
 
     .controller("MovieTimesController1", function($scope, $ionicLoading, $ionicPopup,
-                                                $ionicActionSheet, GeoService, getMoviesService) {
+                                                $ionicActionSheet, GeoService, getMoviesService,
+                                                $localstorage    )
+    {
          $scope.navTitle = 'Root 2';
+         var setingsObj = $localstorage.getObject('settings');
+        var i = 0;
+
         /*     var d = new Date();
          var n = d.getTimezoneOffset();
          var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
@@ -220,7 +225,9 @@ angular.module('MovieApp', ['ionic'])
     })
 
     .controller("MovieMainController", function($scope, $ionicLoading, $ionicPopup, $q,$window,
-                                                $ionicActionSheet, GeoService, getMoviesService) {
+                                                $ionicActionSheet, GeoService, getMoviesService
+                                                , $localstorage        )
+    {
         console.log("main controller");
         var d = new Date();
         var n = d.getTimezoneOffset();
@@ -229,14 +236,17 @@ angular.module('MovieApp', ['ionic'])
 
         $scope.navTitle = 'Root 1';
         //var aZip = GeoService.getZip();
-
-        $scope.viewdate = adate;
+        var settingsObj = {
+            viewdate : adate,
         //$scope.viewzip = aZip;
-        $scope.viewmiles = "10";
-        $scope.viewbegintime = "";
-        $scope.viewendtime = "";
-        $scope.viewLat = $scope.viewLon = "";
-        $scope.viewstartsWith = "";
+            viewmiles : "10",
+            viewbegintime : "",
+            viewendtime : "",
+            viewLat :"",
+            viewLon : "",
+            viewstartsWith : ""
+        };
+
 
         _getLocation();
         //var promise1 = GeoService.getZip();
@@ -261,7 +271,9 @@ angular.module('MovieApp', ['ionic'])
                     console.log("getlocation success: " + position);
                     var apromise = GeoService.reverseGeo(position);
                     apromise.then(function(azip) {
+                        settingsObj.viewzip = azip;
                         $scope.viewzip = azip;
+                        $localstorage.setObject('settings', settingsObj);
                     }, function(error) {
                         console.log('here');
                     });
