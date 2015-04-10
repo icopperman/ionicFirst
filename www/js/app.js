@@ -2,30 +2,32 @@ angular.module('MovieApp', ['ionic'])
 
     .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider, $httpProvider) {
 
-        $httpProvider.interceptors.push(function($rootScope, $q) {
-            return {
-                request: function(config) {
-                    console.log("request interceptor:" + config.url);
-                    $rootScope.$broadcast('loading:show');
-                    return config;
-
-                },
-                requestError: function(rejection) {
-                    console.log("requesterror interceptor:" + rejection);
-                    return $q.reject(rejection);
-                },
-                response: function(response) {
-                    console.log("response interceptor:" + response.config.url /*+ "," + response.data*/ );
-                    $rootScope.$broadcast('loading:hide');
-                    return response;
-                },
-                responseError: function(rejection) {
-                    console.log("response error interceptor:" + rejection);
-                    return $q.reject(rejection);
-                }
-
-            }
-        });
+        $httpProvider.interceptors.push('myinterceptors'
+        //    function($rootScope, $q) {
+        //    return {
+        //        request: function(config) {
+        //            console.log("request interceptor:" + config.url);
+        //            $rootScope.$broadcast('loading:show');
+        //            return config;
+        //
+        //        },
+        //        requestError: function(rejection) {
+        //            console.log("requesterror interceptor:" + rejection);
+        //            return $q.reject(rejection);
+        //        },
+        //        response: function(response) {
+        //            console.log("response interceptor:" + response.config.url /*+ "," + response.data*/ );
+        //            $rootScope.$broadcast('loading:hide');
+        //            return response;
+        //        },
+        //        responseError: function(rejection) {
+        //            console.log("response error interceptor:" + rejection);
+        //            return $q.reject(rejection);
+        //        }
+        //
+        //    }
+        //}
+        );
 
         $compileProvider.debugInfoEnabled(true);
         //ionic.Platform.setPlatform('android');
@@ -52,11 +54,11 @@ angular.module('MovieApp', ['ionic'])
                ,onExit: function () {
                     console.log("root1 onexit");
                }
-               //,resolve: {
-               //             getZip: function (GeoService) {
-               //                 return GeoService.getZip()
-               //             }
-               //         }
+               ,resolve: {
+                            getZipzz: function (GeoService) {
+                                return GeoService.getZip()
+                            }
+                        }
 
 
             })
@@ -64,7 +66,12 @@ angular.module('MovieApp', ['ionic'])
                 url: '/root2',
                         templateUrl: 'templates/root2.html',
                         controller: 'MovieTimesController1',
-                        //resolve: {getMovies: "getMoviesService"},
+                        resolve: {
+                            getMovies: function (GeoService)
+                            {
+                                return GeoService.getSettingsAndMovies();
+                            }
+                        },
                         onEnter: function () {
                             console.log("root2 onenter");
                         },
@@ -150,10 +157,12 @@ angular.module('MovieApp', ['ionic'])
 
     .controller("MovieTimesController1", function($scope, $ionicLoading, $ionicPopup,
                                                 $ionicActionSheet, GeoService, getMoviesService,
-                                                $localstorage    )
+                                                $localstorage , getMovies   )
     {
          $scope.navTitle = 'Root 2';
          var setingsObj = $localstorage.getObject('settings');
+        var settings  = getMovies;
+        $scope.movieCount = settings.MovieTimes.length;
         var i = 0;
 
         /*     var d = new Date();
@@ -169,9 +178,8 @@ angular.module('MovieApp', ['ionic'])
          $scope.viewendtime = "";
          $scope.viewLat = $scope.viewLon = "";
          $scope.viewstartsWith = "";
-         */
 
-/*
+
         $scope.btnSubmit = function() {
             var o = {
                 viewDate:        $scope.viewdate,
@@ -226,29 +234,32 @@ angular.module('MovieApp', ['ionic'])
 
     .controller("MovieMainController", function($scope, $ionicLoading, $ionicPopup, $q,$window,
                                                 $ionicActionSheet, GeoService, getMoviesService
-                                                , $localstorage        )
+                                                , $localstorage , getZipzz       )
     {
-        console.log("main controller");
-        var d = new Date();
-        var n = d.getTimezoneOffset();
-        var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
         var lat, lng, zip;
 
+        console.log("main controller");
         $scope.navTitle = 'Root 1';
-        //var aZip = GeoService.getZip();
-        var settingsObj = {
-            viewdate : adate,
-        //$scope.viewzip = aZip;
-            viewmiles : "10",
-            viewbegintime : "",
-            viewendtime : "",
-            viewLat :"",
-            viewLon : "",
-            viewstartsWith : ""
-        };
 
+        //var d = new Date();
+        //var n = d.getTimezoneOffset();
+        //var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        //
+        ////var aZip = GeoService.getZip();
+        //var settingsObj = {
+        //    viewdate : adate,
+        //    viewzip : "99999",
+        //    viewmiles : "10",
+        //    viewbegintime : d.getHours(),
+        //    viewendtime : "",
+        //    viewLat :"",
+        //    viewLon : "",
+        //    viewstartsWith : ""
+        //};
 
-        _getLocation();
+        var settingsObj = getZipzz;
+        $scope.settingsObj = settingsObj;
+        //_getLocation();
         //var promise1 = GeoService.getZip();
         //promise1.then(
         //   function(azip) {
@@ -294,7 +305,7 @@ angular.module('MovieApp', ['ionic'])
 
 
 
-    })
+    });
    /*     GeoService.getLocation()
             .then(
             function(position) {

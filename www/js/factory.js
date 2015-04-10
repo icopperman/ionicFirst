@@ -16,9 +16,26 @@ var app = angular.module('MovieApp')
     }
 }])
 
-.factory('GeoService', function ($q) {
+.factory('GeoService', function ($q, $localstorage, $http) {
     console.log("geoservice factory" );
-    function _getLocation() {
+
+        var d = new Date();
+        var n = d.getTimezoneOffset();
+        var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+
+        //var aZip = GeoService.getZip();
+        var settingsObj = {
+            viewdate : adate,
+            viewzip : "99999",
+            viewmiles : "10",
+            viewbegintime : d.getHours(),
+            viewendtime : "",
+            titlestartsWith : "",
+            viewLat :"",
+            viewLon : ""
+        };
+
+        function _getLocation() {
 
         var q = $q.defer();
 
@@ -45,18 +62,21 @@ var app = angular.module('MovieApp')
 
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
+        settingsObj.viewLat = lat;
+        settingsObj.viewLon = lng;
 
         var q = $q.defer();
 
         var geocoder = new google.maps.Geocoder();
         console.log("reverseGeocdoe:" + position);
+        $localstorage.setObject('settings', settingsObj);
 
         geocoder.geocode({
                 'latLng': new google.maps.LatLng(lat, lng)
             },
             function (geoResults, status) {
 
-                var zip = "99999";
+                var zip = "66666";
 
                 if (status != google.maps.GeocoderStatus.OK) {
                     console.log('reverse fail', geoResults, status);
@@ -93,7 +113,9 @@ var app = angular.module('MovieApp')
 
                             if (aAddrCompo == null) continue;
 
-                            zip = aAddrCompo.short_name;
+                            var xx = $localstorage.getObject("settings");
+                            settingsObj.viewzip = aAddrCompo.short_name;
+                            $localstorage.setObject("settings", settingsObj);
                             //$("#viewzip").val(zip);
 
                             break;
@@ -107,7 +129,7 @@ var app = angular.module('MovieApp')
                     //    $scope.viewzip = zip;
 
                     //});
-                    q.resolve(zip);
+                    q.resolve(settingsObj);
 
                 } //end if geocoder ok
 
@@ -119,7 +141,148 @@ var app = angular.module('MovieApp')
         return q.promise;
     }
 
+        function addTransform() {
+
+        }
+
+        function successGetMovies(data) {
+            console.log("invoked webapi svc, success");
+
+            var rc = data.Status;
+            if (rc == "fail") {
+                $.each(data.ErrMessage, function (idx, amsg) {
+                    console.log(amsg);
+                });
+
+                return;
+            }
+            else {
+                movieData = data.MovieTimes;
+                //$("#basetable").remove();
+                if (type == 1) createTable(data.MovieTimes);
+                else createBaseTable(data.MovieTimes);
+
+            }
+        }
+
+        function createTable(movies) {
+            $("#content").append("<table id='basetable' rules='all' border='1'>"
+            + "<tr><th>cnt</th><th id='hdrTime'>time</th><th>rt</th>"
+            + "<th id='hdrTitle' width=400>movie</th><th id='hdrTheater'>theater</th></tr></table>");
+            $.each(movies,
+                function (idx, aval) {
+                    var arow = "<tr>"
+                        + "<td>" + idx + "</td>"
+                        + "<td>" + aval.d + "</td>"
+                        + "<td>" + aval.r + "</td>"
+                        + "<td>" + aval.t + "</td>"
+                        + "<td>" + aval.h + "</td>"
+                        + "</tr>";
+                    $("#basetable").append(arow);
+
+                });
+        }
+
+        function createBaseTable(movies) {
+
+            $("#content").append("<div style='float:left;'>"
+            + "<table id='basetable' rules='all' border='1'>"
+            + "<tr><th>#</th><th>Time</th><th>Movies</th></tr>"
+            + "</table></div>");
+            moviesByTime = _.groupBy(movies, function (amovie) { return amovie.d; });
+
+            var cnt = 1;
+
+            _.forEach(moviesByTime,
+                function (moviesAtTime, keyTime, allMovies) {
+                    var arow = "<tr key='" + keyTime + "' >"
+                        + "<td>" + cnt + "</td>"
+                        + "<td>" + keyTime + "</td>"
+                        + "<td>" + moviesAtTime.length + " movies at this time</td>"
+                        + "</tr>";
+                    $("#basetable").append(arow);
+                    cnt++;
+                });
+
+            $("#content").on("click", "tr", function () {
+                var thetr = this;
+                var key = $(thetr).attr('key');
+                var data = moviesByTime[key];
+                createSideTable(data, key);
+                console.log('here');
+            })
+
+            $("#content").on("mouseenter", "tr", function () {
+                var thetr = this;
+                var key = $(thetr).attr('key');
+                var data = moviesByTime[key];
+                createSideTable(data, key);
+                console.log('here');
+            })
+            $("#content").on("mouseleave", "tr", function () {
+                $("#sidetable").remove();
+                console.log('here');
+            })
+        }
+
+        function createSideTable(movies, key) {
+            $("#sidetable").remove();
+            $("#content").append("<div  style='float:left; margin-left: 10px;' >"
+            + "<table id='sidetable' rules='all' border='1'>"
+            + "<tr><th>#</th>"
+            + "<th id='hdrTitle' width=400>" + movies.length + " movies at " + key
+            + "</th><th id='hdrTheater'>theater</th><th>rt</th></tr>"
+            + "</table></div>");
+            $.each(movies,
+                function (idx, aval) {
+                    idx++;
+                    var arow = "<tr>"
+                        + "<td>" + idx + "</td>"
+                        + "<td>" + aval.t + "</td>"
+                        + "<td>" + aval.h + "</td>"
+                        + "<td>" + aval.r + "</td>"
+                        + "</tr>";
+                    $("#sidetable").append(arow);
+
+                });
+        }
+
+
     return {
+        getSettingsAndMovies: function() {
+
+            var q = $q.defer();
+
+            var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
+            var xx =  settingsObj;
+            var config = {
+                method: "JSONP"
+                //,transformRequest: addTransform()
+                ,url : mtURL
+                //,data: xx
+                ,params: xx
+                ,timeout: 5000
+            };
+
+            $http(config).then(
+                function(response) {
+                    console.log('response from jsonp');
+                    q.resolve(response.data);
+                    //return response.data;
+
+                },
+                function(err) {
+                    console.log('error response from jsonp');
+                    q.reject(err);
+                    //return;
+                }
+            );
+
+            return q.promise;
+
+
+        },
+
         reverseGeo: _reverseGeocode,
 
         getZip: function () {
