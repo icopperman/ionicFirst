@@ -45,7 +45,28 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
             return q.promise;
         }
+
+        ,getPosition: function () {
+
+            console.log("factory getPosition");
+
+            var aprom1 = _getLocation();
+
+            return aprom1;
+
+        },
+
+        getZipFromPosition: function (position) {
+
+            console.log("factory getzipfromposotion");
+
+            var aprom1 = _reverseGeocode(position);
+
+            return aprom1;
+
+        }
     };
+
 
     function _init() {
 
@@ -68,15 +89,35 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
     function _getLocation() {
 
-        var q = $q.defer();
-
-        var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
-
         console.log("getlocation");
+
+        var position = $localstorage.getObject("tsLatLon");
+
+        if ( position.timestamp != undefined)
+        {
+            //we have a previous position, so don't both with geolocate
+            var xx       = position.timestamp;
+            var prevDate = new Date(xx);
+            var currTime = Date.now();
+            var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+
+            //do geolocate if prev position is stale (older than 4 hours)
+            if ( diff < 4) {
+                //use previous geolocate, immediately resolve promise
+                return $q.when(position);
+            }
+        }
+
+        var q = $q.defer();
+        var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
 
         navigator.geolocation.getCurrentPosition(
             function (position) {
+
                 console.log("getlocation success: " + position);
+
+                $localstorage.setObject("tsLatLon", { position : position });
+
                 q.resolve(position);
             },
             function (error) {
@@ -91,8 +132,29 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
     function _reverseGeocode(position) {
 
+        var tsZip = $localstorage.getObject("tsZip");
+
+        if ( tsZip.ts != undefined)
+        {
+            //we have a previous zip, so don't both with reverse geocode
+            var xx       = tsZip.ts;
+            var prevDate = new Date(xx);
+            var currTime = Date.now();
+            var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+
+            //do reverse geocde if prev  is stale (older than 4 hours)
+            if ( diff < 4) {
+                //use previous zip, immediately resolve promise
+                settingsObj.viewzip = tsZip.zip;
+                $localstorage.setObject("settings", settingsObj);
+
+                return $q.when(settingsObj);
+            }
+        }
+
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
+
         settingsObj.viewLat = lat;
         settingsObj.viewLon = lng;
 
@@ -145,7 +207,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                             if (aAddrCompo == null) continue;
 
                             var xx = $localstorage.getObject("settings");
-                            settingsObj.viewzip = aAddrCompo.short_name;
+                            settingsObj.viewzip = zip = aAddrCompo.short_name;
                             $localstorage.setObject("settings", settingsObj);
                             //$("#viewzip").val(zip);
 
@@ -161,6 +223,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                     //});
                     q.resolve(settingsObj);
+                    var tsZip = { zip: zip, ts: Date.now()};
+                    $localstorage.setObject("tsZip", tsZip);
+
 
                 } //end if geocoder ok
 
