@@ -1,0 +1,33 @@
+
+    <ion-view title="{{navTitle}}"">
+        <ion-content class="padding"  scroll="false">
+            <div class="noscrollsection">Have no scroll</div>
+            <hr>
+            <div class="scrollsection">
+                <h5 class="title">Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
+
+
+                <ion-scroll  direction="x"  class="item wide-item">
+                    <div ng-repeat="atTime in moviesAtSpecificTimes" style="display: inline-block">
+                        <div class="card">
+                            <div class="item item-divider">
+                                {{ $index }}. {{ atTime.keyTime }} : {{atTime.moviesAtTime.length}} Movies
+                            </div>
+
+                            <div >
+                                <div ng-repeat="movie in atTime.moviesAtTime" >
+                                    <div >Movie: {{movie.title}}
+                                        Theater: {{movie.theater}}
+                                        Runtime: {{movie.runtime}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+                </ion-scroll>
+
+                <!--<ion-infinite-scroll ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>-->
+            </div>
+        </ion-content>
+    </ion-view>
