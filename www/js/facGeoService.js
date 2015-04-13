@@ -116,7 +116,13 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                 console.log("getlocation success: " + position);
 
-                $localstorage.setObject("tsLatLon", { position : position });
+                var tsPos1 = {ts: Date.now(), tsPos: position};
+                var tsPos2 = { tsPos: position};
+                var tsPos3  = { tsPos: position.timestamp, tsCoord: position.coords};
+                $localstorage.setObject("tsLatLon0", { tsposition : position });
+                $localstorage.setObject("tsLatLon1", { tsposition : tsPos1 });
+                $localstorage.setObject("tsLatLon2", { tsposition : tsPos2 });
+                $localstorage.setObject("tsLatLon3", { tsposition : tsPos3 });
 
                 q.resolve(position);
             },
