@@ -18,3 +18,10 @@ body {
 .list .item.item-accordion.ng-hide-remove {
     display: block !important;
 }
+
+ion-scroll .item {
+    display: inline-block;
+    margin: 0;
+    width:200px;
+    height:200px
+}

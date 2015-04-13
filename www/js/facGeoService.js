@@ -21,6 +21,23 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         getSettingsAndMovies: function () {
 
+            var tsMovies = $localstorage.getObject("tsMovies");
+
+            if ( tsMovies.ts != undefined)
+            {
+                //we have a previous position, so don't both with geolocate
+                var xx       = tsMovies.ts;
+                var prevDate = new Date(xx);
+                var currTime = Date.now();
+                var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+
+                //do geolocate if prev position is stale (older than 4 hours)
+                if ( diff < 4) {
+                    //use previous geolocate, immediately resolve promise
+                    return $q.when(tsMovies.movies);
+                }
+            }
+
             var q = $q.defer();
 
             var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
@@ -35,6 +52,10 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             $http(config).then(
                 function (response) {
                     console.log('response from jsonp');
+                    var tsMovies  = { ts: Date.now(), movies: response.data};
+
+                    $localstorage.setObject("tsMovies", tsMovies);
+
                     q.resolve(response.data);
                 },
                 function (err) {
@@ -91,12 +112,12 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         console.log("getlocation");
 
-        var position = $localstorage.getObject("tsLatLon");
+        var tsPos = $localstorage.getObject("tsLatLon");
 
-        if ( position.timestamp != undefined)
+        if ( tsPos.ts != undefined)
         {
             //we have a previous position, so don't both with geolocate
-            var xx       = position.timestamp;
+            var xx       = tsPos.ts;
             var prevDate = new Date(xx);
             var currTime = Date.now();
             var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
@@ -104,7 +125,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             //do geolocate if prev position is stale (older than 4 hours)
             if ( diff < 4) {
                 //use previous geolocate, immediately resolve promise
-                return $q.when(position);
+                return $q.when(tsPos);
             }
         }
 
@@ -116,15 +137,13 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                 console.log("getlocation success: " + position);
 
-                var tsPos1 = {ts: Date.now(), tsPos: position};
-                var tsPos2 = { tsPos: position};
-                var tsPos3  = { tsPos: position.timestamp, tsCoord: position.coords};
-                $localstorage.setObject("tsLatLon0", { tsposition : position });
-                $localstorage.setObject("tsLatLon1", { tsposition : tsPos1 });
-                $localstorage.setObject("tsLatLon2", { tsposition : tsPos2 });
-                $localstorage.setObject("tsLatLon3", { tsposition : tsPos3 });
+                //note: google canary and firefor do not stringify position object, but regular chrome does
+                //so, to be careful, create my own object
+                var tsPos  = { ts: position.timestamp, tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
-                q.resolve(position);
+                $localstorage.setObject("tsLatLon", tsPos);
+
+                q.resolve(tsPos);
             },
             function (error) {
                 console.log("getlocation error: " + error);
@@ -136,7 +155,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
         return q.promise;
     }
 
-    function _reverseGeocode(position) {
+    function _reverseGeocode(tsPos) {
 
         var tsZip = $localstorage.getObject("tsZip");
 
@@ -158,20 +177,20 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             }
         }
 
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
+        var lat = tsPos.tsLat;
+        var lon = tsPos.tsLon;
 
         settingsObj.viewLat = lat;
-        settingsObj.viewLon = lng;
+        settingsObj.viewLon = lon;
 
         var q = $q.defer();
 
         var geocoder = new google.maps.Geocoder();
-        console.log("reverseGeocdoe:" + position);
+        console.log("reverseGeocode:" + lat + ", " + lon);
         $localstorage.setObject('settings', settingsObj);
 
         geocoder.geocode({
-                'latLng': new google.maps.LatLng(lat, lng)
+                'latLng': new google.maps.LatLng(lat, lon)
             },
             function (geoResults, status) {
 

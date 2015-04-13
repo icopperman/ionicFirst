@@ -1,6 +1,6 @@
-angular.module('MovieApp', ['ionic'])
+var theapp = angular.module('MovieApp', ['ionic']);
 
-    .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider,
+    theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider,
                       $compileProvider, $httpProvider) {
 
         $httpProvider.interceptors.push('myinterceptors');
@@ -64,13 +64,82 @@ angular.module('MovieApp', ['ionic'])
                     console.log("tplMovieTimes onexit");
                 }
 
+            })
+            .state('tplMovieTimesHor', {
+                url: '/tplMovieTimesHor',
+                templateUrl: 'templates/tplMovieTimesHor.html',
+                controller: 'MovieTimesControllerHor',
+                resolve: {
+                    getMovies: function (GeoService) {
+                        return GeoService.getSettingsAndMovies();
+                    }
+                },
+                onEnter: function () {
+                    console.log("tplMovieTimesHor onenter");
+                },
+                onExit: function () {
+                    console.log("tplMovieTimesHor onexit");
+                }
+
             });
 
-    })
+    });
 
-    .controller("MovieTimesController1", function ($scope, $localstorage, getMovies) {
+    theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, getMovies, $ionicScrollDelegate) {
+
 
         var setingsObj = $localstorage.getObject('settings');
+
+        var allMovieTimes = getMovies;
+        var rc = allMovieTimes.Status;
+
+        if ( rc == "fail" ) {
+
+            angular.forEach(allMovieTimes.ErrMessage, function(value, key) {
+                console.log(key);
+            });
+            $scope.navTitle = 'Movie Times -- error';
+        }
+        else {
+
+            var movieData = allMovieTimes.MovieTimes;
+            var x = createTable(movieData);
+            $scope.moviesAtSpecificTimes = createBaseTable(x);
+
+        }
+
+        $scope.navTitle = 'Movie Times';
+        $scope.movieCount = allMovieTimes.MovieTimes.length;
+
+        $scope.noMoreItemsAvailable = false;
+        $scope.number = 10;
+        $scope.items = [];
+
+
+        $scope.loadMore = function() {
+            for(var i=0; i<$scope.number; i++){
+                $scope.items.push({
+                    id: $scope.items.length});
+            }
+
+            if ( $scope.items.length > 99 ) {
+
+                $scope.noMoreItemsAvailable = true;
+            }
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+
+        };
+
+        $scope.goToPage= function(){
+
+            $location.url('/event/attendees');
+        };
+    });
+
+    theapp.controller("MovieTimesController1", function ($scope, $localstorage, getMovies) {
+
+        var setingsObj = $localstorage.getObject('settings');
+
         var allMovieTimes = getMovies;
         var rc = allMovieTimes.Status;
 
@@ -121,60 +190,9 @@ angular.module('MovieApp', ['ionic'])
             return rc
         };
 
-        function createTable(movies) {
-            var allMovies = [];
-            angular.forEach(movies,
-                function (aval, idx) {
-                    var i = 0;
-                    var arow = {
-                        cnt: idx + 1
-                        , time: aval.d
-                        , runtime: aval.r
-                        , title: aval.t
-                        , theater: aval.h
-                    };
-                    allMovies.push(arow);
-                });
+    });
 
-            return allMovies;
-
-        }
-
-        function createBaseTable(movies) {
-
-            //$("#content").append("<div style='float:left;'>"
-            //+ "<table id='basetable' rules='all' border='1'>"
-            //+ "<tr><th>#</th><th>Time</th><th>Movies</th></tr>"
-            //+ "</table></div>");
-            moviesByTime = _.groupBy(movies, function (amovie) {
-                return amovie.time;
-            });
-
-            var cnt = 1;
-            var x = [];
-
-            angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
-                //var arow = "<tr key='" + keyTime + "' >"
-                //    + "<td>" + cnt + "</td>"
-                //    + "<td>" + keyTime + "</td>"
-                //    + "<td>" + moviesAtTime.length + " movies at this time</td>"
-                //    + "</tr>";
-                var i = 0;
-                var arow = {
-
-                    cnt: cnt
-                    , keyTime: keyTime
-                    , moviesAtTime: moviesAtTime
-                };
-                x.push(arow);
-                cnt++;
-            });
-
-            return x;
-        }
-    })
-
-    .controller("MovieMainController", function ($scope, $localstorage, getZip) {
+    theapp.controller("MovieMainController", function ($scope, $localstorage, getZip) {
 
         console.log("main controller");
         var settingsObj = getZip;
@@ -182,9 +200,9 @@ angular.module('MovieApp', ['ionic'])
         $scope.navTitle = 'Set Setting';
         $scope.settingsObj = settingsObj;
 
-    })
+    });
 
-    .controller('MainCtrl', function ($scope, $ionicPopup, $ionicActionSheet) {
+    theapp.controller('MainCtrl', function ($scope, $ionicPopup, $ionicActionSheet) {
 
         $scope.defaultPrimaryButtonClick = function () {
             $ionicPopup.show({
@@ -208,8 +226,61 @@ angular.module('MovieApp', ['ionic'])
                 cancelText: 'Cancel Nav Bar Default Secondary'
             });
         };
-    })
-;
+    });
+
+
+function createTable(movies) {
+    var allMovies = [];
+    angular.forEach(movies,
+        function (aval, idx) {
+            var i = 0;
+            var arow = {
+                cnt: idx + 1
+                , time: aval.d
+                , runtime: aval.r
+                , title: aval.t
+                , theater: aval.h
+            };
+            allMovies.push(arow);
+        });
+
+    return allMovies;
+
+}
+
+function createBaseTable(movies) {
+
+    //$("#content").append("<div style='float:left;'>"
+    //+ "<table id='basetable' rules='all' border='1'>"
+    //+ "<tr><th>#</th><th>Time</th><th>Movies</th></tr>"
+    //+ "</table></div>");
+    moviesByTime = _.groupBy(movies, function (amovie) {
+        return amovie.time;
+    });
+
+    var cnt = 1;
+    var x = [];
+
+    angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
+        //var arow = "<tr key='" + keyTime + "' >"
+        //    + "<td>" + cnt + "</td>"
+        //    + "<td>" + keyTime + "</td>"
+        //    + "<td>" + moviesAtTime.length + " movies at this time</td>"
+        //    + "</tr>";
+        var i = 0;
+        var arow = {
+
+            cnt: cnt
+            , keyTime: keyTime
+            , moviesAtTime: moviesAtTime
+        };
+        x.push(arow);
+        cnt++;
+    });
+
+    return x;
+}
+
 
 //            //$("#basetable").append(arow);
 //

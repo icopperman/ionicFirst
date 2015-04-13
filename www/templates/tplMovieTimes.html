@@ -16,9 +16,7 @@
     <!--</ion-header-bar>-->
     <ion-content delegate-handle="root1-scroll-handle">
 
-        <ion-list show-delete="data.showDelete"
-                  show-reorder="data.showReorder"
-                   delegate-handle="listDelegate" >
+        <ion-list show-delete="data.showDelete" show-reorder="data.showReorder"  delegate-handle="listDelegate" >
             <!--type="list-inset"-->
             <!--<ion-item ng-repeat="atTime in moviesAtSpecificTimes"-->
                       <!--href="#/movielist/{{atTime.keyTime}}" >-->
@@ -34,16 +32,12 @@
 
             <!--</ion-item>-->
             <div ng-repeat="atTime in moviesAtSpecificTimes">
-                <ion-item class="item-stable"
-                          ng-click="toggleGroup(atTime)"
-                          ng-class="{active: isGroupShown(atTime)}">
+                <ion-item class="item-stable" ng-click="toggleGroup(atTime)"  ng-class="{active: isGroupShown(atTime)}">
                     <i class="icon" ng-class="isGroupShown(atTime) ? 'ion-minus' : 'ion-plus'"></i>
                     &nbsp;
                     {{atTime.keyTime}} Movies at this time:  {{atTime.moviesAtTime.length}}
                 </ion-item>
-                <ion-item class="item-accordion"
-                          ng-repeat="movie in atTime.moviesAtTime"
-                          ng-show="isGroupShown(atTime)">
+                <ion-item class="item-accordion" ng-repeat="movie in atTime.moviesAtTime" ng-show="isGroupShown(atTime)">
                     Movie: {{movie.title}}</br>
                     Theater: {{movie.theater}}</br>
                     Runtime: {{movie.runtime}}</br>
