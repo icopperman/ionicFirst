@@ -21,21 +21,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         getSettingsAndMovies: function () {
 
-            var tsMovies = $localstorage.getObject("tsMovies");
-
-            if ( tsMovies.ts != undefined)
-            {
-                //we have a previous position, so don't both with geolocate
-                var xx       = tsMovies.ts;
-                var prevDate = new Date(xx);
-                var currTime = Date.now();
-                var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
-
-                //do geolocate if prev position is stale (older than 4 hours)
-                if ( diff < 4) {
-                    //use previous geolocate, immediately resolve promise
-                    return $q.when(tsMovies.movies);
-                }
+            var tsMovies = _isCached("tsMovies");
+            if ( tsMovies != undefined) {
+                return $q.when(tsMovies.movies);
             }
 
             var q = $q.defer();
@@ -108,25 +96,28 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
     }
 
+    function _isCached(cacheName) {
+
+        var cacheObj = $localstorage.getObject(cacheName);
+
+        if ( cacheObj.ts == undefined) return;
+
+        var xx       = cacheObj.ts;
+        var prevDate = new Date(xx);
+        var currTime = Date.now();
+        var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+
+        if  ( diff < 4 ) return cacheObj;
+
+    }
+
     function _getLocation() {
 
         console.log("getlocation");
 
-        var tsPos = $localstorage.getObject("tsLatLon");
-
-        if ( tsPos.ts != undefined)
-        {
-            //we have a previous position, so don't both with geolocate
-            var xx       = tsPos.ts;
-            var prevDate = new Date(xx);
-            var currTime = Date.now();
-            var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
-
-            //do geolocate if prev position is stale (older than 4 hours)
-            if ( diff < 4) {
-                //use previous geolocate, immediately resolve promise
-                return $q.when(tsPos);
-            }
+        var tsPos = _isCached("tsLatLon");
+        if ( tsPos != undefined) {
+            return $q.when(tsPos);
         }
 
         var q = $q.defer();
@@ -157,24 +148,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
     function _reverseGeocode(tsPos) {
 
-        var tsZip = $localstorage.getObject("tsZip");
+        var tsZip = _isCached("tsZip");
 
-        if ( tsZip.ts != undefined)
-        {
-            //we have a previous zip, so don't both with reverse geocode
-            var xx       = tsZip.ts;
-            var prevDate = new Date(xx);
-            var currTime = Date.now();
-            var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+        if ( tsZip != undefined) {
 
-            //do reverse geocde if prev  is stale (older than 4 hours)
-            if ( diff < 4) {
-                //use previous zip, immediately resolve promise
-                settingsObj.viewzip = tsZip.zip;
-                $localstorage.setObject("settings", settingsObj);
+            settingsObj.viewzip = tsZip.zip;
+            $localstorage.setObject("settings", settingsObj);
 
-                return $q.when(settingsObj);
-            }
+            return $q.when(settingsObj);
         }
 
         var lat = tsPos.tsLat;
@@ -426,3 +407,55 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 //        }
 //    }
 //}])
+//var tsPos = $localstorage.getObject("tsLatLon");
+//
+//if ( tsPos.ts != undefined)
+//{
+//    //we have a previous position, so don't both with geolocate
+//    var xx       = tsPos.ts;
+//    var prevDate = new Date(xx);
+//    var currTime = Date.now();
+//    var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+//
+//    //do geolocate if prev position is stale (older than 4 hours)
+//    if ( diff < 4) {
+//        //use previous geolocate, immediately resolve promise
+//        return $q.when(tsPos);
+//    }
+//}
+
+//var tsMovies = $localstorage.getObject("tsMovies");
+//
+//if ( tsMovies.ts != undefined)
+//{
+//    //we have a previous position, so don't both with geolocate
+//    var xx       = tsMovies.ts;
+//    var prevDate = new Date(xx);
+//    var currTime = Date.now();
+//    var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+//
+//    //do geolocate if prev position is stale (older than 4 hours)
+//    if ( diff < 4) {
+//        //use previous geolocate, immediately resolve promise
+//        return $q.when(tsMovies.movies);
+//    }
+//}
+
+//var tsZip = $localstorage.getObject("tsZip");
+//if ( tsZip.ts != undefined)
+//{
+//    //we have a previous zip, so don't both with reverse geocode
+//    var xx       = tsZip.ts;
+//    var prevDate = new Date(xx);
+//    var currTime = Date.now();
+//    var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+//
+//    //do reverse geocde if prev  is stale (older than 4 hours)
+//    if ( diff < 4) {
+//        //use previous zip, immediately resolve promise
+//        settingsObj.viewzip = tsZip.zip;
+//        $localstorage.setObject("settings", settingsObj);
+//
+//        return $q.when(settingsObj);
+//    }
+//}

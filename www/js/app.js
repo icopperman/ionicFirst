@@ -81,7 +81,25 @@ var theapp = angular.module('MovieApp', ['ionic']);
                     console.log("tplMovieTimesHor onexit");
                 }
 
+            })
+            .state('tplMovieTheaters', {
+                url: '/tplMovieTheaters',
+                templateUrl: 'templates/tplMovieTheaters.html',
+                controller: 'MovieTheaterController',
+                resolve: {
+                    getTheaters: function (GeoService) {
+                        return GeoService.getTheaters();
+                    }
+                },
+                onEnter: function () {
+                    console.log("tplMovieTheaters onenter");
+                },
+                onExit: function () {
+                    console.log("tplMovieTheaters onexit");
+                }
+
             });
+
 
     });
 
@@ -103,8 +121,8 @@ var theapp = angular.module('MovieApp', ['ionic']);
         else {
 
             var movieData = allMovieTimes.MovieTimes;
-            var x = createTable(movieData);
-            $scope.moviesAtSpecificTimes = createBaseTable(x);
+            var x = expandPropNames(movieData);
+            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(x);
 
         }
 
@@ -153,8 +171,8 @@ var theapp = angular.module('MovieApp', ['ionic']);
         else {
 
             var movieData = allMovieTimes.MovieTimes;
-            var x = createTable(movieData);
-            $scope.moviesAtSpecificTimes = createBaseTable(x);
+            var x = expandPropNames(movieData);
+            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(x);
 
         }
 
@@ -229,51 +247,43 @@ var theapp = angular.module('MovieApp', ['ionic']);
     });
 
 
-function createTable(movies) {
+function expandPropNames(movies) {
+
     var allMovies = [];
-    angular.forEach(movies,
-        function (aval, idx) {
-            var i = 0;
-            var arow = {
-                cnt: idx + 1
-                , time: aval.d
-                , runtime: aval.r
-                , title: aval.t
-                , theater: aval.h
-            };
-            allMovies.push(arow);
-        });
+
+    angular.forEach(movies, function (aval, idx) {
+
+        var i = 0;
+
+        var arow = {cnt: idx + 1, time: aval.d, runtime: aval.r, title: aval.t, theater: aval.h};
+
+        allMovies.push(arow);
+
+    });
 
     return allMovies;
 
 }
 
-function createBaseTable(movies) {
+function moviesAtSpecificTimes(movies) {
 
-    //$("#content").append("<div style='float:left;'>"
-    //+ "<table id='basetable' rules='all' border='1'>"
-    //+ "<tr><th>#</th><th>Time</th><th>Movies</th></tr>"
-    //+ "</table></div>");
-    moviesByTime = _.groupBy(movies, function (amovie) {
+    //create array like this [time, [moviesAtTime]]
+    var moviesByTime = _.groupBy(movies, function (amovie) {
         return amovie.time;
+    });
+
+    var moviesByTheater = _.groupBy(movies, function(amovie) {
+       return amovie.theater;
     });
 
     var cnt = 1;
     var x = [];
 
+    //create array of objects with named properties
     angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
-        //var arow = "<tr key='" + keyTime + "' >"
-        //    + "<td>" + cnt + "</td>"
-        //    + "<td>" + keyTime + "</td>"
-        //    + "<td>" + moviesAtTime.length + " movies at this time</td>"
-        //    + "</tr>";
-        var i = 0;
-        var arow = {
 
-            cnt: cnt
-            , keyTime: keyTime
-            , moviesAtTime: moviesAtTime
-        };
+        var arow = { cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
+
         x.push(arow);
         cnt++;
     });
