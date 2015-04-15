@@ -86,11 +86,11 @@ var theapp = angular.module('MovieApp', ['ionic']);
                 url: '/tplMovieTheaters',
                 templateUrl: 'templates/tplMovieTheaters.html',
                 controller: 'MovieTheaterController',
-                resolve: {
-                    getTheaters: function (GeoService) {
-                        return GeoService.getTheaters();
-                    }
-                },
+                //resolve: {
+                //    getTheaters: function (GeoService) {
+                //        return GeoService.getTheaters();
+                //    }
+                //},
                 onEnter: function () {
                     console.log("tplMovieTheaters onenter");
                 },
@@ -103,7 +103,14 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
     });
 
-    theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, getMovies, $ionicScrollDelegate) {
+theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
+
+    var theaters = $localstorage.getObject("tsTheaters" );
+
+
+});
+
+theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, getMovies, $ionicScrollDelegate) {
 
         //var setingsObj = $localstorage.getObject("settings");
 
@@ -172,6 +179,22 @@ var theapp = angular.module('MovieApp', ['ionic']);
             var movieData = allMovieTimes.MovieTimes;
             var x = expandPropNames(movieData);
             $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(x);
+
+            var theaters = [];
+
+            var moviesByTheater = _.groupBy(x, function(amovie) {
+
+                var atheater = amovie.theater;
+
+                theaters.push({ theaterName: atheater, include: true });
+
+                return atheater;
+
+            });
+
+            var uniqList = _.uniq(theaters, "theaterName");
+            $localstorage.setObject("tsTheaters", uniqList );
+
 
         }
 
@@ -295,9 +318,6 @@ function moviesAtSpecificTimes(movies) {
         return amovie.time;
     });
 
-    var moviesByTheater = _.groupBy(movies, function(amovie) {
-       return amovie.theater;
-    });
 
     var cnt = 1;
     var x = [];
