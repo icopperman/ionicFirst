@@ -7,21 +7,27 @@
                 <h5 class="title">Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
 
 
-                <ion-scroll  direction="x"  class="item wide-item">
+                <ion-scroll  direction="x" class="itemxx" >
+                    <!--class="item wide-item">item-divider-->
                     <div ng-repeat="atTime in moviesAtSpecificTimes" style="display: inline-block">
-                        <div class="card">
+                        <div class="card" >
                             <div class="item item-divider">
                                 {{ $index }}. {{ atTime.keyTime }} : {{atTime.moviesAtTime.length}} Movies
                             </div>
-
-                            <div >
-                                <div ng-repeat="movie in atTime.moviesAtTime" >
-                                    <div >Movie: {{movie.title}}
-                                        Theater: {{movie.theater}}
-                                        Runtime: {{movie.runtime}}
-                                    </div>
-                                </div>
+                            <div class="item ">
+                                body
                             </div>
+                            <div class="item item-divider">
+                                footer
+                            </div>
+                            <!--<div class="item item-text-wrap">-->
+                                <!--<div ng-repeat="movie in atTime.moviesAtTime" >-->
+                                    <!--<div >Movie: {{movie.title}}-->
+                                        <!--Theater: {{movie.theater}}-->
+                                        <!--Runtime: {{movie.runtime}}-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
                         </div>
                     </div>
             </div>

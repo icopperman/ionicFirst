@@ -105,8 +105,7 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
     theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, getMovies, $ionicScrollDelegate) {
 
-
-        var setingsObj = $localstorage.getObject('settings');
+        //var setingsObj = $localstorage.getObject("settings");
 
         var allMovieTimes = getMovies;
         var rc = allMovieTimes.Status;
@@ -156,7 +155,7 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
     theapp.controller("MovieTimesController1", function ($scope, $localstorage, getMovies) {
 
-        var setingsObj = $localstorage.getObject('settings');
+        //var setingsObj = $localstorage.getObject("settings");
 
         var allMovieTimes = getMovies;
         var rc = allMovieTimes.Status;
@@ -210,13 +209,37 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
     });
 
-    theapp.controller("MovieMainController", function ($scope, $localstorage, getZip) {
+    theapp.controller("MovieMainController", function ($scope, $localstorage, $state, getZip) {
 
         console.log("main controller");
         var settingsObj = getZip;
 
+
         $scope.navTitle = 'Set Setting';
         $scope.settingsObj = settingsObj;
+        var prevObj1 = settingsObj;
+
+        $scope.handleClick = function()
+        {
+            //get saved settings
+            var prevObj2 = $localstorage.getObject("settings");
+
+            //has user changed it?
+            var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
+            var rc2 = _.isEqual($scope.settingsObj, prevObj2);
+
+            if ( rc2 == false ) {
+                //user changed search parms, so save it now
+                $localstorage.setObject("settings", $scope.settingsObj);
+                //and clear out any cached objects
+                $localstorage.deleteObject("tsZip");
+                $localstorage.deleteObject("tsLatLon");
+                $localstorage.deleteObject("tsMovies")
+            }
+
+            $state.go("tplMovieTimes");
+
+        }
 
     });
 
