@@ -52,6 +52,7 @@ var theapp = angular.module('MovieApp', ['ionic']);
                 url: '/tplMovieTimes',
                 templateUrl: 'templates/tplMovieTimes.html',
                 controller: 'MovieTimesController1',
+                cache: false,
                 resolve: {
                     getMovies: function (GeoService) {
                         return GeoService.getSettingsAndMovies();
@@ -105,7 +106,18 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
 theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
 
-    var theaters = $localstorage.getObject("tsTheaters" );
+    var xx = $localstorage.getObject("tsTheaters" );
+    var theaters = xx.theaters;
+
+    $scope.theaterList = theaters;
+
+    $scope.saveExclusion = function()
+    {
+        var xx = $scope.theaterList;
+        var exclusionList = _.where(xx, { include : false} );
+
+        $localstorage.setObject("tsExcluded", {ts: Date.now(), excluded : exclusionList});
+    }
 
 
 });
@@ -160,29 +172,66 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         };
     });
 
-    theapp.controller("MovieTimesController1", function ($scope, $localstorage, getMovies) {
+    theapp.controller("MovieTimesController1", function ($scope, $state, $localstorage, getMovies) {
 
         //var setingsObj = $localstorage.getObject("settings");
 
         var allMovieTimes = getMovies;
         var rc = allMovieTimes.Status;
 
+        $scope.totMovies = 0;
+        $scope.totTheaters = 0;
+        $scope.totExcludedMovies = 0;
+        $scope.totExcludedTheaters = 0;
+
         if ( rc == "fail" ) {
 
             angular.forEach(allMovieTimes.ErrMessage, function(value, key) {
                 console.log(key);
             });
+
             $scope.navTitle = 'Movie Times -- error';
         }
         else {
 
             var movieData = allMovieTimes.MovieTimes;
             var x = expandPropNames(movieData);
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(x);
+
+            var exList = $localstorage.getObject("tsExcluded");
+            var xx = [];
+
+            if ( exList.ts == undefined) {
+
+                xx = x;
+            }
+            else {
+
+                xx =  _.filter(x, function(amovie) {
+
+                            var atheater = amovie.theater;
+
+                            var rc = _.find(exList, function(exTheater) {
+                                if ( exTheater == atheater) {
+                                    return true;
+                                }
+                                else {
+                                    return false;
+                                }
+                            });
+
+                            return !rc;
+
+                    });
+
+                $scope.totExcludedTheaters = exList.length;
+                $scope.totExcludedMovies = movieData.length - xx.length;;
+            }
+
+            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(xx);
 
             var theaters = [];
 
-            var moviesByTheater = _.groupBy(x, function(amovie) {
+            var moviesByTheater = _.groupBy(xx, function(amovie) {
 
                 var atheater = amovie.theater;
 
@@ -192,15 +241,20 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
             });
 
+            $localstorage.setObject("tsTheaters", {ts: Date.now(), theateres: uniqList } );
             var uniqList = _.uniq(theaters, "theaterName");
-            $localstorage.setObject("tsTheaters", uniqList );
-
-
+            $scope.totMovies = movieData.length;
+            $scope.totTheaters = uniqList.length;
         }
+
 
         $scope.navTitle = 'Movie Times';
         $scope.movieCount = allMovieTimes.MovieTimes.length;
         $scope.data = { showDelete: false, showReorder: false };
+
+        $scope.showTheaters = function() {
+            $state.go("tplMovieTheaters");
+        };
 
         $scope.edit = function(item) {
             console.log('Edit Item: ' + item.keyTime);
@@ -227,7 +281,7 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         };
         $scope.isGroupShown = function(group) {
             var rc = $scope.shownGroup === group;
-            return rc
+            return rc;
         };
 
     });
@@ -238,7 +292,7 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         var settingsObj = getZip;
 
 
-        $scope.navTitle = 'Set Setting';
+        $scope.navTitle = 'Change movie search criteria';
         $scope.settingsObj = settingsObj;
         var prevObj1 = settingsObj;
 
@@ -266,29 +320,36 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
     });
 
-    theapp.controller('MainCtrl', function ($scope, $ionicPopup, $ionicActionSheet) {
+    theapp.controller('MainCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicActionSheet) {
 
-        $scope.defaultPrimaryButtonClick = function () {
-            $ionicPopup.show({
-                template: '<input type="password" ng-model="data.wifi">',
-                title: 'Enter Wi-Fi Password',
-                subTitle: 'Please use normal things',
-                scope: $scope,
-                buttons: [
-                    {text: 'Cancel'},
-                    {
-                        text: '<b>Save</b>',
-                        type: 'button-positive'
-                    }
-                ]
-            });
-        };
+        //$scope.defaultPrimaryButtonClick = function () {
+        //    $ionicPopup.show({
+        //        template: '<input type="password" ng-model="data.wifi">',
+        //        title: 'Enter Wi-Fi Password',
+        //        subTitle: 'Please use normal things',
+        //        scope: $scope,
+        //        buttons: [
+        //            {text: 'Cancel'},
+        //            {
+        //                text: '<b>Save</b>',
+        //                type: 'button-positive'
+        //            }
+        //        ]
+        //    });
+        //};
+        $ionicModal.fromTemplateUrl('templates/tplModal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
 
         $scope.defaultSecondaryButtonClick = function () {
-            $ionicActionSheet.show({
-                titleText: 'Nav Bar Default Secondary',
-                cancelText: 'Cancel Nav Bar Default Secondary'
-            });
+            $scope.modal.show();
+            //$ionicActionSheet.show({
+            //    titleText: 'Nav Bar Default Secondary',
+            //    cancelText: 'Cancel Nav Bar Default Secondary'
+            //});
         };
     });
 

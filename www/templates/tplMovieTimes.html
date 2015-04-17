@@ -1,6 +1,8 @@
+
 <ion-view view-title="{{navTitle}}">
 
-    <!--<ion-header-bar class="bar-subheader">-->
+    <div class="bar bar-subheader" >
+        <h1 class="title">Movies : {{totMovies}}, {{totTheaters}}, {{totExcludedMovies}}, {{totExcludedTheaters}}</h1>
 
     <!--<div class="buttons">-->
         <!--<button class="button button-icon icon ion-ios-minus-outline"-->
@@ -13,7 +15,7 @@
                 <!--ng-click="data.showDelete = false; data.showReorder = !data.showReorder">-->
             <!--Reorder   </button>-->
     <!--</div>-->
-    <!--</ion-header-bar>-->
+    </div>
     <ion-content delegate-handle="root1-scroll-handle">
 
         <ion-list show-delete="data.showDelete" show-reorder="data.showReorder"  delegate-handle="listDelegate" >
@@ -47,5 +49,16 @@
         <!--<ion-toggle ng-model="data.showDelete">Show Delete?</ion-toggle>-->
 
     </ion-content>
+    <ion-footer-bar align-title="center" class="bar-assertive">
+
+        <div class="title">
+            <div class="buttons">
+                <button class="button" ng-click="showTheaters()">Show List of Theaters</button>
+            </div>
+        </div>
+        <!--<div class="buttons" ng-click="doSomething()">-->
+            <!--<button class="button">Right Button</button>-->
+        <!--</div>-->
+    </ion-footer-bar>
 
 </ion-view>
