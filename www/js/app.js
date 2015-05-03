@@ -51,7 +51,7 @@ var theapp = angular.module('MovieApp', ['ionic']);
             .state('tplMovieTimes', {
                 url: '/tplMovieTimes',
                 templateUrl: 'templates/tplMovieTimes.html',
-                controller: 'MovieTimesController1',
+                controller: 'MovieTimesController',
                 cache: false,
                 resolve: {
                     getMovies: function (GeoService) {
@@ -172,7 +172,7 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         };
     });
 
-    theapp.controller("MovieTimesController1", function ($scope, $state, $localstorage, getMovies) {
+    theapp.controller("MovieTimesController", function ($scope, $state, $localstorage, getMovies) {
 
         //var setingsObj = $localstorage.getObject("settings");
 
@@ -194,24 +194,24 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         }
         else {
 
-            var movieData = allMovieTimes.MovieTimes;
-            var x = expandPropNames(movieData);
+            var x = allMovieTimes.MovieTimes;
+            var movieData = expandPropNames(x);
 
             var exList = $localstorage.getObject("tsExcluded");
-            var xx = [];
+            var filteredMovieData = [];
 
             if ( exList.ts == undefined) {
 
-                xx = x;
+                filteredMovieData = movieData;
             }
             else {
 
-                xx =  _.filter(x, function(amovie) {
+                filteredMovieData =  _.filter(movieData, function(amovie) {
 
                             var atheater = amovie.theater;
 
-                            var rc = _.find(exList, function(exTheater) {
-                                if ( exTheater == atheater) {
+                            var rc = _.find(exList.excluded, function(exTheater) {
+                                if ( exTheater.theaterName == atheater) {
                                     return true;
                                 }
                                 else {
@@ -223,15 +223,15 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
                     });
 
-                $scope.totExcludedTheaters = exList.length;
-                $scope.totExcludedMovies = movieData.length - xx.length;;
+                $scope.totExcludedTheaters = exList.excluded.length;
+                $scope.totExcludedMovies = movieData.length - filteredMovieData.length;
             }
 
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(xx);
+            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
 
             var theaters = [];
 
-            var moviesByTheater = _.groupBy(xx, function(amovie) {
+            var moviesByTheater = _.groupBy(filteredMovieData, function(amovie) {
 
                 var atheater = amovie.theater;
 
@@ -241,10 +241,11 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
             });
 
-            $localstorage.setObject("tsTheaters", {ts: Date.now(), theateres: uniqList } );
-            var uniqList = _.uniq(theaters, "theaterName");
+            var uniqList1 = _.keys(moviesByTheater);
+            var uniqList2 = _.uniq(theaters, "theaterName");
+            $localstorage.setObject("tsTheaters", {ts: Date.now(), theaters: uniqList2 } );
             $scope.totMovies = movieData.length;
-            $scope.totTheaters = uniqList.length;
+            $scope.totTheaters = uniqList1.length;
         }
 
 
