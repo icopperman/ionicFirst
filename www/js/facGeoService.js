@@ -30,6 +30,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
             var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
             var xx = settingsObj;
+
             var config = {
                 method: "JSONP"
                 , url: mtURL
@@ -38,6 +39,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             };
 
             $http(config).then(
+
                 function (response) {
 
                     console.log('response from jsonp');
@@ -47,16 +49,6 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     var movieTimesIdx = response.data.movieTimesIdx;
                     var theaterNames  = response.data.theaterNames;
                     var movieNames    = response.data.movieNames;
-
-                    var tsMovies       = { ts: Date.now(), movies: response.data};
-                    var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
-                    var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
-                    var tsTheaterNames = { ts: Date.now(), theaterName: theaterNames};
-
-                    $localstorage.setObject("tsMovies", tsMovies);
-                    $localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
-                    $localstorage.setObject("tsMovieNames", tsMovieNames);
-                    $localstorage.setObject("tsTheaterName", tsTheaterNames);
 
                     var movieTimesNew = [];
 
@@ -84,8 +76,19 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                     response.data.MovieTimesNew = movieTimesNew;
 
+                    var tsMovies       = { ts: Date.now(), movies: response.data};
+                    var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
+                    var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
+                    var tsTheaterNames = { ts: Date.now(), theaterNames: theaterNames};
+
+                    $localstorage.setObject("tsMovies", tsMovies);
+                    $localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
+                    $localstorage.setObject("tsMovieNames", tsMovieNames);
+                    $localstorage.setObject("tsTheaterNames", tsTheaterNames);
+
                     q.resolve(response.data);
                 },
+
                 function (err) {
                     console.log('error response from jsonp');
                     q.reject(err);
@@ -127,10 +130,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             viewdate: adate,
             viewzip: "99999",
             viewmiles: "10",
-            //viewbegintime: d.getHours(),
-            viewbegintime: "",
+            viewbegintime: d.getHours(),
             viewendtime: "",
-            titlestartsWith: "",
+            viewstartsWith: "",
             viewLat: "",
             viewLon: ""
         };

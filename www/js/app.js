@@ -106,15 +106,41 @@ var theapp = angular.module('MovieApp', ['ionic']);
 
 theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
 
-    var xx = $localstorage.getObject("tsTheaters" );
-    var theaters = xx.theaters;
+    var tsTheaterNames = $localstorage.getObject("tsTheaterNames" );
+    var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
+
+    var theaters = [];
+    var excludedTheaters = [];
+
+    if ( tsExcludedTheaters.ts != undefined) {
+
+        excludedTheaters = tsExcludedTheaters.theaterNames;
+
+    }
+
+        var theaterNames = tsTheaterNames.theaterNames;
+
+        for (var i = 0; i < theaterNames.length; i++){
+
+            var aname = theaterNames[i];
+            var include = true;
+
+            var excluded = _.find(excludedTheaters, aname);
+            if ( excluded != undefined) {
+                include = false;
+            }
+
+            theaters.push({ theaterName: aname, include: include});
+        }
+
+    //var theaters = xx.theaters;
 
     $scope.theaterList = theaters;
 
     $scope.saveExclusion = function()
     {
         var xx = $scope.theaterList;
-        var exclusionList = _.where(xx, { include : false} );
+        var exclusionList = _.pluck(_.where(xx, { include : false} ), "theaterName");
 
         $localstorage.setObject("tsExcluded", {ts: Date.now(), excluded : exclusionList});
     }
@@ -174,7 +200,7 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
     theapp.controller("MovieTimesController", function ($scope, $state, $localstorage, getMovies) {
 
-        //var setingsObj = $localstorage.getObject("settings");
+        var settingsObj = $localstorage.getObject("settings");
 
         var allMovieTimes = getMovies;
         var rc = allMovieTimes.Status;
@@ -195,15 +221,47 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         else {
 
             var movieData = allMovieTimes.MovieTimesNew;
-            //var movieData = expandPropNames(x);
+
+            var beginTime = -1;
+            var endTime = 26;
+            var titleFilter = "";
+
+            if ( ( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
+                beginTime  = parseInt(settingsObj.viewbegintime);
+            }
+            if ( ( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
+                endTime  = parseInt(settingsObj.viewendtime);
+            }
+            if ( ( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "") ) {
+                titleFilter  = settingsObj.viewstartsWith;
+            }
+
+            var filteredMovieData = [];
+            var excludedTheaters = [];
 
             var exList = $localstorage.getObject("tsExcluded");
-            var filteredMovieData = [];
 
-            if ( exList.ts == undefined) {
+            if ( exList.ts != undefined) {
 
-                filteredMovieData = movieData;
+                excludedTheaters = exList.excluded;
             }
+
+            for (var i = 0; i < movieData.length; i++) {
+
+                var amovie = movieData[i];
+                var movieBeginTime = parseInt(amovie.time.substring(0,2));
+
+                if ( movieBeginTime < beginTime) continue;
+                if ( movieBeginTime > endTime) continue;
+                if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false ) continue;
+
+                filteredMovieData.push(amovie);
+
+            }
+
+            var theaterNames = allMovieTimes.theaterNames;
+
+
             else {
 
                 filteredMovieData =  _.filter(movieData, function(amovie) {
@@ -229,23 +287,24 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
             $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
 
-            var theaters = [];
+            //var theaters = [];
+            //
+            //var moviesByTheater = _.groupBy(filteredMovieData, function(amovie) {
+            //
+            //    var atheater = amovie.theater;
+            //
+            //    theaters.push({ theaterName: atheater, include: true });
+            //
+            //    return atheater;
+            //
+            //});
+            //
+            //var uniqList1 = _.keys(moviesByTheater);
+            //var uniqList2 = _.uniq(theaters, "theaterName");
+            //$localstorage.setObject("tsTheaters", {ts: Date.now(), theaters: uniqList2 } );
 
-            var moviesByTheater = _.groupBy(filteredMovieData, function(amovie) {
-
-                var atheater = amovie.theater;
-
-                theaters.push({ theaterName: atheater, include: true });
-
-                return atheater;
-
-            });
-
-            var uniqList1 = _.keys(moviesByTheater);
-            var uniqList2 = _.uniq(theaters, "theaterName");
-            $localstorage.setObject("tsTheaters", {ts: Date.now(), theaters: uniqList2 } );
             $scope.totMovies = movieData.length;
-            $scope.totTheaters = uniqList1.length;
+            $scope.totTheaters = theaterNames.length;
         }
 
 
@@ -300,15 +359,25 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         $scope.handleClick = function()
         {
             //get saved settings
-            var prevObj2 = $localstorage.getObject("settings");
+            var prev = $localstorage.getObject("settings");
+            var curr = $scope.settingsObj;
+            var invalidateCache = false;
+
+            if (   ( prev.viewdate  != curr.viewdate )
+                || ( prev.viewzip   != curr.viewzip )
+                || ( prev.viewmiles != curr.viewmiles ) )
+            {
+                invalidateCache = true;
+            }
 
             //has user changed it?
-            var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
-            var rc2 = _.isEqual($scope.settingsObj, prevObj2);
+            //var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
+            //var rc2 = _.isEqual($scope.settingsObj, prevObj2);
 
-            if ( rc2 == false ) {
+            $localstorage.setObject("settings", $scope.settingsObj);
+
+            if ( invalidateCache == true ) {
                 //user changed search parms, so save it now
-                $localstorage.setObject("settings", $scope.settingsObj);
                 //and clear out any cached objects
                 $localstorage.deleteObject("tsZip");
                 $localstorage.deleteObject("tsLatLon");
