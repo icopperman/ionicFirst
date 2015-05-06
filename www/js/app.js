@@ -138,9 +138,9 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         }
         else {
 
-            var movieData = allMovieTimes.MovieTimes;
-            var x = expandPropNames(movieData);
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(x);
+            var movieData = allMovieTimes.MovieTimesNew;
+            //var x = expandPropNames(movieData);
+            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(movieData);
 
         }
 
@@ -194,8 +194,8 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         }
         else {
 
-            var x = allMovieTimes.MovieTimes;
-            var movieData = expandPropNames(x);
+            var movieData = allMovieTimes.MovieTimesNew;
+            //var movieData = expandPropNames(x);
 
             var exList = $localstorage.getObject("tsExcluded");
             var filteredMovieData = [];
@@ -355,23 +355,7 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
     });
 
 
-function expandPropNames(movies) {
 
-    var allMovies = [];
-
-    angular.forEach(movies, function (aval, idx) {
-
-        var i = 0;
-
-        var arow = {cnt: idx + 1, time: aval.d, runtime: aval.r, title: aval.t, theater: aval.h};
-
-        allMovies.push(arow);
-
-    });
-
-    return allMovies;
-
-}
 
 function moviesAtSpecificTimes(movies) {
 

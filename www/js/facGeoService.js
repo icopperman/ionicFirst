@@ -39,10 +39,50 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
             $http(config).then(
                 function (response) {
+
                     console.log('response from jsonp');
-                    var tsMovies  = { ts: Date.now(), movies: response.data};
+
+                    var errs          = response.data.ErrMessage;
+                    var movieTimes    = response.data.MovieTimes;
+                    var movieTimesIdx = response.data.movieTimesIdx;
+                    var theaterNames  = response.data.theaterNames;
+                    var movieNames    = response.data.movieNames;
+
+                    var tsMovies       = { ts: Date.now(), movies: response.data};
+                    var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
+                    var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
+                    var tsTheaterNames = { ts: Date.now(), theaterName: theaterNames};
 
                     $localstorage.setObject("tsMovies", tsMovies);
+                    $localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
+                    $localstorage.setObject("tsMovieNames", tsMovieNames);
+                    $localstorage.setObject("tsTheaterName", tsTheaterNames);
+
+                    var movieTimesNew = [];
+
+                    for ( var i = 0; i < movieTimesIdx.length; i++)
+                    {
+                        var movieTimeIdx = movieTimesIdx[i];
+                        var movieIdx = movieTimeIdx.m;
+                        var theaterIdx = movieTimeIdx.t;
+
+                        var movieName = movieNames[movieIdx].m;
+                        var showTime = movieTimeIdx.s;
+                        var runTime =  movieNames[movieIdx].r;
+                        var theaterName = theaterNames[theaterIdx];
+
+                        var obj = {
+                            cnt: i + 1,
+                            time: showTime,
+                            theater: theaterName,
+                            runtime: runTime,
+                            title: movieName
+                        };
+
+                        movieTimesNew.push(obj);
+                    }
+
+                    response.data.MovieTimesNew = movieTimesNew;
 
                     q.resolve(response.data);
                 },
@@ -246,7 +286,23 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
 });
 
-
+//function expandPropNames(movies) {
+//
+//    var allMovies = [];
+//
+//    angular.forEach(movies, function (aval, idx) {
+//
+//        var i = 0;
+//
+//        var arow = {cnt: idx + 1, time: aval.d, runtime: aval.r, title: aval.t, theater: aval.h};
+//
+//        allMovies.push(arow);
+//
+//    });
+//
+//    return allMovies;
+//
+//}
 //function successGetMovies(data) {
 //    console.log("invoked webapi svc, success");
 //
