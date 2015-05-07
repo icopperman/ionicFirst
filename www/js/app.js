@@ -125,8 +125,8 @@ theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
             var aname = theaterNames[i];
             var include = true;
 
-            var excluded = _.find(excludedTheaters, aname);
-            if ( excluded != undefined) {
+            var excludedIdx = _.indexOf(excludedTheaters, aname);
+            if ( excludedIdx != -1) {
                 include = false;
             }
 
@@ -142,7 +142,7 @@ theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
         var xx = $scope.theaterList;
         var exclusionList = _.pluck(_.where(xx, { include : false} ), "theaterName");
 
-        $localstorage.setObject("tsExcluded", {ts: Date.now(), excluded : exclusionList});
+        $localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames : exclusionList});
     }
 
 
@@ -243,17 +243,21 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
 
             if ( exList.ts != undefined) {
 
-                excludedTheaters = exList.excluded;
+                excludedTheaters = exList.theaterNames;
             }
 
             for (var i = 0; i < movieData.length; i++) {
 
                 var amovie = movieData[i];
                 var movieBeginTime = parseInt(amovie.time.substring(0,2));
+                var theaterName = amovie.theater;
 
                 if ( movieBeginTime < beginTime) continue;
                 if ( movieBeginTime > endTime) continue;
                 if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false ) continue;
+
+                var exIdx = _.indexOf(excludedTheaters, theaterName);
+                if ( exIdx != -1 ) continue;
 
                 filteredMovieData.push(amovie);
 
@@ -262,28 +266,28 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
             var theaterNames = allMovieTimes.theaterNames;
 
 
-            else {
+            //else {
+            //
+            //    filteredMovieData =  _.filter(movieData, function(amovie) {
+            //
+            //                var atheater = amovie.theater;
+            //
+            //                var rc = _.find(exList.excluded, function(exTheater) {
+            //                    if ( exTheater.theaterName == atheater) {
+            //                        return true;
+            //                    }
+            //                    else {
+            //                        return false;
+            //                    }
+            //                });
+            //
+            //                return !rc;
+            //
+            //        });
 
-                filteredMovieData =  _.filter(movieData, function(amovie) {
-
-                            var atheater = amovie.theater;
-
-                            var rc = _.find(exList.excluded, function(exTheater) {
-                                if ( exTheater.theaterName == atheater) {
-                                    return true;
-                                }
-                                else {
-                                    return false;
-                                }
-                            });
-
-                            return !rc;
-
-                    });
-
-                $scope.totExcludedTheaters = exList.excluded.length;
+                $scope.totExcludedTheaters = excludedTheaters.length;
                 $scope.totExcludedMovies = movieData.length - filteredMovieData.length;
-            }
+            //}
 
             $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
 
