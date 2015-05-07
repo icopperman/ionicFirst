@@ -1,39 +1,59 @@
+<ion-view title="{{navTitle}}"">
+<ion-content class="padding" scroll="false">
+    <div class="noscrollsection">Have no scroll</div>
+    <hr>
+    <div class="scrollsection">
+        <h5 class="title">Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
 
-    <ion-view title="{{navTitle}}"">
-        <ion-content class="padding"  scroll="false">
-            <div class="noscrollsection">Have no scroll</div>
-            <hr>
-            <div class="scrollsection">
-                <h5 class="title">Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
 
+        <ion-scroll direction="x" >
 
-                <ion-scroll  direction="x" class="itemxx" >
-                    <!--class="item wide-item">item-divider-->
-                    <div ng-repeat="atTime in moviesAtSpecificTimes" style="display: inline-block">
-                        <div class="card" >
-                            <div class="item item-divider">
-                                {{ $index }}. {{ atTime.keyTime }} : {{atTime.moviesAtTime.length}} Movies
-                            </div>
-                            <div class="item ">
-                                body
-                            </div>
-                            <div class="item item-divider">
-                                footer
-                            </div>
-                            <!--<div class="item item-text-wrap">-->
-                                <!--<div ng-repeat="movie in atTime.moviesAtTime" >-->
-                                    <!--<div >Movie: {{movie.title}}-->
-                                        <!--Theater: {{movie.theater}}-->
-                                        <!--Runtime: {{movie.runtime}}-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
+            <!--class="item wide-item">item-divider-->
+            <div id="xxx">
+                <div ng-repeat="atTime in moviesAtSpecificTimes"
+                    class="item-stable" style="display: inline-block; width: 300px; border: 1px solid black;"
+                         ng-click="toggleGroup(atTime)" ng-class="{active: isGroupShown(atTime)}">
+                        <i class="icon" ng-class="isGroupShown(atTime) ? 'ion-minus' : 'ion-plus'"></i>
+                        &nbsp;
+                        {{atTime.keyTime}} Movies at this time: {{atTime.moviesAtTime.length}}
+
+                        <div class="item-accordion" ng-repeat="movie in atTime.moviesAtTime"
+                             ng-show="isGroupShown(atTime)">
+                            <hr/>
+                            Movie: {{movie.title}}</br>
+                            Theater: {{movie.theater}}</br>
+                            Runtime: {{movie.runtime}}</br>
                         </div>
-                    </div>
-            </div>
-                </ion-scroll>
 
-                <!--<ion-infinite-scroll ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>-->
+                </div>
             </div>
-        </ion-content>
-    </ion-view>
+            <!--<div ng-repeat="atTime in moviesAtSpecificTimes" style="display: inline-block">-->
+            <!--<div class="item item-text-wrap">-->
+            <!--<div ng-repeat="movie in atTime.moviesAtTime">-->
+            <!--<div>Movie: {{movie.title}}-->
+            <!--Theater: {{movie.theater}}-->
+            <!--Runtime: {{movie.runtime}}-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="card">-->
+            <!--<div class="item item-divider">-->
+            <!--{{ $index }}. {{ atTime.keyTime }} : {{atTime.moviesAtTime.length}} Movies-->
+            <!--</div>-->
+            <!--<div class="item ">-->
+            <!--body-->
+            <!--</div>-->
+            <!--<div class="item item-divider">-->
+            <!--footer-->
+            <!--</div>-->
+            <!---->
+            <!--</div>-->
+
+        </ion-scroll>
+    </div>
+
+    <!--<ion-infinite-scroll ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>-->
+
+</ion-content>
+</ion-view>

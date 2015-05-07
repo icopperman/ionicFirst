@@ -47,8 +47,8 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     var errs          = response.data.ErrMessage;
                     var movieTimes    = response.data.MovieTimes;
                     var movieTimesIdx = response.data.movieTimesIdx;
-                    var theaterNames  = response.data.theaterNames;
-                    var movieNames    = response.data.movieNames;
+                    var theaterNames  = response.data.theaterNames.sort();
+                    var movieNames    = response.data.movieNames.sort();
 
                     var movieTimesNew = [];
 

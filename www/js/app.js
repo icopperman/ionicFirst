@@ -177,7 +177,17 @@ theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, get
         $scope.number = 10;
         $scope.items = [];
 
-
+    $scope.toggleGroup = function(group) {
+        if ($scope.isGroupShown(group)) {
+            $scope.shownGroup = null;
+        } else {
+            $scope.shownGroup = group;
+        }
+    };
+    $scope.isGroupShown = function(group) {
+        var rc = $scope.shownGroup === group;
+        return rc;
+    };
         $scope.loadMore = function() {
             for(var i=0; i<$scope.number; i++){
                 $scope.items.push({

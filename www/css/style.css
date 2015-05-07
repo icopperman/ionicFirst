@@ -25,3 +25,7 @@ ion-scroll .item {
     width:200px;
     height:200px
 }
+#xxx {
+    width: -webkit-max-content;
+    width: max-content;
+}
