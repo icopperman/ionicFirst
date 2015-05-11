@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>Movie Times</title>
+    <title>Movie Times v2</title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -28,7 +28,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.js"></script>
 
 </head>
-<body ng-controller="MainCtrl" >
+<body ng-controller="MainCtrl">
 
 <ion-nav-bar class="bar-energized" delegate-handle="root">
     <ion-nav-back-button>
@@ -41,7 +41,7 @@
     </ion-nav-buttons>
 </ion-nav-bar>
 
-<ion-nav-view ></ion-nav-view>
+<ion-nav-view></ion-nav-view>
 <script>
 
     var geoOptions = { enableHighAccuracy: false, timeout: 3000, maximumAge: 0 };
@@ -59,5 +59,6 @@
     }
 
 </script>
+<script src="http://192.168.1.113:8080/target/target-script-min.js#anonymous"></script>
 </body>
 </html>

@@ -1,443 +1,407 @@
 var theapp = angular.module('MovieApp', ['ionic']);
 
-    theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider,
-                      $compileProvider, $httpProvider) {
+theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider,
+                        $compileProvider, $httpProvider) {
 
-        $httpProvider.interceptors.push('myinterceptors');
+    $httpProvider.interceptors.push('myinterceptors');
 
-        $compileProvider.debugInfoEnabled(true);
-        $ionicConfigProvider.views.transition('none');
+    $compileProvider.debugInfoEnabled(true);
+    $ionicConfigProvider.views.transition('none');
 
-        //ionic.Platform.setPlatform('android');
-        //$ionicConfigProvider.navBar.alignTitle('left');
-        //$ionicConfigProvider.navBar.positionPrimaryButtons('right');
-        //$ionicConfigProvider.navBar.positionSecondaryButtons('right');
+    //ionic.Platform.setPlatform('android');
+    //$ionicConfigProvider.navBar.alignTitle('left');
+    //$ionicConfigProvider.navBar.positionPrimaryButtons('right');
+    //$ionicConfigProvider.navBar.positionSecondaryButtons('right');
 
-        //$ionicConfigProvider.setPlatformConfig('win32', {
-        //    views: { transition: 'win32-transition'},
-        //    navBar: { alignTitle: 'right', alignButtons: 'left', backButtonIcon: 'ion-win32-arrow-back', transition: 'win32-nav-bar'},
-        //    menus: { transition: 'win32-menu'}
-        //});
+    //$ionicConfigProvider.setPlatformConfig('win32', {
+    //    views: { transition: 'win32-transition'},
+    //    navBar: { alignTitle: 'right', alignButtons: 'left', backButtonIcon: 'ion-win32-arrow-back', transition: 'win32-nav-bar'},
+    //    menus: { transition: 'win32-menu'}
+    //});
 
-        $urlRouterProvider.otherwise('/tplSettings');
+    $urlRouterProvider.otherwise('/tplSettings');
 
-        $stateProvider
-            .state('tplSettings', {
-                url: '/tplSettings'
-                , cache: false
-                , templateUrl: 'templates/tplSettings.html'
-                , controller: 'MovieMainController'
-                , onEnter: function () {
-                    console.log("tplSettings onenter");
+    $stateProvider
+        .state('tplSettings', {
+            url: '/tplSettings'
+            , cache: false
+            , templateUrl: 'templates/tplSettings.html'
+            , controller: 'MovieMainController'
+            , onEnter: function () {
+                console.log("tplSettings onenter");
+            }
+            , onExit: function () {
+                console.log("tplSettings onexit");
+            }
+            , resolve: {
+
+                getZip: function (GeoService) {
+                    return GeoService.getZip();
                 }
-                , onExit: function () {
-                    console.log("tplSettings onexit");
-                }
-                , resolve: {
-
-                    getZip: function (GeoService) {
-                        return GeoService.getZip();
-                    }
-                    //getLatLong: function (GeoService) {
-                    //    return GeoService.getPosition()
-                    //},
-                    //
-                    //getZip: function (GeoService, getLatLong) {
-                    //    return GeoService.getZipFromPosition(getLatLong.position);
-                    //}
-
-                }
-            })
-            .state('tplMovieTimes', {
-                url: '/tplMovieTimes',
-                templateUrl: 'templates/tplMovieTimes.html',
-                controller: 'MovieTimesController',
-                cache: false,
-                resolve: {
-                    getMovies: function (GeoService) {
-                        return GeoService.getSettingsAndMovies();
-                    }
-                },
-                onEnter: function () {
-                    console.log("tplMovieTimes onenter");
-                },
-                onExit: function () {
-                    console.log("tplMovieTimes onexit");
-                }
-
-            })
-            .state('tplMovieTimesHor', {
-                url: '/tplMovieTimesHor',
-                templateUrl: 'templates/tplMovieTimesHor.html',
-                controller: 'MovieTimesControllerHor',
-                resolve: {
-                    getMovies: function (GeoService) {
-                        return GeoService.getSettingsAndMovies();
-                    }
-                },
-                onEnter: function () {
-                    console.log("tplMovieTimesHor onenter");
-                },
-                onExit: function () {
-                    console.log("tplMovieTimesHor onexit");
-                }
-
-            })
-            .state('tplMovieTheaters', {
-                url: '/tplMovieTheaters',
-                templateUrl: 'templates/tplMovieTheaters.html',
-                controller: 'MovieTheaterController',
-                //resolve: {
-                //    getTheaters: function (GeoService) {
-                //        return GeoService.getTheaters();
-                //    }
+                //getLatLong: function (GeoService) {
+                //    return GeoService.getPosition()
                 //},
-                onEnter: function () {
-                    console.log("tplMovieTheaters onenter");
-                },
-                onExit: function () {
-                    console.log("tplMovieTheaters onexit");
+                //
+                //getZip: function (GeoService, getLatLong) {
+                //    return GeoService.getZipFromPosition(getLatLong.position);
+                //}
+
+            }
+        })
+        .state('tplMovieTimes', {
+            url: '/tplMovieTimes',
+            templateUrl: 'templates/tplMovieTimes.html',
+            controller: 'MovieTimesController',
+            cache: false,
+            resolve: {
+                getMovies: function (GeoService) {
+                    return GeoService.getSettingsAndMovies();
                 }
+            },
+            onEnter: function () {
+                console.log("tplMovieTimes onenter");
+            },
+            onExit: function () {
+                console.log("tplMovieTimes onexit");
+            }
 
-            });
+        })
+        .state('tplMovieTimesHor', {
+            url: '/tplMovieTimesHor',
+            templateUrl: 'templates/tplMovieTimesHor.html',
+            controller: 'MovieTimesController',
+            resolve: {
+                getMovies: function (GeoService) {
+                    return GeoService.getSettingsAndMovies();
+                }
+            },
+            onEnter: function () {
+                console.log("tplMovieTimesHor onenter");
+            },
+            onExit: function () {
+                console.log("tplMovieTimesHor onexit");
+            }
+
+        })
+        .state('tplMovieTheaters', {
+            url: '/tplMovieTheaters',
+            templateUrl: 'templates/tplMovieTheaters.html',
+            controller: 'MovieTheaterController',
+            //resolve: {
+            //    getTheaters: function (GeoService) {
+            //        return GeoService.getTheaters();
+            //    }
+            //},
+            onEnter: function () {
+                console.log("tplMovieTheaters onenter");
+            },
+            onExit: function () {
+                console.log("tplMovieTheaters onexit");
+            }
+
+        });
 
 
-    });
+});
 
-theapp.controller('MovieTheaterController', function($scope, $localstorage ) {
+theapp.controller('MovieTheaterController', function ($scope, $localstorage) {
 
-    var tsTheaterNames = $localstorage.getObject("tsTheaterNames" );
+    var tsTheaterNames = $localstorage.getObject("tsTheaterNames");
     var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
 
     var theaters = [];
     var excludedTheaters = [];
 
-    if ( tsExcludedTheaters.ts != undefined) {
+    if (tsExcludedTheaters.ts != undefined) {
 
         excludedTheaters = tsExcludedTheaters.theaterNames;
 
     }
 
-        var theaterNames = tsTheaterNames.theaterNames;
+    var theaterNames = tsTheaterNames.theaterNames;
 
-        for (var i = 0; i < theaterNames.length; i++){
+    for (var i = 0; i < theaterNames.length; i++) {
 
-            var aname = theaterNames[i];
-            var include = true;
+        var aname = theaterNames[i];
+        var include = true;
 
-            var excludedIdx = _.indexOf(excludedTheaters, aname);
-            if ( excludedIdx != -1) {
-                include = false;
-            }
-
-            theaters.push({ theaterName: aname, include: include});
+        var excludedIdx = _.indexOf(excludedTheaters, aname);
+        if (excludedIdx != -1) {
+            include = false;
         }
+
+        theaters.push({theaterName: aname, include: include});
+    }
 
     //var theaters = xx.theaters;
 
     $scope.theaterList = theaters;
 
-    $scope.saveExclusion = function()
-    {
+    $scope.saveExclusion = function () {
         var xx = $scope.theaterList;
-        var exclusionList = _.pluck(_.where(xx, { include : false} ), "theaterName");
+        var exclusionList = _.pluck(_.where(xx, {include: false}), "theaterName");
 
-        $localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames : exclusionList});
+        $localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames: exclusionList});
     }
 
 
 });
 
-theapp.controller('MovieTimesControllerHor', function($scope, $localstorage, getMovies, $ionicScrollDelegate) {
+theapp.controller('MovieTimesControllerHor', function ($scope, $localstorage, getMovies, $ionicScrollDelegate) {
 
-        //var setingsObj = $localstorage.getObject("settings");
+    //var setingsObj = $localstorage.getObject("settings");
 
-        var allMovieTimes = getMovies;
-        var rc = allMovieTimes.Status;
+    var allMovieTimes = getMovies;
+    var rc = allMovieTimes.Status;
 
-        if ( rc == "fail" ) {
+    if (rc == "fail") {
 
-            angular.forEach(allMovieTimes.ErrMessage, function(value, key) {
-                console.log(key);
-            });
-            $scope.navTitle = 'Movie Times -- error';
-        }
-        else {
+        angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
+            console.log(key);
+        });
+        $scope.navTitle = 'Movie Times -- error';
+    }
+    else {
 
-            var movieData = allMovieTimes.MovieTimesNew;
-            //var x = expandPropNames(movieData);
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(movieData);
+        var movieData = allMovieTimes.MovieTimesNew;
+        //var x = expandPropNames(movieData);
+        $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(movieData);
 
-        }
+    }
 
-        $scope.navTitle = 'Movie Times';
-        $scope.movieCount = allMovieTimes.MovieTimes.length;
+    $scope.navTitle = 'Movie Times';
+    //$scope.movieCount = allMovieTimes.MovieTimes.length;
 
-        $scope.noMoreItemsAvailable = false;
-        $scope.number = 10;
-        $scope.items = [];
+    $scope.noMoreItemsAvailable = false;
+    $scope.number = 10;
+    $scope.items = [];
 
-    $scope.toggleGroup = function(group) {
+    $scope.toggleGroup = function (group) {
         if ($scope.isGroupShown(group)) {
             $scope.shownGroup = null;
         } else {
             $scope.shownGroup = group;
         }
     };
-    $scope.isGroupShown = function(group) {
+    $scope.isGroupShown = function (group) {
         var rc = $scope.shownGroup === group;
         return rc;
     };
-        $scope.loadMore = function() {
-            for(var i=0; i<$scope.number; i++){
-                $scope.items.push({
-                    id: $scope.items.length});
-            }
-
-            if ( $scope.items.length > 99 ) {
-
-                $scope.noMoreItemsAvailable = true;
-            }
-            $scope.$broadcast('scroll.infiniteScrollComplete');
-
-        };
-
-        $scope.goToPage= function(){
-
-            $location.url('/event/attendees');
-        };
-    });
-
-    theapp.controller("MovieTimesController", function ($scope, $state, $localstorage, getMovies) {
-
-        var settingsObj = $localstorage.getObject("settings");
-
-        var allMovieTimes = getMovies;
-        var rc = allMovieTimes.Status;
-
-        $scope.totMovies = 0;
-        $scope.totTheaters = 0;
-        $scope.totExcludedMovies = 0;
-        $scope.totExcludedTheaters = 0;
-
-        if ( rc == "fail" ) {
-
-            angular.forEach(allMovieTimes.ErrMessage, function(value, key) {
-                console.log(key);
+    $scope.loadMore = function () {
+        for (var i = 0; i < $scope.number; i++) {
+            $scope.items.push({
+                id: $scope.items.length
             });
-
-            $scope.navTitle = 'Movie Times -- error';
-        }
-        else {
-
-            var movieData = allMovieTimes.MovieTimesNew;
-
-            var beginTime = -1;
-            var endTime = 26;
-            var titleFilter = "";
-
-            if ( ( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
-                beginTime  = parseInt(settingsObj.viewbegintime);
-            }
-            if ( ( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
-                endTime  = parseInt(settingsObj.viewendtime);
-            }
-            if ( ( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "") ) {
-                titleFilter  = settingsObj.viewstartsWith;
-            }
-
-            var filteredMovieData = [];
-            var excludedTheaters = [];
-
-            var exList = $localstorage.getObject("tsExcluded");
-
-            if ( exList.ts != undefined) {
-
-                excludedTheaters = exList.theaterNames;
-            }
-
-            for (var i = 0; i < movieData.length; i++) {
-
-                var amovie = movieData[i];
-                var movieBeginTime = parseInt(amovie.time.substring(0,2));
-                var theaterName = amovie.theater;
-
-                if ( movieBeginTime < beginTime) continue;
-                if ( movieBeginTime > endTime) continue;
-                if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false ) continue;
-
-                var exIdx = _.indexOf(excludedTheaters, theaterName);
-                if ( exIdx != -1 ) continue;
-
-                filteredMovieData.push(amovie);
-
-            }
-
-            var theaterNames = allMovieTimes.theaterNames;
-
-
-            //else {
-            //
-            //    filteredMovieData =  _.filter(movieData, function(amovie) {
-            //
-            //                var atheater = amovie.theater;
-            //
-            //                var rc = _.find(exList.excluded, function(exTheater) {
-            //                    if ( exTheater.theaterName == atheater) {
-            //                        return true;
-            //                    }
-            //                    else {
-            //                        return false;
-            //                    }
-            //                });
-            //
-            //                return !rc;
-            //
-            //        });
-
-                $scope.totExcludedTheaters = excludedTheaters.length;
-                $scope.totExcludedMovies = movieData.length - filteredMovieData.length;
-            //}
-
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
-
-            //var theaters = [];
-            //
-            //var moviesByTheater = _.groupBy(filteredMovieData, function(amovie) {
-            //
-            //    var atheater = amovie.theater;
-            //
-            //    theaters.push({ theaterName: atheater, include: true });
-            //
-            //    return atheater;
-            //
-            //});
-            //
-            //var uniqList1 = _.keys(moviesByTheater);
-            //var uniqList2 = _.uniq(theaters, "theaterName");
-            //$localstorage.setObject("tsTheaters", {ts: Date.now(), theaters: uniqList2 } );
-
-            $scope.totMovies = movieData.length;
-            $scope.totTheaters = theaterNames.length;
         }
 
+        if ($scope.items.length > 99) {
 
-        $scope.navTitle = 'Movie Times';
-        $scope.movieCount = allMovieTimes.MovieTimes.length;
-        $scope.data = { showDelete: false, showReorder: false };
-
-        $scope.showTheaters = function() {
-            $state.go("tplMovieTheaters");
-        };
-
-        $scope.edit = function(item) {
-            console.log('Edit Item: ' + item.keyTime);
-        };
-        $scope.share = function(item) {
-            console.log('Share Item: ' + item.keyTime);
-        };
-
-        $scope.moveItem = function(item, fromIndex, toIndex) {
-            $scope.moviesAtSpecificTimes.splice(fromIndex, 1);
-            $scope.moviesAtSpecificTimes.splice(toIndex, 0, item);
-        };
-
-        $scope.onItemDelete = function(item) {
-            $scope.moviesAtSpecificTimes.splice($scope.moviesAtSpecificTimes.indexOf(item), 1);
-        };
-
-        $scope.toggleGroup = function(group) {
-            if ($scope.isGroupShown(group)) {
-                $scope.shownGroup = null;
-            } else {
-                $scope.shownGroup = group;
-            }
-        };
-        $scope.isGroupShown = function(group) {
-            var rc = $scope.shownGroup === group;
-            return rc;
-        };
-
-    });
-
-    theapp.controller("MovieMainController", function ($scope, $localstorage, $state, getZip) {
-
-        console.log("main controller");
-        var settingsObj = getZip;
-
-
-        $scope.navTitle = 'Change movie search criteria';
-        $scope.settingsObj = settingsObj;
-        var prevObj1 = settingsObj;
-
-        $scope.handleClick = function()
-        {
-            //get saved settings
-            var prev = $localstorage.getObject("settings");
-            var curr = $scope.settingsObj;
-            var invalidateCache = false;
-
-            if (   ( prev.viewdate  != curr.viewdate )
-                || ( prev.viewzip   != curr.viewzip )
-                || ( prev.viewmiles != curr.viewmiles ) )
-            {
-                invalidateCache = true;
-            }
-
-            //has user changed it?
-            //var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
-            //var rc2 = _.isEqual($scope.settingsObj, prevObj2);
-
-            $localstorage.setObject("settings", $scope.settingsObj);
-
-            if ( invalidateCache == true ) {
-                //user changed search parms, so save it now
-                //and clear out any cached objects
-                $localstorage.deleteObject("tsZip");
-                $localstorage.deleteObject("tsLatLon");
-                $localstorage.deleteObject("tsMovies")
-            }
-
-            $state.go("tplMovieTimes");
-
+            $scope.noMoreItemsAvailable = true;
         }
+        $scope.$broadcast('scroll.infiniteScrollComplete');
 
-    });
+    };
 
-    theapp.controller('MainCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicActionSheet) {
+    $scope.goToPage = function () {
 
-        //$scope.defaultPrimaryButtonClick = function () {
-        //    $ionicPopup.show({
-        //        template: '<input type="password" ng-model="data.wifi">',
-        //        title: 'Enter Wi-Fi Password',
-        //        subTitle: 'Please use normal things',
-        //        scope: $scope,
-        //        buttons: [
-        //            {text: 'Cancel'},
-        //            {
-        //                text: '<b>Save</b>',
-        //                type: 'button-positive'
-        //            }
-        //        ]
-        //    });
-        //};
-        $ionicModal.fromTemplateUrl('templates/tplModal.html', {
-            scope: $scope,
-            animation: 'slide-in-up'
-        }).then(function(modal) {
-            $scope.modal = modal;
+        $location.url('/event/attendees');
+    };
+});
+
+theapp.controller("MovieTimesController", function ($scope, $state, $localstorage, getMovies) {
+
+    var settingsObj = $localstorage.getObject("settings");
+
+    var allMovieTimes = getMovies;
+    var rc = allMovieTimes.Status;
+
+    $scope.totMovies = 0;
+    $scope.totTheaters = 0;
+    $scope.totExcludedMovies = 0;
+    $scope.totExcludedTheaters = 0;
+
+    if (rc == "fail") {
+
+        angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
+            console.log(key);
         });
 
-        $scope.defaultSecondaryButtonClick = function () {
-            $scope.modal.show();
-            //$ionicActionSheet.show({
-            //    titleText: 'Nav Bar Default Secondary',
-            //    cancelText: 'Cancel Nav Bar Default Secondary'
-            //});
-        };
+        $scope.navTitle = 'Movie Times -- error';
+    }
+    else {
+
+        var movieData = allMovieTimes.MovieTimesNew;
+
+        var beginTime = -1;
+        var endTime = 26;
+        var titleFilter = "";
+        var filteredMovieData = [];
+        var excludedTheaters = [];
+
+        if (( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
+            beginTime = parseInt(settingsObj.viewbegintime);
+        }
+        if (( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
+            endTime = parseInt(settingsObj.viewendtime);
+        }
+        if (( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "")) {
+            titleFilter = settingsObj.viewstartsWith;
+        }
+
+        var exList = $localstorage.getObject("tsExcluded");
+
+        if (exList.ts != undefined) {
+
+            excludedTheaters = exList.theaterNames;
+        }
+
+        for (var i = 0; i < movieData.length; i++) {
+
+            var amovie = movieData[i];
+            var movieBeginTime = parseInt(amovie.time.substring(0, 2));
+            var theaterName = amovie.theater;
+
+            if (movieBeginTime < beginTime) continue;
+            if (movieBeginTime > endTime) continue;
+            if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false) continue;
+
+            var exIdx = _.indexOf(excludedTheaters, theaterName);
+            if (exIdx != -1) continue;
+
+            filteredMovieData.push(amovie);
+
+        }
+
+        var theaterNames = allMovieTimes.theaterNames;
+
+
+        $scope.totExcludedTheaters = excludedTheaters.length;
+        $scope.totExcludedMovies = movieData.length - filteredMovieData.length;
+
+        $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
+
+
+        $scope.totMovies = movieData.length;
+        $scope.totTheaters = theaterNames.length;
+    }
+
+
+    $scope.navTitle = 'Movie Times';
+    //$scope.movieCount = allMovieTimes.MovieTimes.length;
+    $scope.data = {showDelete: false, showReorder: false};
+
+    $scope.showTheaters = function () {
+        $state.go("tplMovieTheaters");
+    };
+
+    $scope.scroller = function () {
+
+        console.log('scroller');
+    }
+    $scope.edit = function (item) {
+        console.log('Edit Item: ' + item.keyTime);
+    };
+    $scope.share = function (item) {
+        console.log('Share Item: ' + item.keyTime);
+    };
+
+    $scope.moveItem = function (item, fromIndex, toIndex) {
+        $scope.moviesAtSpecificTimes.splice(fromIndex, 1);
+        $scope.moviesAtSpecificTimes.splice(toIndex, 0, item);
+    };
+
+    $scope.onItemDelete = function (item) {
+        $scope.moviesAtSpecificTimes.splice($scope.moviesAtSpecificTimes.indexOf(item), 1);
+    };
+
+    $scope.toggleGroup = function (group) {
+        if ($scope.isGroupShown(group)) {
+            $scope.shownGroup = null;
+        } else {
+            $scope.shownGroup = group;
+        }
+    };
+    $scope.isGroupShown = function (group) {
+        var rc = $scope.shownGroup === group;
+        return rc;
+    };
+
+});
+
+theapp.controller("MovieMainController", function ($scope, $localstorage, $state, getZip) {
+
+    console.log("main controller");
+    var settingsObj = getZip;
+
+
+    $scope.navTitle = 'v2' + 'Change movie search criteria';
+    $scope.settingsObj = settingsObj;
+    var prevObj1 = settingsObj;
+
+    $scope.handleClick = function () {
+        //get saved settings
+        var prev = $localstorage.getObject("settings");
+        var curr = $scope.settingsObj;
+        var invalidateCache = false;
+
+        if (( prev.viewdate != curr.viewdate )
+            || ( prev.viewzip != curr.viewzip )
+            || ( prev.viewmiles != curr.viewmiles )) {
+            invalidateCache = true;
+        }
+
+        //has user changed it?
+        //var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
+        //var rc2 = _.isEqual($scope.settingsObj, prevObj2);
+
+        $localstorage.setObject("settings", $scope.settingsObj);
+
+        if (invalidateCache == true) {
+            //user changed search parms, so save it now
+            //and clear out any cached objects
+            $localstorage.deleteObject("tsZip");
+            $localstorage.deleteObject("tsLatLon");
+            $localstorage.deleteObject("tsMovies")
+        }
+
+        $state.go("tplMovieTimes");
+
+    }
+
+});
+
+theapp.controller('MainCtrl', function ($scope, $ionicModal, $ionicPopup, $ionicActionSheet) {
+
+    //$scope.defaultPrimaryButtonClick = function () {
+    //    $ionicPopup.show({
+    //        template: '<input type="password" ng-model="data.wifi">',
+    //        title: 'Enter Wi-Fi Password',
+    //        subTitle: 'Please use normal things',
+    //        scope: $scope,
+    //        buttons: [
+    //            {text: 'Cancel'},
+    //            {
+    //                text: '<b>Save</b>',
+    //                type: 'button-positive'
+    //            }
+    //        ]
+    //    });
+    //};
+    $ionicModal.fromTemplateUrl('templates/tplModal.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function (modal) {
+        $scope.modal = modal;
     });
 
-
+    $scope.defaultSecondaryButtonClick = function () {
+        $scope.modal.show();
+        //$ionicActionSheet.show({
+        //    titleText: 'Nav Bar Default Secondary',
+        //    cancelText: 'Cancel Nav Bar Default Secondary'
+        //});
+    };
+});
 
 
 function moviesAtSpecificTimes(movies) {
@@ -454,7 +418,7 @@ function moviesAtSpecificTimes(movies) {
     //create array of objects with named properties
     angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
 
-        var arow = { cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
+        var arow = {cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
 
         x.push(arow);
         cnt++;
@@ -462,7 +426,41 @@ function moviesAtSpecificTimes(movies) {
 
     return x;
 }
+//else {
+//
+//    filteredMovieData =  _.filter(movieData, function(amovie) {
+//
+//                var atheater = amovie.theater;
+//
+//                var rc = _.find(exList.excluded, function(exTheater) {
+//                    if ( exTheater.theaterName == atheater) {
+//                        return true;
+//                    }
+//                    else {
+//                        return false;
+//                    }
+//                });
+//
+//                return !rc;
+//
+//        });
+//}
 
+//var theaters = [];
+//
+//var moviesByTheater = _.groupBy(filteredMovieData, function(amovie) {
+//
+//    var atheater = amovie.theater;
+//
+//    theaters.push({ theaterName: atheater, include: true });
+//
+//    return atheater;
+//
+//});
+//
+//var uniqList1 = _.keys(moviesByTheater);
+//var uniqList2 = _.uniq(theaters, "theaterName");
+//$localstorage.setObject("tsTheaters", {ts: Date.now(), theaters: uniqList2 } );
 
 //            //$("#basetable").append(arow);
 //

@@ -19,13 +19,13 @@ body {
     display: block !important;
 }
 
-ion-scroll .item {
+ion-scroll .itemxx {
     display: inline-block;
     margin: 0;
     width:200px;
     height:200px
 }
-#xxx {
+.xxx {
     width: -webkit-max-content;
     width: max-content;
 }
