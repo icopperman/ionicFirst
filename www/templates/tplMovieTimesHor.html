@@ -11,20 +11,17 @@
             <!--class="item wide-item">item-divider-->
             <div id="xxx" class="xxx">
                 <div ng-repeat="atTime in moviesAtSpecificTimes"
-
                     class="item-stable"
                      style="vertical-align:top; display: inline-block; width: 250px;
-                     border-left: 1px solid black;border-top: 1px solid black;
-                     "
-                         ng-click="toggleGroup(atTime)" ng-class="{active: isGroupShown(atTime)}">
-                    <div>
+                     border-left: 1px solid black;border-top: 1px solid black; "
+                     ng-click="toggleGroup(atTime)"
+                     ng-class="{active: isGroupShown(atTime)}">
+                    <div id="x{{$index}}">
                         <i class="icon" style="padding-left: 10px;" ng-class="isGroupShown(atTime) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
                         &nbsp;
                         {{atTime.keyTime}} Movies at this time: {{atTime.moviesAtTime.length}}
-                        </div>
-
-
-                        <div class="item-accordion xxx" ng-repeat="movie in atTime.moviesAtTime"
+                    </div>
+                    <div class="item-accordion xxx" ng-repeat="movie in atTime.moviesAtTime"
                              ng-show="isGroupShown(atTime)" style="border: none;">
 
                             <!--Movie: {{movie.title}}</br>-->
@@ -32,7 +29,7 @@
                             <!--Runtime: {{movie.runtime}}</br>-->
                             {{movie.title}} at {{movie.theater}}, runtime = {{movie.runtime}}
                             <hr/>
-                        </div>
+                    </div>
 
                 </div>
             </div>

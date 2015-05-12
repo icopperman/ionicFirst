@@ -295,9 +295,10 @@ theapp.controller("MovieTimesController", function ($scope, $state, $localstorag
     };
 
     $scope.scroller = function () {
-
+        window.status = window.pageXOffset;
         console.log('scroller');
-    }
+    };
+
     $scope.edit = function (item) {
         console.log('Edit Item: ' + item.keyTime);
     };
