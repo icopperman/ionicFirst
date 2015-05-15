@@ -77,6 +77,12 @@ theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider
             },
             onEnter: function () {
                 console.log("tplMovieTimesHor onenter");
+                var els = $('.outerdiv');
+
+                angular.forEach(els, function(el) {
+
+                    console.log('here');
+                });
             },
             onExit: function () {
                 console.log("tplMovieTimesHor onexit");
@@ -105,6 +111,8 @@ theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider
 });
 
 theapp.controller('MovieTheaterController', function ($scope, $localstorage) {
+
+
 
     var tsTheaterNames = $localstorage.getObject("tsTheaterNames");
     var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
@@ -151,6 +159,7 @@ theapp.controller('MovieTimesControllerHor', function ($scope, $localstorage, ge
 
     //var setingsObj = $localstorage.getObject("settings");
 
+
     var allMovieTimes = getMovies;
     var rc = allMovieTimes.Status;
 
@@ -183,7 +192,11 @@ theapp.controller('MovieTimesControllerHor', function ($scope, $localstorage, ge
             $scope.shownGroup = group;
         }
     };
-    $scope.isGroupShown = function (group) {
+    $scope.isGroupShown1 = function (group) {
+        var rc = $scope.shownGroup === group;
+        return rc;
+    };
+    $scope.isGroupShown2 = function (group) {
         var rc = $scope.shownGroup === group;
         return rc;
     };
@@ -210,6 +223,15 @@ theapp.controller('MovieTimesControllerHor', function ($scope, $localstorage, ge
 
 theapp.controller("MovieTimesController", function ($scope, $state, $localstorage, getMovies) {
 
+    if ( $state.current.name.indexOf('Hor') != -1) {
+
+        var els = $('.outerdiv');
+
+        angular.forEach(els, function (el) {
+
+            console.log('here');
+        });
+    }
     var settingsObj = $localstorage.getObject("settings");
 
     var allMovieTimes = getMovies;
@@ -294,9 +316,19 @@ theapp.controller("MovieTimesController", function ($scope, $state, $localstorag
         $state.go("tplMovieTheaters");
     };
 
+    var scrollcnt = 0;
+
     $scope.scroller = function () {
-        window.status = window.pageXOffset;
-        console.log('scroller');
+    scrollcnt++;
+        if ( scrollcnt == 300) {
+            console.log('here');
+        }
+        //window.status = window.pageXOffset;
+        //console.log('scrollerpo ' + window.pageXOffset);
+        //console.log('scrollersl1 ' + document.documentElement.scrollLeft);
+        //console.log('scroller screen w ' + screen.availWidth);
+        //console.log('scrollersl2 ' + screenLeft);
+        //console.log('scroller ww ' + window.outerWidth);
     };
 
     $scope.edit = function (item) {
@@ -315,18 +347,49 @@ theapp.controller("MovieTimesController", function ($scope, $state, $localstorag
         $scope.moviesAtSpecificTimes.splice($scope.moviesAtSpecificTimes.indexOf(item), 1);
     };
 
-    $scope.toggleGroup = function (group) {
-        if ($scope.isGroupShown(group)) {
+    $scope.toggleGroup = function (group, el) {
+        var elem1 = document.getElementsByName(el);
+        var elem2 = document.getElementById(el);
+        if ($scope.isGroupShownClass1(group)) {
             $scope.shownGroup = null;
         } else {
             $scope.shownGroup = group;
         }
     };
-    $scope.isGroupShown = function (group) {
+
+    $scope.isGroupShownClass1 = function (group, index, last) {
+        var outerdiv = $(".outerdiv").length;
+        var innerdiv = $(".innerdiv").length;
+        var xxx      = $(".xxx").length;
+
+        if (last == true) {
+            console.log('group shown class1');
+        }
+
+        //console.log('class1 ' + index + ' ' + last + ' ' + outerdiv + ' ' + innerdiv + ' ' + xxx);
+        var rc = $scope.shownGroup === group;
+        return rc;
+    };
+    $scope.isGroupShownClass2 = function (group, index, last) {
+        var outerdiv = $(".outerdiv").length;
+        var innerdiv = $(".innerdiv").length;
+        var xxx      = $(".xxx").length;
+
+        if (last == true) {
+            console.log('group shown class2 ');
+        }
+
+        //console.log('class2 ' + index + ' ' + last + ' ' + outerdiv + ' ' + innerdiv + ' ' + xxx);
         var rc = $scope.shownGroup === group;
         return rc;
     };
 
+
+    $scope.isGroupShownShow = function (group, index, last) {
+      //  console.log('show ' + index + ' ' + last);
+        var rc = $scope.shownGroup === group;
+        return rc;
+    };
 });
 
 theapp.controller("MovieMainController", function ($scope, $localstorage, $state, getZip) {

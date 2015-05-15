@@ -9,10 +9,57 @@ theappRun.run(function ($ionicPlatform, $rootScope, $ionicLoading) {
         + "," + data.stateName );
     }
 
-    $rootScope.$on('$ionicView.loaded',
-        function(viewevent, data) { logViewEvent (viewevent,data)});
-    $rootScope.$on('$ionicView.enter',
-        function(viewevent, data) { logViewEvent (viewevent,data)});
+    $rootScope.$on('$ionicView.loaded', function(viewevent, data) { logViewEvent (viewevent,data)});
+
+    $rootScope.$on('$ionicView.enter', function(viewevent, data) {
+
+        if ( data.stateName == "tplMovieTimesHor")
+        {
+            var els = $('.outerdiv').each(function(index) {
+
+                var _this = this;
+
+                $(_this).on('inview', function(event, visible) {
+
+                    if (visible) {
+                        console.log('visible');
+                    }
+                    else {
+                        console.log('notvisible');
+                    }
+                });
+
+                //var inview = new Waypoint.Inview({
+                //
+                //    element: _this,
+                //    horizontal: true,
+                //    enter: function (direction) {
+                //        var msg = 'enter' + direction + ' ' + this.element.id;
+                //        console.log(msg);
+                //    },
+                //    entered: function (direction) {
+                //        var msg = 'entered' + direction + ' ' + this.element.id;
+                //        console.log(msg);
+                //
+                //    },
+                //    exit: function (direction) {
+                //        var msg = 'exit' + direction + ' ' + this.element.id;
+                //        console.log(msg);
+                //    },
+                //    exited: function (direction) {
+                //        var msg = 'exited' + direction + ' ' + this.element.id;
+                //        console.log(msg);
+                //    }
+                //
+                //});
+
+            });
+
+        }
+
+        logViewEvent (viewevent,data);
+
+    });
 
     $rootScope.$on('$ionicView.leave', function(viewevent, data) { logViewEvent (viewevent,data)});
 

@@ -6,23 +6,28 @@
         <h1 class="title">Movies : {{totMovies}}, {{totTheaters}}, {{totExcludedMovies}}, {{totExcludedTheaters}}</h1>
         <h5 class="title">xx Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
 
-        <ion-scroll direction="x" on-scroll="scroller()">
+        <ion-scroll direction="x" >
 
-            <!--class="item wide-item">item-divider-->
+            <!--class="item wide-item">item-divider
+            on-scroll="scroller()"
+            -->
             <div id="xxx" class="xxx">
-                <div ng-repeat="atTime in moviesAtSpecificTimes"
-                    class="item-stable"
+                <div ng-repeat="atTime in moviesAtSpecificTimes track by $index"
+                    class="item-stable outerdiv"
                      style="vertical-align:top; display: inline-block; width: 250px;
                      border-left: 1px solid black;border-top: 1px solid black; "
-                     ng-click="toggleGroup(atTime)"
-                     ng-class="{active: isGroupShown(atTime)}">
-                    <div id="x{{$index}}">
-                        <i class="icon" style="padding-left: 10px;" ng-class="isGroupShown(atTime) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                    id="outer{{$index}}"
+                     ng-click="toggleGroup(atTime, 'outer{{$index}}')"
+                     ng-class="{active: isGroupShownClass1(atTime, $index, $last)}">
+                    <div id="inner{{$index}}" class="innerdiv">
+                        <i class="icon" style="padding-left: 10px;"
+                           ng-class="isGroupShownClass2(atTime, $index, $last) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
                         &nbsp;
-                        {{atTime.keyTime}} Movies at this time: {{atTime.moviesAtTime.length}}
+                        ({{$index}}){{atTime.keyTime}} Movies at this time: {{atTime.moviesAtTime.length}}
                     </div>
-                    <div class="item-accordion xxx" ng-repeat="movie in atTime.moviesAtTime"
-                             ng-show="isGroupShown(atTime)" style="border: none;">
+                    <div class="item-accordion zzz" ng-repeat="movie in atTime.moviesAtTime track by $index"
+                         id="accord{{$index}}"
+                         ng-show="isGroupShownShow(atTime, $index, $last)" style="border: none;">
 
                             <!--Movie: {{movie.title}}</br>-->
                             <!--Theater: {{movie.theater}}</br>-->
