@@ -1,64 +1,32 @@
-
 <ion-view view-title="{{navTitle}}">
 
     <div class="bar bar-subheader" >
         <h1 class="title">Movies : {{totMovies}}, {{totTheaters}}, {{totExcludedMovies}}, {{totExcludedTheaters}}</h1>
-
-    <!--<div class="buttons">-->
-        <!--<button class="button button-icon icon ion-ios-minus-outline"-->
-                <!--ng-click="data.showDelete = !data.showDelete; data.showReorder = false">-->
-        <!--</button>-->
-    <!--</div>-->
-    <!--<h1 class="title">Movie Times</h1>-->
-    <!--<div class="buttons">-->
-        <!--<button class="button"-->
-                <!--ng-click="data.showDelete = false; data.showReorder = !data.showReorder">-->
-            <!--Reorder   </button>-->
-    <!--</div>-->
     </div>
+
     <ion-content delegate-handle="root1-scroll-handle">
 
-        <ion-list show-delete="data.showDelete" show-reorder="data.showReorder"  delegate-handle="listDelegate" >
-            <!--type="list-inset"-->
-            <!--<ion-item ng-repeat="atTime in moviesAtSpecificTimes"-->
-                      <!--href="#/movielist/{{atTime.keyTime}}" >-->
-                      <!--&lt;!&ndash;class="item-thumbnail-left"&ndash;&gt;-->
-
-
-                <!--<p>Time: {{atTime.keyTime}} &#45;&#45; Showings : {{atTime.moviesAtTime.length}}</p>-->
-
-                <!--&lt;!&ndash;<ion-option-button class="button-positive" ng-click="share(atTime)">Share </ion-option-button>&ndash;&gt;-->
-                <!--&lt;!&ndash;<ion-option-button class="button-info"  ng-click="edit(atTime)">Edit</ion-option-button>&ndash;&gt;-->
-                <!--&lt;!&ndash;<ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(atTime)"></ion-delete-button>&ndash;&gt;-->
-                <!--&lt;!&ndash;<ion-reorder-button class="ion-navicon" on-reorder="moveItem(atTime, $fromIndex, $toIndex)"></ion-reorder-button>&ndash;&gt;-->
-
-            <!--</ion-item>-->
+        <ion-list delegate-handle="listDelegate" >
             <div ng-repeat="atTime in moviesAtSpecificTimes">
-                <ion-item class="item-stable" ng-click="toggleGroup(atTime)"  ng-class="{active: isGroupShown(atTime)}">
-                    <i class="icon" ng-class="isGroupShown(atTime) ? 'ion-minus' : 'ion-plus'"></i>
+                <ion-item class="item-stable" ng-click="toggleGroup(atTime)"  ng-class="{active: isGroupShownClass1(atTime)}">
+                    <i class="icon" ng-class="isGroupShownClass1(atTime) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
                     &nbsp;
                     {{atTime.keyTime}} Movies at this time:  {{atTime.moviesAtTime.length}}
                 </ion-item>
-                <ion-item class="item-accordion" ng-repeat="movie in atTime.moviesAtTime" ng-show="isGroupShown(atTime)">
-                    Movie: {{movie.title}}</br>
-                    Theater: {{movie.theater}}</br>
-                    Runtime: {{movie.runtime}}</br>
+                <ion-item class="item-accordion" ng-repeat="movie in atTime.moviesAtTime" ng-show="isGroupShownClass1(atTime)">
+                    at <b>{{movie.time}}, {{movie.title}}</b> is playing at <b>{{movie.theater}}</b>, runtime is <b>{{movie.runtime}}</b>.
                 </ion-item>
             </div>
         </ion-list>
-        <!--<ion-toggle ng-model="data.showDelete">Show Delete?</ion-toggle>-->
 
     </ion-content>
-    <ion-footer-bar align-title="center" class="bar-assertive">
 
+    <ion-footer-bar align-title="center" class="bar-assertive">
         <div class="title">
             <div class="buttons">
                 <button class="button" ng-click="showTheaters()">Show List of Theaters</button>
             </div>
         </div>
-        <!--<div class="buttons" ng-click="doSomething()">-->
-            <!--<button class="button">Right Button</button>-->
-        <!--</div>-->
     </ion-footer-bar>
 
 </ion-view>

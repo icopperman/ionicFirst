@@ -12,14 +12,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
             console.log("factory getzip");
 
-            var aprom1 = _getLocation();
-            var aprom2 = aprom1.then(_reverseGeocode);
+            var aprom1 = _getLocation();                //returns promise with tsPos: lat, lon
+            var aprom2 = aprom1.then(_reverseGeocode);  //returns settingsObj
 
             return aprom2;
 
         },
 
-        getSettingsAndMovies: function () {
+        getMovies: function () {
 
             var tsMovies = _isCached("tsMovies");
             if ( tsMovies != undefined) {
@@ -55,13 +55,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     for ( var i = 0; i < movieTimesIdx.length; i++)
                     {
                         var movieTimeIdx = movieTimesIdx[i];
-                        var movieIdx = movieTimeIdx.m;
-                        var theaterIdx = movieTimeIdx.t;
 
-                        var movieName = movieNames[movieIdx].m;
-                        var showTime = movieTimeIdx.s;
-                        var runTime =  movieNames[movieIdx].r;
-                        var theaterName = theaterNames[theaterIdx];
+                        var movieIdx     = movieTimeIdx.m;
+                        var theaterIdx   = movieTimeIdx.t;
+                        var showTime     = movieTimeIdx.s;
+
+                        var movieName    = movieNames[movieIdx].m;
+                        var runTime      = movieNames[movieIdx].r;
+                        var theaterName  = theaterNames[theaterIdx];
 
                         var obj = {
                             cnt: i + 1,
@@ -77,13 +78,13 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     response.data.MovieTimesNew = movieTimesNew;
 
                     var tsMovies       = { ts: Date.now(), movies: response.data};
-                    var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
-                    var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
+                    //var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
+                    //var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
                     var tsTheaterNames = { ts: Date.now(), theaterNames: theaterNames};
 
                     $localstorage.setObject("tsMovies", tsMovies);
-                    $localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
-                    $localstorage.setObject("tsMovieNames", tsMovieNames);
+                    //$localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
+                    //$localstorage.setObject("tsMovieNames", tsMovieNames);
                     $localstorage.setObject("tsTheaterNames", tsTheaterNames);
 
                     q.resolve(response.data);
@@ -122,11 +123,18 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
     function _init() {
 
+        var settings = $localstorage.getObject("settings");
+        if ( settings.viewdate != undefined) {
+            return settings;
+        }
+
         var d = new Date();
         var n = d.getTimezoneOffset();
         var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 
         return {
+
+            viewDateChar: "today",
             viewdate: adate,
             viewzip: "99999",
             viewmiles: "10",
@@ -134,7 +142,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             viewendtime: "",
             viewstartsWith: "",
             viewLat: "",
-            viewLon: ""
+            viewLon: "",
+            viewTimeSpan: "60",
+            viewCacheTime: "4"
         };
 
     }
@@ -163,6 +173,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             return $q.when(tsPos);
         }
 
+        //if we recompute lat, long we will have to recompute zip
+        $localstorage.deleteObject("tsZip");
+
         var q = $q.defer();
         var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
 
@@ -173,11 +186,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                 //note: google canary and firefor do not stringify position object, but regular chrome does
                 //so, to be careful, create my own object
-                var tsPos  = { ts: position.timestamp, tsLat: position.coords.latitude, tsLon: position.coords.longitude};
+                var tsPos  = { ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
                 $localstorage.setObject("tsLatLon", tsPos);
+                settingsObj.viewLat = position.coords.latitude;
+                settingsObj.viewLon = position.coords.longitude;
 
                 q.resolve(tsPos);
+
             },
             function (error) {
                 console.log("getlocation error: " + error);
@@ -195,7 +211,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         if ( tsZip != undefined) {
 
-            settingsObj.viewzip = tsZip.zip;
+            settingsObj.viewzip = tsZip.tsZip;
             $localstorage.setObject("settings", settingsObj);
 
             return $q.when(settingsObj);
@@ -204,16 +220,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
         var lat = tsPos.tsLat;
         var lon = tsPos.tsLon;
 
-        settingsObj.viewLat = lat;
-        settingsObj.viewLon = lon;
-
         var q = $q.defer();
 
         var geocoder = new google.maps.Geocoder();
         console.log("reverseGeocode:" + lat + ", " + lon);
         $localstorage.setObject('settings', settingsObj);
 
-        geocoder.geocode({
+        geocoder.geocode(
+            {
                 'latLng': new google.maps.LatLng(lat, lon)
             },
             function (geoResults, status) {
@@ -271,9 +285,9 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     //    $scope.viewzip = zip;
 
                     //});
-                    q.resolve(settingsObj);
-                    var tsZip = { zip: zip, ts: Date.now()};
+                    var tsZip = { ts: Date.now(), tsZip: zip};
                     $localstorage.setObject("tsZip", tsZip);
+                    q.resolve(settingsObj);
 
 
                 } //end if geocoder ok

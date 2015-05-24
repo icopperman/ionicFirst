@@ -1,31 +1,18 @@
-
-
-<ion-view >
-    <ion-footer-bar align-title="center" class="bar-assertive">
-
+<ion-view>
+    <ion-header-bar align-title="center" class="bar-assertive">
         <div class="title">
             <div class="buttons">
                 <button class="button" ng-click="saveExclusion()">Save Exclusion List</button>
             </div>
         </div>
-        <!--<div class="buttons" ng-click="doSomething()">-->
-        <!--<button class="button">Right Button</button>-->
-        <!--</div>-->
-    </ion-footer-bar>
+    </ion-header-bar>
     <ion-content>
-
         <div class="list">
-
-            <div class="item item-divider"> Theaters</div>
-
+            <!--<div class="item item-divider"> Theaters</div>-->
             <ion-toggle ng-repeat="atheater in theaterList" ng-model="atheater.include" ng-checked="atheater.include">
                 {{ atheater.theaterName }}
             </ion-toggle>
-
-
-
         </div>
-
     </ion-content>
 </ion-view>
 

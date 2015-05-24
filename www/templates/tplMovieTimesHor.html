@@ -1,81 +1,51 @@
 <ion-view title="{{navTitle}}"">
 <ion-content class="padding" scroll="false">
-    <div class="noscrollsection">Have no scroll</div>
-    <hr>
     <div class="scrollsection">
         <h1 class="title">Movies : {{totMovies}}, {{totTheaters}}, {{totExcludedMovies}}, {{totExcludedTheaters}}</h1>
         <h5 class="title">xx Ionic Infinite Scroll with {{moviesAtSpecficTimes.length}} items</h5>
 
-        <ion-scroll direction="x" >
+        <ion-scroll direction="x">
 
             <!--class="item wide-item">item-divider
             on-scroll="scroller()"
             -->
             <div id="xxx" class="xxx">
                 <div ng-repeat="atTime in moviesAtSpecificTimes track by $index"
-                    class="item-stable outerdiv"
-                     style="vertical-align:top; display: inline-block; width: 250px;
-                     border-left: 1px solid black;border-top: 1px solid black; "
-                    id="outer{{$index}}"
                      ng-click="toggleGroup(atTime, 'outer{{$index}}')"
-                     ng-class="{active: isGroupShownClass1(atTime, $index, $last)}">
-                    <div id="inner{{$index}}" class="innerdiv">
-                        <i class="icon" style="padding-left: 10px;"
+                     ng-class="{active: isGroupShownClass1(atTime, $index, $last)}"
+                     id="outer{{$index}}" class="item-stable outerdiv"
+                     style="vertical-align:top; display: inline-block; width: 250px;
+                     border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black; margin-bottom: 10px; ">
+                    <div id="inner{{$index}}" class="innerdiv" style="margin-bottom: 10px;">
+                        <i class="icon" style="padding: 10px;"
                            ng-class="isGroupShownClass2(atTime, $index, $last) ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
                         &nbsp;
-                        ({{$index}}){{atTime.keyTime}} Movies at this time: {{atTime.moviesAtTime.length}}
+                        at <b>{{atTime.keyTime}}, {{atTime.moviesAtTime.length}}</b> movies are playing </b>
                     </div>
-                    <div class="item-accordion zzz" ng-repeat="movie in atTime.moviesAtTime track by $index"
-                         id="accord{{$index}}"
-                         ng-show="isGroupShownShow(atTime, $index, $last)" style="border: none;">
-
-                            <!--Movie: {{movie.title}}</br>-->
-                            <!--Theater: {{movie.theater}}</br>-->
-                            <!--Runtime: {{movie.runtime}}</br>-->
-                            {{movie.title}} at {{movie.theater}}, runtime = {{movie.runtime}}
-                            <hr/>
+                    <div ng-repeat="movie in atTime.moviesAtTime track by $index"
+                         ng-show="isGroupShownShow(atTime, $index, $last)" style="border: none; overflow: visible;"
+                         id="accord{{$index}}" class="item-accordion">
+                        <!--Time: {{movie.time}}<br/>-->
+                        <!--Movie: {{movie.title}}</br>-->
+                        <!--Theater: {{movie.theater}}</br>-->
+                        <!--Runtime: {{movie.runtime}}</br>-->
+                        <!--{{movie.title}} at {{movie.theater}}, runtime = {{movie.runtime}}-->
+                        <div style="overflow: visible; width: 600px; border: 1px solid black;">at <b>{{movie.time}},
+                            {{movie.title}}</b> is playing at <b>{{movie.theater}}</b>, runtime is
+                            <b>{{movie.runtime}}</b>.
+                        </div>
                     </div>
-
                 </div>
             </div>
-            <!--<div ng-repeat="atTime in moviesAtSpecificTimes" style="display: inline-block">-->
-            <!--<div class="item item-text-wrap">-->
-            <!--<div ng-repeat="movie in atTime.moviesAtTime">-->
-            <!--<div>Movie: {{movie.title}}-->
-            <!--Theater: {{movie.theater}}-->
-            <!--Runtime: {{movie.runtime}}-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="card">-->
-            <!--<div class="item item-divider">-->
-            <!--{{ $index }}. {{ atTime.keyTime }} : {{atTime.moviesAtTime.length}} Movies-->
-            <!--</div>-->
-            <!--<div class="item ">-->
-            <!--body-->
-            <!--</div>-->
-            <!--<div class="item item-divider">-->
-            <!--footer-->
-            <!--</div>-->
-            <!---->
-            <!--</div>-->
-
         </ion-scroll>
     </div>
-
     <!--<ion-infinite-scroll ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>-->
-
 </ion-content>
 <ion-footer-bar align-title="center" class="bar-assertive">
-
     <div class="title">
         <div class="buttons">
             <button class="button" ng-click="showTheaters()">Show List of Theaters</button>
         </div>
     </div>
-    <!--<div class="buttons" ng-click="doSomething()">-->
-    <!--<button class="button">Right Button</button>-->
-    <!--</div>-->
 </ion-footer-bar>
 </ion-view>

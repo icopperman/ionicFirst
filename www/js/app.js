@@ -55,7 +55,7 @@ theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider
             cache: false,
             resolve: {
                 getMovies: function (GeoService) {
-                    return GeoService.getSettingsAndMovies();
+                    return GeoService.getMovies();
                 }
             },
             onEnter: function () {
@@ -70,9 +70,10 @@ theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider
             url: '/tplMovieTimesHor',
             templateUrl: 'templates/tplMovieTimesHor.html',
             controller: 'MovieTimesController',
+            cache: false,
             resolve: {
                 getMovies: function (GeoService) {
-                    return GeoService.getSettingsAndMovies();
+                    return GeoService.getMovies();
                 }
             },
             onEnter: function () {
@@ -111,8 +112,6 @@ theapp.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider
 });
 
 theapp.controller('MovieTheaterController', function ($scope, $localstorage) {
-
-
 
     var tsTheaterNames = $localstorage.getObject("tsTheaterNames");
     var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
@@ -300,7 +299,7 @@ theapp.controller("MovieTimesController", function ($scope, $state, $localstorag
         $scope.totExcludedTheaters = excludedTheaters.length;
         $scope.totExcludedMovies = movieData.length - filteredMovieData.length;
 
-        $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData);
+        $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData, settingsObj.viewTimeSpan);
 
 
         $scope.totMovies = movieData.length;
@@ -395,24 +394,46 @@ theapp.controller("MovieTimesController", function ($scope, $state, $localstorag
 theapp.controller("MovieMainController", function ($scope, $localstorage, $state, getZip) {
 
     console.log("main controller");
+
+    $scope.tsOptions = [ {name: 'none', value: 0},
+        {name: '15 min', value: 15},
+        {name: '30 min', value: 30},
+        {name: '1 hour', value: 60}
+    ];
+
     var settingsObj = getZip;
 
-
-    $scope.navTitle = 'v2' + 'Change movie search criteria';
+    $scope.navTitle    = 'v2 ' + 'Change movie search criteria';
     $scope.settingsObj = settingsObj;
-    var prevObj1 = settingsObj;
+    var prevObj1       = settingsObj;
 
-    $scope.handleClick = function () {
+    $scope.handleClick = function (orientation) {
+
+        var d = new Date();
+
+        if ( settingsObj.viewDateChar.toLowerCase() == "tomorrow") {
+
+            d.setDate(d.getDate()+1);
+
+        }
+
+        var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        settingsObj.viewdate = adate;
+
         //get saved settings
-        var prev = $localstorage.getObject("settings");
-        var curr = $scope.settingsObj;
+        var prev            = $localstorage.getObject("settings");
+        var curr            = $scope.settingsObj;
         var invalidateCache = false;
 
-        if (( prev.viewdate != curr.viewdate )
-            || ( prev.viewzip != curr.viewzip )
+        if (   ( prev.viewdate  != curr.viewdate )
+            || ( prev.viewzip   != curr.viewzip )
             || ( prev.viewmiles != curr.viewmiles )) {
+            var tsZip = { ts: Date.now(), tsZip: curr.viewzip};
+            $localstorage.setObject("tsZip", tsZip);
             invalidateCache = true;
         }
+
+
 
         //has user changed it?
         //var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
@@ -423,12 +444,17 @@ theapp.controller("MovieMainController", function ($scope, $localstorage, $state
         if (invalidateCache == true) {
             //user changed search parms, so save it now
             //and clear out any cached objects
-            $localstorage.deleteObject("tsZip");
-            $localstorage.deleteObject("tsLatLon");
-            $localstorage.deleteObject("tsMovies")
+            //$localstorage.deleteObject("tsZip");
+            //$localstorage.deleteObject("tsLatLon");
+            //$localstorage.deleteObject("tsMovieNames");
+            //$localstorage.deleteObject("tsMoviesIdx");
+            $localstorage.deleteObject("tsTheaterNames");
+            $localstorage.deleteObject("tsExcluded");
         }
 
-        $state.go("tplMovieTimes");
+        var sfx = "";
+        if ( orientation == 'hor') sfx = "Hor";
+        $state.go("tplMovieTimes" + sfx);
 
     }
 
@@ -468,11 +494,34 @@ theapp.controller('MainCtrl', function ($scope, $ionicModal, $ionicPopup, $ionic
 });
 
 
-function moviesAtSpecificTimes(movies) {
+function moviesAtSpecificTimes(movies, timespan) {
 
+    var ati;
     //create array like this [time, [moviesAtTime]]
     var moviesByTime = _.groupBy(movies, function (amovie) {
-        return amovie.time;
+
+        var movieShowTime = ati = amovie.time;
+
+        switch (timespan) {
+            case "60":
+                ati = movieShowTime.substring(0,2) + ":00";
+                break;
+
+            case "30":
+                var hours = movieShowTime.substr(0,2);
+                var minutes = movieShowTime.substr(3,2);
+                if ( minutes <= "29") {
+                    ati = hours + ":00";
+                }
+                else {
+                    ati = hours + ":30";
+                }
+                break;
+
+        }
+
+        return ati;
+
     });
 
 
