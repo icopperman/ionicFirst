@@ -1,33 +1,44 @@
-var theappInt = angular.module('MovieApp');
+(function () {
 
-theappInt.factory('myinterceptors', function ($rootScope, $q) {
+    'use strict';
 
-    return {
-        request: function (config) {
+    angular
+        .module('MovieApp')
+        .factory('myinterceptors', interceptorFn);
+
+    function interceptorFn($rootScope, $q) {
+
+        return {
+
+            request: requestFn,
+            requestError: requestErrorFn,
+            response: responseFn,
+            responsError: responseErrorFn
+        };
+
+        function requestFn(config) {
             console.log("request interceptor:" + config.url);
             $rootScope.$broadcast('loading:show');
             return config;
         }
 
-        , requestError: function (rejection) {
+        function requestErrorFn(rejection) {
             console.log("requesterror interceptor:" + rejection);
             return $q.reject(rejection);
         }
 
-        , response: function (response) {
+        function responseFn(response) {
             console.log("response interceptor:" + response.config.url /*+ "," + response.data*/);
             $rootScope.$broadcast('loading:hide');
             return response;
         }
 
-        , responseError: function (rejection) {
+        function responseErrorFn(rejection) {
             console.log("response error interceptor:" + rejection);
             return $q.reject(rejection);
         }
 
     }
 
-});
-/**
- * Created by ira on 4/9/2015.
- */
+})();
+

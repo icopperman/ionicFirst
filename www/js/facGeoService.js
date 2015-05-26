@@ -22,7 +22,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
         getMovies: function () {
 
             var tsMovies = _isCached("tsMovies");
-            if ( tsMovies != undefined) {
+            if (tsMovies != undefined) {
                 return $q.when(tsMovies.movies);
             }
 
@@ -39,30 +39,28 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             };
 
             $http(config).then(
-
                 function (response) {
 
                     console.log('response from jsonp');
 
-                    var errs          = response.data.ErrMessage;
-                    var movieTimes    = response.data.MovieTimes;
+                    var errs = response.data.ErrMessage;
+                    var movieTimes = response.data.MovieTimes;
                     var movieTimesIdx = response.data.movieTimesIdx;
-                    var theaterNames  = response.data.theaterNames.sort();
-                    var movieNames    = response.data.movieNames.sort();
+                    var theaterNames = response.data.theaterNames.sort();
+                    var movieNames = response.data.movieNames.sort();
 
                     var movieTimesNew = [];
 
-                    for ( var i = 0; i < movieTimesIdx.length; i++)
-                    {
+                    for (var i = 0; i < movieTimesIdx.length; i++) {
                         var movieTimeIdx = movieTimesIdx[i];
 
-                        var movieIdx     = movieTimeIdx.m;
-                        var theaterIdx   = movieTimeIdx.t;
-                        var showTime     = movieTimeIdx.s;
+                        var movieIdx = movieTimeIdx.m;
+                        var theaterIdx = movieTimeIdx.t;
+                        var showTime = movieTimeIdx.s;
 
-                        var movieName    = movieNames[movieIdx].m;
-                        var runTime      = movieNames[movieIdx].r;
-                        var theaterName  = theaterNames[theaterIdx];
+                        var movieName = movieNames[movieIdx].m;
+                        var runTime = movieNames[movieIdx].r;
+                        var theaterName = theaterNames[theaterIdx];
 
                         var obj = {
                             cnt: i + 1,
@@ -77,10 +75,10 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                     response.data.MovieTimesNew = movieTimesNew;
 
-                    var tsMovies       = { ts: Date.now(), movies: response.data};
+                    var tsMovies = {ts: Date.now(), movies: response.data};
                     //var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
                     //var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
-                    var tsTheaterNames = { ts: Date.now(), theaterNames: theaterNames};
+                    var tsTheaterNames = {ts: Date.now(), theaterNames: theaterNames};
 
                     $localstorage.setObject("tsMovies", tsMovies);
                     //$localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
@@ -99,7 +97,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
             return q.promise;
         }
 
-        ,getPosition: function () {
+        , getPosition: function () {
 
             console.log("factory getPosition");
 
@@ -124,7 +122,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
     function _init() {
 
         var settings = $localstorage.getObject("settings");
-        if ( settings.viewdate != undefined) {
+        if (settings.viewdate != undefined) {
             return settings;
         }
 
@@ -153,14 +151,14 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         var cacheObj = $localstorage.getObject(cacheName);
 
-        if ( cacheObj.ts == undefined) return;
+        if (cacheObj.ts == undefined) return;
 
-        var xx       = cacheObj.ts;
+        var xx = cacheObj.ts;
         var prevDate = new Date(xx);
         var currTime = Date.now();
-        var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
+        var diff = (currTime - prevDate) / ( 1000 * 60 * 60 );
 
-        if  ( diff < 4 ) return cacheObj;
+        if (diff < 4) return cacheObj;
 
     }
 
@@ -169,7 +167,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
         console.log("getlocation");
 
         var tsPos = _isCached("tsLatLon");
-        if ( tsPos != undefined) {
+        if (tsPos != undefined) {
             return $q.when(tsPos);
         }
 
@@ -186,7 +184,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
                 //note: google canary and firefor do not stringify position object, but regular chrome does
                 //so, to be careful, create my own object
-                var tsPos  = { ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
+                var tsPos = {ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
                 $localstorage.setObject("tsLatLon", tsPos);
                 settingsObj.viewLat = position.coords.latitude;
@@ -209,7 +207,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
 
         var tsZip = _isCached("tsZip");
 
-        if ( tsZip != undefined) {
+        if (tsZip != undefined) {
 
             settingsObj.viewzip = tsZip.tsZip;
             $localstorage.setObject("settings", settingsObj);
@@ -285,7 +283,7 @@ appFac.factory('GeoService', function ($q, $localstorage, $http) {
                     //    $scope.viewzip = zip;
 
                     //});
-                    var tsZip = { ts: Date.now(), tsZip: zip};
+                    var tsZip = {ts: Date.now(), tsZip: zip};
                     $localstorage.setObject("tsZip", tsZip);
                     q.resolve(settingsObj);
 
