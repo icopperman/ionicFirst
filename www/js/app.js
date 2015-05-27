@@ -1,7 +1,14 @@
 (function() {
 
     angular
-        .module('MovieApp', ['ionic']);
+        .module('MovieApp', ['ionic'])
+        .value('constants',
+        {
+            serviceURL: '',
+
+
+        }
+    )
 
 })();
 

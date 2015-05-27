@@ -6,13 +6,15 @@
         .module('MovieApp')
         .factory('myinterceptors', interceptorFn);
 
+    interceptorFn.$inject = ['$rootScope', '$q'];
+
     function interceptorFn($rootScope, $q) {
 
         return {
 
-            request: requestFn,
-            requestError: requestErrorFn,
-            response: responseFn,
+            request      : requestFn,
+            requestError : requestErrorFn,
+            response     : responseFn,
             responseError: responseErrorFn
         };
 

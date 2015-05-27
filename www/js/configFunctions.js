@@ -7,10 +7,10 @@
         .config(configFunctions);
 
     configFunctions.$inject = ['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',
-                                '$compileProvider', '$httpProvider'];
+        '$compileProvider', '$httpProvider'];
 
     function configFunctions($stateProvider, $urlRouterProvider, $ionicConfigProvider,
-                     $compileProvider, $httpProvider) {
+                             $compileProvider, $httpProvider) {
 
         $httpProvider.interceptors.push('myinterceptors');
 
@@ -32,18 +32,18 @@
 
         $stateProvider
             .state('tplSettings', {
-                url: '/tplSettings',
-                cache: false,
+                url        : '/tplSettings',
+                cache      : false,
                 templateUrl: 'templates/tplSettings.html',
-                controller: 'SettingsController as vm',
+                controller : 'SettingsController as vm',
                 //controllerAs: 'vm',
-                onEnter: function () {
+                onEnter    : function () {
                     console.log("tplSettings onenter");
                 },
-                onExit: function () {
+                onExit     : function () {
                     console.log("tplSettings onexit");
                 },
-                resolve: {
+                resolve    : {
 
                     getZip: function (GeoService) {
                         return GeoService.getZip();
@@ -59,36 +59,36 @@
                 }
             })
             .state('tplMovieTimes', {
-                url: '/tplMovieTimes',
+                url        : '/tplMovieTimes',
                 templateUrl: 'templates/tplMovieTimes.html',
-                controller: 'MovieTimesController as vm',
+                controller : 'MovieTimesController as vm',
                 //controllerAs: 'movieTimes',
-                cache: false,
-                resolve: {
-                    getMovies: function (GeoService) {
-                        return GeoService.getMovies();
+                cache      : false,
+                resolve    : {
+                    getMovies: function (GetMovieData) {
+                        return GetMovieData.getMovies();
                     }
                 },
-                onEnter: function () {
+                onEnter    : function () {
                     console.log("tplMovieTimes onenter");
                 },
-                onExit: function () {
+                onExit     : function () {
                     console.log("tplMovieTimes onexit");
                 }
 
             })
             .state('tplMovieTimesHor', {
-                url: '/tplMovieTimesHor',
+                url        : '/tplMovieTimesHor',
                 templateUrl: 'templates/tplMovieTimesHor.html',
-                controller: 'MovieTimesController as vm',
+                controller : 'MovieTimesController as vm',
                 //controllerAs: 'movieTimesHor',
-                cache: false,
-                resolve: {
-                    getMovies: function (GeoService) {
-                        return GeoService.getMovies();
+                cache      : false,
+                resolve    : {
+                    getMovies: function (GetMovieData) {
+                        return GetMovieData.getMovies();
                     }
                 },
-                onEnter: function () {
+                onEnter    : function () {
                     console.log("tplMovieTimesHor onenter");
                     var els = jQuery('.outerdiv');
 
@@ -97,25 +97,25 @@
                         //    console.log('here');
                     });
                 },
-                onExit: function () {
+                onExit     : function () {
                     console.log("tplMovieTimesHor onexit");
                 }
 
             })
             .state('tplMovieTheaters', {
-                url: '/tplMovieTheaters',
+                url        : '/tplMovieTheaters',
                 templateUrl: 'templates/tplMovieTheaters.html',
-                controller: 'MovieTheaterController as vm',
+                controller : 'MovieTheaterController as vm',
                 //controllerAs: 'theaters',
                 //resolve: {
-                //    getTheaters: function (GeoService) {
-                //        return GeoService.getTheaters();
+                //    getTheaters: function (GetMovieData) {
+                //        return GetMovieData.getTheaters();
                 //    }
                 //},
-                onEnter: function () {
+                onEnter    : function () {
                     console.log("tplMovieTheaters onenter");
                 },
-                onExit: function () {
+                onExit     : function () {
                     console.log("tplMovieTheaters onexit");
                 }
 

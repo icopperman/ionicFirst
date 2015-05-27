@@ -12,7 +12,7 @@
 
         console.log("main controller");
 
-        var vm = this;
+        var vm          = this;
         var settingsObj = getZip;
 
         vm.handleClick = handleClick;
@@ -42,12 +42,11 @@
             var curr            = vm.settingsObj;
             var invalidateCache = false;
 
-            if (   ( prev.viewdate  != curr.viewdate  )
-                || ( prev.viewzip   != curr.viewzip   )
-                || ( prev.viewmiles != curr.viewmiles ))
-            {
-                var tsZip = {ts: Date.now(), tsZip: curr.viewzip};
-                $localstorage.setObject("tsZip", tsZip);
+            if (( prev.viewdate != curr.viewdate  )
+                || ( prev.viewzip != curr.viewzip   )
+                || ( prev.viewmiles != curr.viewmiles )) {
+                //var tsZip = {ts: Date.now(), tsZip: curr.viewzip};
+                $localstorage.setObject("tsZip", curr.viewzip);
                 invalidateCache = true;
             }
 

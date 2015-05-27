@@ -12,8 +12,8 @@
 
         var vm = this;
 
-        var theaters           = [];
-        var excludedTheaters   = [];
+        var theaters         = [];
+        var excludedTheaters = [];
 
         vm.theaterList   = createTheaterList();
         vm.saveExclusion = saveExclusion;
@@ -52,7 +52,9 @@
             var xx            = vm.theaterList;
             var exclusionList = _.pluck(_.where(xx, {include: false}), "theaterName");
 
-            $localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames: exclusionList});
+            //$localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames: exclusionList});
+            $localstorage.setObject("tsExcluded", exclusionList);
+
         }
 
     }

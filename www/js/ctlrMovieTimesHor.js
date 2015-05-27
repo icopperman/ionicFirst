@@ -6,7 +6,7 @@
         .module('MovieApp')
         .controller("MovieTimesControllerHor", MovieTimesControllerHor);
 
-    MovieTimesControllerHor.$inject = ['$localstorage', 'getMovies','$ionicScrollDelegate'];
+    MovieTimesControllerHor.$inject = ['$localstorage', 'getMovies', '$ionicScrollDelegate'];
 
     function MovieTimesControllerHor($localstorage, getMovies, $ionicScrollDelegate) {
 
@@ -15,7 +15,7 @@
 
 
         var allMovieTimes = getMovies;
-        var rc = allMovieTimes.Status;
+        var rc            = allMovieTimes.Status;
 
         if (rc == "fail") {
 
@@ -36,10 +36,10 @@
         //vm.movieCount = allMovieTimes.MovieTimes.length;
 
         vm.noMoreItemsAvailable = false;
-        vm.number = 10;
-        vm.items = [];
+        vm.number               = 10;
+        vm.items                = [];
 
-        vm.toggleGroup = function (group) {
+        vm.toggleGroup   = function (group) {
             if (vm.isGroupShown(group)) {
                 vm.shownGroup = null;
             } else {
@@ -54,7 +54,7 @@
             var rc = vm.shownGroup === group;
             return rc;
         };
-        vm.loadMore = function () {
+        vm.loadMore      = function () {
             for (var i = 0; i < vm.number; i++) {
                 vm.items.push({
                     id: vm.items.length
@@ -73,52 +73,52 @@
 
             $location.url('/event/attendees');
         };
-    }
 
-    function moviesAtSpecificTimes(movies, timespan) {
+        function moviesAtSpecificTimes(movies, timespan) {
 
-        var ati;
-        //create array like this [time, [moviesAtTime]]
-        var moviesByTime = _.groupBy(movies, function (amovie) {
+            var ati;
+            //create array like this [time, [moviesAtTime]]
+            var moviesByTime = _.groupBy(movies, function (amovie) {
 
-            var movieShowTime = ati = amovie.time;
+                var movieShowTime = ati = amovie.time;
 
-            switch (timespan) {
-                case "60":
-                    ati = movieShowTime.substring(0, 2) + ":00";
-                    break;
+                switch (timespan) {
+                    case "60":
+                        ati = movieShowTime.substring(0, 2) + ":00";
+                        break;
 
-                case "30":
-                    var hours = movieShowTime.substr(0, 2);
-                    var minutes = movieShowTime.substr(3, 2);
-                    if (minutes <= "29") {
-                        ati = hours + ":00";
-                    }
-                    else {
-                        ati = hours + ":30";
-                    }
-                    break;
+                    case "30":
+                        var hours   = movieShowTime.substr(0, 2);
+                        var minutes = movieShowTime.substr(3, 2);
+                        if (minutes <= "29") {
+                            ati = hours + ":00";
+                        }
+                        else {
+                            ati = hours + ":30";
+                        }
+                        break;
 
-            }
+                }
 
-            return ati;
+                return ati;
 
-        });
+            });
 
 
-        var cnt = 1;
-        var x = [];
+            var cnt = 1;
+            var x   = [];
 
-        //create array of objects with named properties
-        angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
+            //create array of objects with named properties
+            angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
 
-            var arow = {cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
+                var arow = {cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
 
-            x.push(arow);
-            cnt++;
-        });
+                x.push(arow);
+                cnt++;
+            });
 
-        return x;
+            return x;
+        }
     }
 
 })();

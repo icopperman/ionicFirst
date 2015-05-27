@@ -24,27 +24,27 @@
 
 
         //$scope.movieCount = allMovieTimes.MovieTimes.length;
-        vm.totMovies = 0;
-        vm.totTheaters = 0;
-        vm.totExcludedMovies = 0;
+        vm.totMovies           = 0;
+        vm.totTheaters         = 0;
+        vm.totExcludedMovies   = 0;
         vm.totExcludedTheaters = 0;
-        vm.navTitle = 'Movie Times';
+        vm.navTitle            = 'Movie Times';
         //vm.data               = {showDelete: false, showReorder: false};
 
-        vm.showTheaters = showTheaters;
-        vm.scroller = scroller;
-        vm.toggleGroup = toggleGroup;
+        vm.showTheaters       = showTheaters;
+        vm.scroller           = scroller;
+        vm.toggleGroup        = toggleGroup;
         vm.isGroupShownClass1 = isGroupShownClass1;
         vm.isGroupShownClass2 = isGroupShownClass2;
-        vm.isGroupShownShow = isGroupShownShow;
+        vm.isGroupShownShow   = isGroupShownShow;
         //vm.edit               = edit;
         //vm.share              = share;
         //vm.moveItem           = moveItem;
         //vm.onItemDelete       = onItemDelete;
 
-        var settingsObj = $localstorage.getObject("settings");
+        var settingsObj   = $localstorage.getObject("settings");
         var allMovieTimes = getMovies;
-        var rc = allMovieTimes.Status;
+        var rc            = allMovieTimes.Status;
 
         if (rc == "fail") {
 
@@ -59,29 +59,27 @@
             var movieData = allMovieTimes.MovieTimesNew;
 
             var filteredMovieData = [];
-            var excludedTheaters = [];
+            var excludedTheaters  = [];
 
             filteredMovieData = filterMovieList();
 
             var theaterNames = allMovieTimes.theaterNames;
 
-            vm.totExcludedTheaters = excludedTheaters.length;
-            vm.totExcludedMovies = movieData.length - filteredMovieData.length;
-
+            vm.totExcludedTheaters   = excludedTheaters.length;
+            vm.totExcludedMovies     = movieData.length - filteredMovieData.length;
             vm.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData, settingsObj.viewTimeSpan);
-
-            vm.totMovies = movieData.length;
-            vm.totTheaters = theaterNames.length;
+            vm.totMovies             = movieData.length;
+            vm.totTheaters           = theaterNames.length;
         }
 
         var scrollcnt = 0;
 
         function filterMovieList() {
 
-            var beginTime = -1;
-            var endTime = 26;
+            var beginTime   = -1;
+            var endTime     = 26;
             var titleFilter = "";
-            var exList = $localstorage.getObject("tsExcluded");
+            var exList      = $localstorage.getObject("tsExcluded");
 
             if (exList.ts != undefined) {
 
@@ -100,9 +98,9 @@
 
             for (var i = 0; i < movieData.length; i++) {
 
-                var amovie = movieData[i];
+                var amovie         = movieData[i];
                 var movieBeginTime = parseInt(amovie.time.substring(0, 2));
-                var theaterName = amovie.theater;
+                var theaterName    = amovie.theater;
 
                 if (movieBeginTime < beginTime) continue;
                 if (movieBeginTime > endTime) continue;
@@ -149,7 +147,7 @@
         function isGroupShownClass1(group, index, last) {
             var outerdiv = $(".outerdiv").length;
             var innerdiv = $(".innerdiv").length;
-            var xxx = $(".xxx").length;
+            var xxx      = $(".xxx").length;
 
             if (last == true) {
                 //console.log('group shown class1');
@@ -163,7 +161,7 @@
         function isGroupShownClass2(group, index, last) {
             var outerdiv = $(".outerdiv").length;
             var innerdiv = $(".innerdiv").length;
-            var xxx = $(".xxx").length;
+            var xxx      = $(".xxx").length;
 
             if (last == true) {
                 //console.log('group shown class2 ');
@@ -179,69 +177,69 @@
             var rc = vm.shownGroup === group;
             return rc;
         }
-    }
 
-    function moviesAtSpecificTimes(movies, timespan) {
+        function moviesAtSpecificTimes(movies, timespan) {
 
-        var ati;
-        //create array like this [time, [moviesAtTime]]
-        var moviesByTime = _.groupBy(movies, function (amovie) {
+            var ati;
+            //create array like this [time, [moviesAtTime]]
+            var moviesByTime = _.groupBy(movies, function (amovie) {
 
-            var movieShowTime = ati = amovie.time;
+                var movieShowTime = ati = amovie.time;
 
-            switch (timespan) {
-                case "60":
-                    ati = movieShowTime.substring(0, 2) + ":00";
-                    break;
+                switch (timespan) {
+                    case "60":
+                        ati = movieShowTime.substring(0, 2) + ":00";
+                        break;
 
-                case "30":
-                    var hours = movieShowTime.substr(0, 2);
-                    var minutes = movieShowTime.substr(3, 2);
-                    if (minutes <= "29") {
-                        ati = hours + ":00";
-                    }
-                    else {
-                        ati = hours + ":30";
-                    }
-                    break;
+                    case "30":
+                        var hours   = movieShowTime.substr(0, 2);
+                        var minutes = movieShowTime.substr(3, 2);
+                        if (minutes <= "29") {
+                            ati = hours + ":00";
+                        }
+                        else {
+                            ati = hours + ":30";
+                        }
+                        break;
 
-            }
+                }
 
-            return ati;
+                return ati;
 
-        });
+            });
 
 
-        var cnt = 1;
-        var x = [];
+            var cnt = 1;
+            var x   = [];
 
-        //create array of objects with named properties
-        angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
+            //create array of objects with named properties
+            angular.forEach(moviesByTime, function (moviesAtTime, keyTime, allMovies) {
 
-            var arow = {cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
+                var arow = {cnt: cnt, keyTime: keyTime, moviesAtTime: moviesAtTime};
 
-            x.push(arow);
-            cnt++;
-        });
+                x.push(arow);
+                cnt++;
+            });
 
-        return x;
-    }
+            return x;
+        }
 
-    function edit(item) {
-        console.log('Edit Item: ' + item.keyTime);
-    }
+        function edit(item) {
+            console.log('Edit Item: ' + item.keyTime);
+        }
 
-    function share(item) {
-        console.log('Share Item: ' + item.keyTime);
-    }
+        function share(item) {
+            console.log('Share Item: ' + item.keyTime);
+        }
 
-    function moveItem(item, fromIndex, toIndex) {
-        vm.moviesAtSpecificTimes.splice(fromIndex, 1);
-        vm.moviesAtSpecificTimes.splice(toIndex, 0, item);
-    }
+        function moveItem(item, fromIndex, toIndex) {
+            vm.moviesAtSpecificTimes.splice(fromIndex, 1);
+            vm.moviesAtSpecificTimes.splice(toIndex, 0, item);
+        }
 
-    function onItemDelete(item) {
-        vm.moviesAtSpecificTimes.splice(vm.moviesAtSpecificTimes.indexOf(item), 1);
+        function onItemDelete(item) {
+            vm.moviesAtSpecificTimes.splice(vm.moviesAtSpecificTimes.indexOf(item), 1);
+        }
     }
 
 })();
