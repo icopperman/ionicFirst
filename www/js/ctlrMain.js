@@ -6,6 +6,8 @@
         .module('MovieApp')
         .controller("MainCtrl", MainCtrl);
 
+    MainCtrl.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$ionicActionSheet'];
+
     function MainCtrl($scope, $ionicModal, $ionicPopup, $ionicActionSheet) {
 
         //$scope.defaultPrimaryButtonClick = function () {
@@ -40,6 +42,4 @@
     }
 
 })();
-/**
- * Created by ira on 5/25/2015.
- */
+

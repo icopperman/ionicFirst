@@ -6,23 +6,25 @@
         .module('MovieApp')
         .controller("SettingsController", SettingsController);
 
-    function SettingsController($scope, $localstorage, $state, getZip) {
+    SettingsController.$inject = ['$localstorage', '$state', 'getZip'];
+
+    function SettingsController($localstorage, $state, getZip) {
 
         console.log("main controller");
 
-        $scope.tsOptions = [{name: 'none', value: 0},
+        var vm = this;
+        var settingsObj = getZip;
+
+        vm.handleClick = handleClick;
+        vm.navTitle    = 'v2 ' + 'Change movie search criteria';
+        vm.settingsObj = settingsObj;
+        vm.tsOptions   = [{name: 'none', value: 0},
             {name: '15 min', value: 15},
             {name: '30 min', value: 30},
             {name: '1 hour', value: 60}
         ];
 
-        var settingsObj = getZip;
-
-        $scope.navTitle = 'v2 ' + 'Change movie search criteria';
-        $scope.settingsObj = settingsObj;
-        var prevObj1 = settingsObj;
-
-        $scope.handleClick = function (orientation) {
+        function handleClick(orientation) {
 
             var d = new Date();
 
@@ -32,28 +34,24 @@
 
             }
 
-            var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            var adate            = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
             settingsObj.viewdate = adate;
 
             //get saved settings
-            var prev = $localstorage.getObject("settings");
-            var curr = $scope.settingsObj;
+            var prev            = $localstorage.getObject("settings");
+            var curr            = vm.settingsObj;
             var invalidateCache = false;
 
-            if (( prev.viewdate != curr.viewdate )
-                || ( prev.viewzip != curr.viewzip )
-                || ( prev.viewmiles != curr.viewmiles )) {
+            if (   ( prev.viewdate  != curr.viewdate  )
+                || ( prev.viewzip   != curr.viewzip   )
+                || ( prev.viewmiles != curr.viewmiles ))
+            {
                 var tsZip = {ts: Date.now(), tsZip: curr.viewzip};
                 $localstorage.setObject("tsZip", tsZip);
                 invalidateCache = true;
             }
 
-
-            //has user changed it?
-            //var rc1 = _.isEqual($scope.settingsObj, prevObj1); //note: when $scope.settings changes, so does prevOjb1
-            //var rc2 = _.isEqual($scope.settingsObj, prevObj2);
-
-            $localstorage.setObject("settings", $scope.settingsObj);
+            $localstorage.setObject("settings", vm.settingsObj);
 
             if (invalidateCache == true) {
                 //user changed search parms, so save it now
@@ -75,6 +73,4 @@
     }
 
 })();
-/**
- * Created by ira on 5/25/2015.
- */
+

@@ -1,0 +1,126 @@
+(function () {
+
+    'use strict';
+
+    angular
+        .module('MovieApp')
+        .config(configFunctions);
+
+    configFunctions.$inject = ['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',
+                                '$compileProvider', '$httpProvider'];
+
+    function configFunctions($stateProvider, $urlRouterProvider, $ionicConfigProvider,
+                     $compileProvider, $httpProvider) {
+
+        $httpProvider.interceptors.push('myinterceptors');
+
+        $compileProvider.debugInfoEnabled(true);
+        $ionicConfigProvider.views.transition('none');
+
+        //ionic.Platform.setPlatform('android');
+        //$ionicConfigProvider.navBar.alignTitle('left');
+        //$ionicConfigProvider.navBar.positionPrimaryButtons('right');
+        //$ionicConfigProvider.navBar.positionSecondaryButtons('right');
+
+        //$ionicConfigProvider.setPlatformConfig('win32', {
+        //    views: { transition: 'win32-transition'},
+        //    navBar: { alignTitle: 'right', alignButtons: 'left', backButtonIcon: 'ion-win32-arrow-back', transition: 'win32-nav-bar'},
+        //    menus: { transition: 'win32-menu'}
+        //});
+
+        $urlRouterProvider.otherwise('/tplSettings');
+
+        $stateProvider
+            .state('tplSettings', {
+                url: '/tplSettings',
+                cache: false,
+                templateUrl: 'templates/tplSettings.html',
+                controller: 'SettingsController as vm',
+                //controllerAs: 'vm',
+                onEnter: function () {
+                    console.log("tplSettings onenter");
+                },
+                onExit: function () {
+                    console.log("tplSettings onexit");
+                },
+                resolve: {
+
+                    getZip: function (GeoService) {
+                        return GeoService.getZip();
+                    }
+                    //getLatLong: function (GeoService) {
+                    //    return GeoService.getPosition()
+                    //},
+                    //
+                    //getZip: function (GeoService, getLatLong) {
+                    //    return GeoService.getZipFromPosition(getLatLong.position);
+                    //}
+
+                }
+            })
+            .state('tplMovieTimes', {
+                url: '/tplMovieTimes',
+                templateUrl: 'templates/tplMovieTimes.html',
+                controller: 'MovieTimesController as vm',
+                //controllerAs: 'movieTimes',
+                cache: false,
+                resolve: {
+                    getMovies: function (GeoService) {
+                        return GeoService.getMovies();
+                    }
+                },
+                onEnter: function () {
+                    console.log("tplMovieTimes onenter");
+                },
+                onExit: function () {
+                    console.log("tplMovieTimes onexit");
+                }
+
+            })
+            .state('tplMovieTimesHor', {
+                url: '/tplMovieTimesHor',
+                templateUrl: 'templates/tplMovieTimesHor.html',
+                controller: 'MovieTimesController as vm',
+                //controllerAs: 'movieTimesHor',
+                cache: false,
+                resolve: {
+                    getMovies: function (GeoService) {
+                        return GeoService.getMovies();
+                    }
+                },
+                onEnter: function () {
+                    console.log("tplMovieTimesHor onenter");
+                    var els = jQuery('.outerdiv');
+
+                    angular.forEach(els, function (el) {
+
+                        //    console.log('here');
+                    });
+                },
+                onExit: function () {
+                    console.log("tplMovieTimesHor onexit");
+                }
+
+            })
+            .state('tplMovieTheaters', {
+                url: '/tplMovieTheaters',
+                templateUrl: 'templates/tplMovieTheaters.html',
+                controller: 'MovieTheaterController as vm',
+                //controllerAs: 'theaters',
+                //resolve: {
+                //    getTheaters: function (GeoService) {
+                //        return GeoService.getTheaters();
+                //    }
+                //},
+                onEnter: function () {
+                    console.log("tplMovieTheaters onenter");
+                },
+                onExit: function () {
+                    console.log("tplMovieTheaters onexit");
+                }
+
+            });
+
+    }
+
+})();

@@ -6,6 +6,8 @@
         .module('MovieApp')
         .run(runFunctions);
 
+    runFunctions.$inject = ['$ionicPlatform', '$rootScope', '$ionicLoading'];
+
     function runFunctions($ionicPlatform, $rootScope, $ionicLoading) {
 
         function logViewEvent(viewevent, data) {

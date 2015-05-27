@@ -2,14 +2,14 @@
     <ion-header-bar align-title="center" class="bar-assertive">
         <div class="title">
             <div class="buttons">
-                <button class="button" ng-click="saveExclusion()">Save Exclusion List</button>
+                <button class="button" ng-click="vm.saveExclusion()">Save Exclusion List</button>
             </div>
         </div>
     </ion-header-bar>
     <ion-content>
         <div class="list">
             <!--<div class="item item-divider"> Theaters</div>-->
-            <ion-toggle ng-repeat="atheater in theaterList" ng-model="atheater.include" ng-checked="atheater.include">
+            <ion-toggle ng-repeat="atheater in vm.theaterList" ng-model="atheater.include" ng-checked="atheater.include">
                 {{ atheater.theaterName }}
             </ion-toggle>
         </div>

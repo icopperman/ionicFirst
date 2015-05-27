@@ -6,8 +6,11 @@
         .module('MovieApp')
         .controller("MovieTimesControllerHor", MovieTimesControllerHor);
 
-    function MovieTimesControllerHor($scope, $localstorage, getMovies, $ionicScrollDelegate) {
+    MovieTimesControllerHor.$inject = ['$localstorage', 'getMovies','$ionicScrollDelegate'];
 
+    function MovieTimesControllerHor($localstorage, getMovies, $ionicScrollDelegate) {
+
+        var vm = this;
         //var setingsObj = $localstorage.getObject("settings");
 
 
@@ -19,54 +22,54 @@
             angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
                 console.log(key);
             });
-            $scope.navTitle = 'Movie Times -- error';
+            vm.navTitle = 'Movie Times -- error';
         }
         else {
 
             var movieData = allMovieTimes.MovieTimesNew;
             //var x = expandPropNames(movieData);
-            $scope.moviesAtSpecificTimes = moviesAtSpecificTimes(movieData);
+            vm.moviesAtSpecificTimes = moviesAtSpecificTimes(movieData);
 
         }
 
-        $scope.navTitle = 'Movie Times';
-        //$scope.movieCount = allMovieTimes.MovieTimes.length;
+        vm.navTitle = 'Movie Times';
+        //vm.movieCount = allMovieTimes.MovieTimes.length;
 
-        $scope.noMoreItemsAvailable = false;
-        $scope.number = 10;
-        $scope.items = [];
+        vm.noMoreItemsAvailable = false;
+        vm.number = 10;
+        vm.items = [];
 
-        $scope.toggleGroup = function (group) {
-            if ($scope.isGroupShown(group)) {
-                $scope.shownGroup = null;
+        vm.toggleGroup = function (group) {
+            if (vm.isGroupShown(group)) {
+                vm.shownGroup = null;
             } else {
-                $scope.shownGroup = group;
+                vm.shownGroup = group;
             }
         };
-        $scope.isGroupShown1 = function (group) {
-            var rc = $scope.shownGroup === group;
+        vm.isGroupShown1 = function (group) {
+            var rc = vm.shownGroup === group;
             return rc;
         };
-        $scope.isGroupShown2 = function (group) {
-            var rc = $scope.shownGroup === group;
+        vm.isGroupShown2 = function (group) {
+            var rc = vm.shownGroup === group;
             return rc;
         };
-        $scope.loadMore = function () {
-            for (var i = 0; i < $scope.number; i++) {
-                $scope.items.push({
-                    id: $scope.items.length
+        vm.loadMore = function () {
+            for (var i = 0; i < vm.number; i++) {
+                vm.items.push({
+                    id: vm.items.length
                 });
             }
 
-            if ($scope.items.length > 99) {
+            if (vm.items.length > 99) {
 
-                $scope.noMoreItemsAvailable = true;
+                vm.noMoreItemsAvailable = true;
             }
-            $scope.$broadcast('scroll.infiniteScrollComplete');
+            vm.$broadcast('scroll.infiniteScrollComplete');
 
         };
 
-        $scope.goToPage = function () {
+        vm.goToPage = function () {
 
             $location.url('/event/attendees');
         };

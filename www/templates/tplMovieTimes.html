@@ -1,19 +1,19 @@
 <ion-view view-title="{{navTitle}}">
 
     <div class="bar bar-subheader" >
-        <h1 class="title">Movies : {{totMovies}}, {{totTheaters}}, {{totExcludedMovies}}, {{totExcludedTheaters}}</h1>
+        <h1 class="title">Movies : {{vm.totMovies}}, {{vm.totTheaters}}, {{vm.totExcludedMovies}}, {{vm.totExcludedTheaters}}</h1>
     </div>
 
     <ion-content delegate-handle="root1-scroll-handle">
 
         <ion-list delegate-handle="listDelegate" >
-            <div ng-repeat="atTime in moviesAtSpecificTimes">
-                <ion-item class="item-stable" ng-click="toggleGroup(atTime)"  ng-class="{active: isGroupShownClass1(atTime)}">
-                    <i class="icon" ng-class="isGroupShownClass1(atTime) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
+            <div ng-repeat="atTime in vm.moviesAtSpecificTimes">
+                <ion-item class="item-stable" ng-click="vm.toggleGroup(atTime)"  ng-class="{active: vm.isGroupShownClass1(atTime)}">
+                    <i class="icon" ng-class="vm.isGroupShownClass1(atTime) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
                     &nbsp;
                     {{atTime.keyTime}} Movies at this time:  {{atTime.moviesAtTime.length}}
                 </ion-item>
-                <ion-item class="item-accordion" ng-repeat="movie in atTime.moviesAtTime" ng-show="isGroupShownClass1(atTime)">
+                <ion-item class="item-accordion" ng-repeat="movie in atTime.moviesAtTime" ng-show="vm.isGroupShownClass1(atTime)">
                     at <b>{{movie.time}}, {{movie.title}}</b> is playing at <b>{{movie.theater}}</b>, runtime is <b>{{movie.runtime}}</b>.
                 </ion-item>
             </div>
@@ -24,7 +24,7 @@
     <ion-footer-bar align-title="center" class="bar-assertive">
         <div class="title">
             <div class="buttons">
-                <button class="button" ng-click="showTheaters()">Show List of Theaters</button>
+                <button class="button" ng-click="vm.showTheaters()">Show List of Theaters</button>
             </div>
         </div>
     </ion-footer-bar>

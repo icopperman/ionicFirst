@@ -13,7 +13,7 @@
             request: requestFn,
             requestError: requestErrorFn,
             response: responseFn,
-            responsError: responseErrorFn
+            responseError: responseErrorFn
         };
 
         function requestFn(config) {

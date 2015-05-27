@@ -1,37 +1,37 @@
-<ion-view view-title="{{navTitle}}">
+<ion-view view-title="{{vm.navTitle}}">
 
     <ion-content delegate-handle="root1-scroll-handle">
 
             <div class="list">
                 <label class="item item-input"><span class="input-label">Date</span>
-                    <select ng-model="settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">
+                    <select ng-model="vm.settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">
                         <option value="today" selected>Today</option>
                         <option value="tomorrow">Tomorrow</option>
                     </select>
-                    <!--<input required type="text" placeholder="Date" ng-model="settingsObj.viewdate" id="viewdate" name="viewdate"/> -->
+                    <!--<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> -->
                 </label>
-                <label class="item item-input"><span class="input-label">Zip</span><input required type="text" placeholder="Zip" ng-model="settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>
-                <label class="item item-input"><span class="input-label">Miles</span><input required type="text" placeholder="Miles" ng-model="settingsObj.viewmiles" id="viewmiles" name="viewmiles"/> </label>
-                <label class="item item-input"><span class="input-label">Time Begin</span><input type="text" placeholder="Begin Time" ng-model="settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
-                <label class="item item-input"><span class="input-label">Time End</span><input type="text" placeholder="End Time" ng-model="settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
-                <label class="item item-input"><span class="input-label">Title</span><input type="text" placeholder="Title Starts With" ng-model="settingsObj.viewstartsWith" id="viewstartsWith" name="viewstartsWith"/> </label>
-                <label class="item item-input"><span class="input-label">Cache</span><input type="text" placeholder="Refresh period" ng-model="settingsObj.viewCacheTime" id="viewCacheTime" name="viewCacheTime"/> </label>
+                <label class="item item-input"><span class="input-label">Zip</span><input required type="text" placeholder="Zip" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>
+                <label class="item item-input"><span class="input-label">Miles</span><input required type="text" placeholder="Miles" ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/> </label>
+                <label class="item item-input"><span class="input-label">Time Begin</span><input type="text" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
+                <label class="item item-input"><span class="input-label">Time End</span><input type="text" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
+                <label class="item item-input"><span class="input-label">Title</span><input type="text" placeholder="Title Starts With" ng-model="vm.settingsObj.viewstartsWith" id="viewstartsWith" name="viewstartsWith"/> </label>
+                <label class="item item-input"><span class="input-label">Cache</span><input type="text" placeholder="Refresh period" ng-model="vm.settingsObj.viewCacheTime" id="viewCacheTime" name="viewCacheTime"/> </label>
                 <label class="item item-input"><span class="input-label">Time Span</span>
-                    <select ng-model="settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" style="width: 50%; text-align: left;">
+                    <select ng-model="vm.settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" style="width: 50%; text-align: left;">
                         <option value="0" >none</option>
                         <option value="15">15 minutes</option>
                         <option value="30">30 minutes</option>
                         <option value="60" selected>60 minutes</option>
 
                     </select>
-                    <!--<select ng-model="settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" ng-options="ts.name for ts in tsOptions">-->
+                    <!--<select ng-model="vm.settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" ng-options="ts.name for ts in tsOptions">-->
 
                     </select>
                     </label>
             </div>
         <!--<div class="button-bar">-->
-             <a class="button button-positive" ng-click="handleClick('ver')" >Movie Times</a>
-             <a class="button button-positive" ng-click="handleClick('hor')">Movie Times1</a>
+             <a class="button button-positive" ng-click="vm.handleClick('ver')" >Movie Times</a>
+             <a class="button button-positive" ng-click="vm.handleClick('hor')">Movie Times1</a>
              <!--<a class="button button-positive" ui-sref="tplMovieTheaters">Theaters</a>-->
 
         <!--</div>-->
