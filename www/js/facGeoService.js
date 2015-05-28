@@ -52,7 +52,7 @@
         function _init() {
 
             var settings = $localstorage.getObject("settings");
-            if (settings.viewdate != undefined) {
+            if (settings != undefined) {
                 return settings;
             }
 
@@ -89,36 +89,36 @@
             //if we recompute lat, long we will have to recompute zip
             $localstorage.deleteObject("tsZip");
 
-            var q          = $q.defer();
+            var q = $q.defer();
             var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
 
             navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 
             return q.promise;
-        }
 
-        function geoSuccess(position) {
+            function geoSuccess(position) {
 
-            console.log("getlocation success: " + position);
+                console.log("getlocation success: " + position);
 
-            //note: google canary and firefor do not stringify position object, but regular chrome does
-            //so, to be careful, create my own object
-            var tsPos = {ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
+                //note: google canary and firefor do not stringify position object, but regular chrome does
+                //so, to be careful, create my own object
+                var tsPos = {ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
-            //$localstorage.setObject("tsLatLon", tsPos);
-            $localstorage.setObject("tsLatLon", position.coords);
+                //$localstorage.setObject("tsLatLon", tsPos);
+                $localstorage.setObject("tsLatLon", position.coords);
 
-            settingsObj.viewLat = position.coords.latitude;
-            settingsObj.viewLon = position.coords.longitude;
+                settingsObj.viewLat = position.coords.latitude;
+                settingsObj.viewLon = position.coords.longitude;
 
-            q.resolve(tsPos);
+                q.resolve(tsPos);
 
-        }
+            }
 
-        function geoError(error) {
+            function geoError(error) {
 
-            console.log("getlocation error: " + error);
-            q.reject(error);
+                console.log("getlocation error: " + error);
+                q.reject(error);
+            }
         }
 
         function _reverseGeocode(tsPos) {
@@ -142,78 +142,79 @@
             $localstorage.setObject('settings', settingsObj);
 
             var geocoder = new google.maps.Geocoder();
-            var geoReq   = { 'latLng': new google.maps.LatLng(lat, lon) };
+            var geoReq = {'latLng': new google.maps.LatLng(lat, lon)};
 
-            geocoder.geocode(geoReq, geoResults );
+            geocoder.geocode(geoReq, geoResults);
 
             return q.promise;
-        }
 
-        function geoResults (geoResults, status) {
 
-            var zip = "66666";
+            function geoResults(geoResults, status) {
 
-            if (status != google.maps.GeocoderStatus.OK) {
+                var zip = "66666";
 
-                console.log('reverse fail', geoResults, status);
-                q.reject(geoResults);
-            }
-            else {
+                if (status != google.maps.GeocoderStatus.OK) {
 
-                console.log('Reverse', geoResults);
+                    console.log('reverse fail', geoResults, status);
+                    q.reject(geoResults);
+                }
+                else {
 
-                for (var i = 0; i < geoResults.length; i++) {
+                    console.log('Reverse', geoResults);
 
-                    var ageoResult = null;
+                    for (var i = 0; i < geoResults.length; i++) {
 
-                    for (var j = 0; j < geoResults[i].types.length; j++) {
+                        var ageoResult = null;
 
-                        if (geoResults[i].types[j] == "postal_code") {
-                            ageoResult = geoResults[i];
-                            break;
-                        } //end for loop over a georesult type array
-                    }
+                        for (var j = 0; j < geoResults[i].types.length; j++) {
 
-                    if (ageoResult == null) continue;
-
-                    for (var k = 0; k < ageoResult.address_components.length; k++) {
-
-                        var aAddrCompo = null;
-
-                        for (var l = 0; l < ageoResult.address_components[k].types.length; l++) {
-
-                            if (ageoResult.address_components[k].types[l] == "postal_code") {
-                                aAddrCompo = ageoResult.address_components[k];
+                            if (geoResults[i].types[j] == "postal_code") {
+                                ageoResult = geoResults[i];
                                 break;
-                            }
-                        } //end for loop over a georesult type array
+                            } //end for loop over a georesult type array
+                        }
 
-                        if (aAddrCompo == null) continue;
+                        if (ageoResult == null) continue;
 
-                        var xx              = $localstorage.getObject("settings");
-                        settingsObj.viewzip = zip = aAddrCompo.short_name;
-                        $localstorage.setObject("settings", settingsObj);
+                        for (var k = 0; k < ageoResult.address_components.length; k++) {
 
-                        break;
+                            var aAddrCompo = null;
 
-                    }
+                            for (var l = 0; l < ageoResult.address_components[k].types.length; l++) {
 
-                } //end for loop over geoResults
+                                if (ageoResult.address_components[k].types[l] == "postal_code") {
+                                    aAddrCompo = ageoResult.address_components[k];
+                                    break;
+                                }
+                            } //end for loop over a georesult type array
 
-                console.log('Reverse', zip);
+                            if (aAddrCompo == null) continue;
 
-                //var tsZip = {ts: Date.now(), tsZip: zip};
-                //$localstorage.setObject("tsZip", tsZip);
-                $localstorage.setObject("tsZip", zip);
+                            var xx = $localstorage.getObject("settings");
+                            settingsObj.viewzip = zip = aAddrCompo.short_name;
+                            $localstorage.setObject("settings", settingsObj);
 
-                q.resolve(settingsObj);
+                            break;
+
+                        }
+
+                    } //end for loop over geoResults
+
+                    console.log('Reverse', zip);
+
+                    //var tsZip = {ts: Date.now(), tsZip: zip};
+                    //$localstorage.setObject("tsZip", tsZip);
+                    $localstorage.setObject("tsZip", zip);
+
+                    q.resolve(settingsObj);
 
 
-            } //end if geocoder ok
+                } //end if geocoder ok
 
-            //return q.promise;
+                //return q.promise;
 
-        } //end function result,status
+            } //end function result,status
+        }
     }
 
 })();

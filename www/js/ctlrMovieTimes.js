@@ -81,7 +81,7 @@
             var titleFilter = "";
             var exList      = $localstorage.getObject("tsExcluded");
 
-            if (exList.ts != undefined) {
+            if (exList != undefined) {
 
                 excludedTheaters = exList.theaterNames;
             }

@@ -23,7 +23,7 @@
             var tsTheaterNames     = $localstorage.getObject("tsTheaterNames");
             var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
 
-            if (tsExcludedTheaters.ts != undefined) {
+            if (tsExcludedTheaters != undefined) {
                 excludedTheaters = tsExcludedTheaters.theaterNames;
             }
 

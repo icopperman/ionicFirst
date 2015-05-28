@@ -36,18 +36,20 @@
 
             var tsObj = {ts: Date.now(), theObj: value};
 
-            $window.localStorage[key] = JSON.stringify(value);
+            $window.localStorage[key] = JSON.stringify(tsObj);
         }
 
         function getObjectFn(key) {
 
-            var theObj    = JSON.parse($window.localStorage[key] || '{}');
+            var xx = $window.localStorage[key];
 
-            if ( key != 'settings') {
+            if ( xx == undefined ) return;
 
-                var cachedObj = _isCached(theObj);
+            var theObj    = JSON.parse(xx); // || '{}');
 
-            }
+            if ( key == 'settings') return theObj;
+
+            var cachedObj = _isCached(theObj);
 
             return cachedObj;
 
@@ -57,7 +59,7 @@
 
             //var cacheObj = $localstorage.getObject(cacheName);
 
-            if (theObj.ts == undefined) return;
+            if (theObj == undefined) return;
 
             var xx       = theObj.ts;
             var prevDate = new Date(xx);
