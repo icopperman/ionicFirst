@@ -34,7 +34,7 @@
 
         function setObjectFn(key, value) {
 
-            var tsObj = {ts: Date.now(), theObj: value};
+            var tsObj = {ts: Date.now(), objToCache: value};
 
             $window.localStorage[key] = JSON.stringify(tsObj);
         }
@@ -66,7 +66,7 @@
             var currTime = Date.now();
             var diff     = (currTime - prevDate) / ( 1000 * 60 * 60 );
 
-            if (diff < 4) return theObj.theObj;
+            if (diff < 4) return theObj.objToCache;
         }
 
     }
