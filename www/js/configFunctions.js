@@ -90,12 +90,12 @@
                 },
                 onEnter    : function () {
                     console.log("tplMovieTimesHor onenter");
-                    var els = jQuery('.outerdiv');
+                    //var els = jQuery('.outerdiv');
 
-                    angular.forEach(els, function (el) {
-
-                        //    console.log('here');
-                    });
+                    //angular.forEach(els, function (el) {
+                    //
+                    //    //    console.log('here');
+                    //});
                 },
                 onExit     : function () {
                     console.log("tplMovieTimesHor onexit");

@@ -6,9 +6,9 @@
         .module('MovieApp')
         .controller("MovieTimesController", MovieTimesController);
 
-    MovieTimesController.$inject = ['$state', '$localstorage', 'getMovies'];
+    MovieTimesController.$inject = ['$state', '$localstorage', 'getMovies', '$ionicLoading'];
 
-    function MovieTimesController($state, $localstorage, getMovies) {
+    function MovieTimesController($state, $localstorage, getMovies, $ionicLoading) {
 
         var vm = this;
 
@@ -16,10 +16,10 @@
 
             var els = $('.outerdiv');
 
-            angular.forEach(els, function (el) {
-
-                console.log('here');
-            });
+            //angular.forEach(els, function (el) {
+            //
+            //    console.log('here');
+            //});
         }
 
 
@@ -72,12 +72,13 @@
             vm.totTheaters           = theaterNames.length;
         }
 
+        $ionicLoading.hide();
         var scrollcnt = 0;
 
         function filterMovieList() {
 
-            var beginTime   = -1;
-            var endTime     = 26;
+            var beginTimeHour   = -1;
+            var endTimeHour     = 26;
             var titleFilter = "";
             var exList      = $localstorage.getObject("tsExcluded");
 
@@ -87,10 +88,12 @@
             }
 
             if (( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
-                beginTime = parseInt(settingsObj.viewbegintime);
+                var xx = new Date(settingsObj.viewbegintime).getHours();
+                beginTimeHour = parseInt(xx);
             }
             if (( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
-                endTime = parseInt(settingsObj.viewendtime);
+                var yy = new Date(settingsObj.viewendtime).getHours();
+                endTimeHour = parseInt(yy);
             }
             if (( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "")) {
                 titleFilter = settingsObj.viewstartsWith;
@@ -98,16 +101,28 @@
 
             for (var i = 0; i < movieData.length; i++) {
 
-                var amovie         = movieData[i];
-                var movieBeginTime = parseInt(amovie.time.substring(0, 2));
-                var theaterName    = amovie.theater;
+                var amovie       = movieData[i];
+                var showTimeHour = amovie.time.substr(0, 2);
+                var showTimeMin  = amovie.time.substr(3, 2);
+                var theaterName  = amovie.theater;
+                var hour         = parseInt(showTimeHour);
 
-                if (movieBeginTime < beginTime) continue;
-                if (movieBeginTime > endTime) continue;
+                if ( hour < beginTimeHour ) continue;
+                if ( hour > endTimeHour   ) continue;
+
                 if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false) continue;
 
                 var exIdx = _.indexOf(excludedTheaters, theaterName);
                 if (exIdx != -1) continue;
+
+                var sfx;
+
+                if ( hour == 0  ) { sfx = "AM"; showTimeHour = "12"; }
+                if ( hour <  12 ) { sfx = "AM"; }
+                if ( hour == 12 ) { sfx = "PM"; }
+                if ( hour >  12 ) { showTimeHour = parseInt(showTimeHour) - 12; sfx = "PM"; }
+
+                amovie.time = showTimeHour + ":" + showTimeMin + sfx;
 
                 filteredMovieData.push(amovie);
 
