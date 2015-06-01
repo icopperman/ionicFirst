@@ -6,9 +6,9 @@
         .module('MovieApp')
         .factory('myinterceptors', interceptorFn);
 
-    interceptorFn.$inject = ['$rootScope', '$q'];
+    interceptorFn.$inject = ['$rootScope', '$q', 'constants'];
 
-    function interceptorFn($rootScope, $q) {
+    function interceptorFn($rootScope, $q, constants) {
 
         return {
 
@@ -20,7 +20,15 @@
 
         function requestFn(config) {
             console.log("request interceptor:" + config.url);
-            $rootScope.$broadcast('loading:show');
+
+            //only broadcast event if request is to backend (i.e., not for loading templates)
+            var mtURL = constants.serviceURL;
+            if ( mtURL.substr(0, 10) == config.url.substr(0,10) ) {
+
+                $rootScope.$broadcast('loading:show');
+
+            }
+
             return config;
         }
 
@@ -31,7 +39,15 @@
 
         function responseFn(response) {
             console.log("response interceptor:" + response.config.url /*+ "," + response.data*/);
-            $rootScope.$broadcast('loading:hide');
+
+            //only broadcast event if request is to backend (i.e., not for loading templates)
+            var mtURL = constants.serviceURL;
+            if ( mtURL.substr(0, 10) == response.config.url.substr(0,10) ) {
+
+                $rootScope.$broadcast('loading:hide');
+
+            }
+
             return response;
         }
 

@@ -3,12 +3,7 @@
     angular
         .module('MovieApp', ['ionic'])
         .value('constants',
-        {
-            serviceURL: '',
-
-
-        }
-    )
+            {  serviceURL: 'http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK' })
 
 })();
 

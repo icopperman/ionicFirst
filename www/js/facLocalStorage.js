@@ -11,6 +11,7 @@
     function localStoreFns($window) {
 
         var obj = {
+            init        : initSettings,
             set         : setFn,
             get         : getFn,
             setObject   : setObjectFn,
@@ -19,6 +20,39 @@
         };
 
         return obj;
+
+        function initSettings() {
+
+            var settings = getObjectFn("settings");
+            if (settings != undefined) {
+                return settings;
+            }
+
+            var d     = new Date();
+            var d1  = new Date();
+            var n     = d.getTimezoneOffset();
+            var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            var d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
+            //var d1 = d1.setHours(d2.getHours() + 3);
+
+            return {
+
+                viewDateChar  : "today",
+                viewdate      : adate,
+                viewzip       : "99999",
+                viewmiles     : "10",
+                //viewbegintime : d.getHours(),
+                viewbegintime : d2, //.toTimeString().substr(0, 8),
+
+                viewendtime   : "",
+                viewstartsWith: "",
+                viewLat       : "",
+                viewLon       : "",
+                viewTimeSpan  : "60",
+                viewCacheTime : "4"
+            };
+
+        }
 
         function setFn(key, value) {
             $window.localStorage[key] = value;
@@ -34,6 +68,9 @@
 
         function setObjectFn(key, value) {
 
+            if ( key == 'settings') {
+                var i = 0;
+            }
             var tsObj = {ts: Date.now(), objToCache: value};
 
             $window.localStorage[key] = JSON.stringify(tsObj);
@@ -47,7 +84,7 @@
 
             var theObj    = JSON.parse(xx); // || '{}');
 
-            if ( key == 'settings') return theObj;
+            //if ( key == 'settings') return theObj;
 
             var cachedObj = _isCached(theObj);
 

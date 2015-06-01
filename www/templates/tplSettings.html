@@ -1,19 +1,31 @@
 <ion-view view-title="{{vm.navTitle}}">
 
     <ion-content delegate-handle="root1-scroll-handle">
+        <form novalidate name="formSettings" class="formSettings">
+
 
             <div class="list">
                 <label class="item item-input"><span class="input-label">Date</span>
-                    <select ng-model="vm.settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">
-                        <option value="today" selected>Today</option>
-                        <option value="tomorrow">Tomorrow</option>
-                    </select>
-                    <!--<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> -->
+                <select ng-model="vm.settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">
+                <option value="today" selected>Today</option>
+                <option value="tomorrow">Tomorrow</option>
+                </select>
+                <!--&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;-->
+                <!--</label>-->
+                <!--<label class="item item-radio" ><span class="input-label">Date</span>-->
+                    <!--<input type="radio" value="today" id="viewDataChar0" name="viewDateChar" checked>-->
+                    <!--<input type="radio" value="tomorrow" id="viewDataChar1" name="viewDateChar" >-->
+
+                    <!--&lt;!&ndash;<span ng-repeat-end>{{item.txt}}</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;-->
                 </label>
-                <label class="item item-input"><span class="input-label">Zip</span><input required type="text" placeholder="Zip" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>
-                <label class="item item-input"><span class="input-label">Miles</span><input required type="text" placeholder="Miles" ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/> </label>
-                <label class="item item-input"><span class="input-label">Time Begin</span><input type="text" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
-                <label class="item item-input"><span class="input-label">Time End</span><input type="text" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
+                <label class="item item-input"><span class="input-label">Zip</span><input maxlength="5" required type="text"
+                      placeholder="{{vm.phZip}}" ng-class="vm.clZip" ng-pattern="/^[0-9]{5,5}$/"
+                      ng-model-options="{ updateOn: blur }" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>
+                <label class="item item-input"><span class="input-label">Miles</span><input required maxlength="2"
+                      ng-pattern="/^[0-9]{1,2}$/"  type="text" ng-class="vm.clZip" placeholder="{{vm.phMiles}}" ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/> </label>
+                <label class="item item-input"><span class="input-label">Time Begin</span><input type="time" step="3600" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
+                <label class="item item-input"><span class="input-label">Time End</span><input type="time" step="3600" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
                 <label class="item item-input"><span class="input-label">Title</span><input type="text" placeholder="Title Starts With" ng-model="vm.settingsObj.viewstartsWith" id="viewstartsWith" name="viewstartsWith"/> </label>
                 <label class="item item-input"><span class="input-label">Cache</span><input type="text" placeholder="Refresh period" ng-model="vm.settingsObj.viewCacheTime" id="viewCacheTime" name="viewCacheTime"/> </label>
                 <label class="item item-input"><span class="input-label">Time Span</span>
@@ -30,12 +42,12 @@
                     </label>
             </div>
         <!--<div class="button-bar">-->
-             <a class="button button-positive" ng-click="vm.handleClick('ver')" >Movie Times</a>
-             <a class="button button-positive" ng-click="vm.handleClick('hor')">Movie Times1</a>
+             <a class="button button-positive" ng-click="vm.handleClick('ver', formSettings)" >Movie Times</a>
+             <a class="button button-positive" ng-click="vm.handleClick('hor', formSettings)">Movie Times1</a>
              <!--<a class="button button-positive" ui-sref="tplMovieTheaters">Theaters</a>-->
 
         <!--</div>-->
-
+        </form>
     </ion-content>
 
 </ion-view>

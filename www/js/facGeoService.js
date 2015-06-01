@@ -4,13 +4,13 @@
         .module('MovieApp')
         .factory('GeoService', geoFunctions);
 
-    geoFunctions.$inject = ['$q', '$localstorage'];
+    geoFunctions.$inject = ['$q', '$timeout', '$localstorage'];
 
-    function geoFunctions($q, $localstorage) {
+    function geoFunctions($q, $timeout, $localstorage) {
 
         console.log("geoservice factory");
 
-        var settingsObj = _init();
+        var settingsObj = $localstorage.init();
 
         return {
             getZip            : getZipFn,
@@ -49,33 +49,6 @@
 
         }
 
-        function _init() {
-
-            var settings = $localstorage.getObject("settings");
-            if (settings != undefined) {
-                return settings;
-            }
-
-            var d     = new Date();
-            var n     = d.getTimezoneOffset();
-            var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-
-            return {
-
-                viewDateChar  : "today",
-                viewdate      : adate,
-                viewzip       : "99999",
-                viewmiles     : "10",
-                viewbegintime : d.getHours(),
-                viewendtime   : "",
-                viewstartsWith: "",
-                viewLat       : "",
-                viewLon       : "",
-                viewTimeSpan  : "60",
-                viewCacheTime : "4"
-            };
-
-        }
 
         function _getLocation() {
 
@@ -94,7 +67,16 @@
 
             navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 
+            var to = $timeout(geoLocateTO, 4000);
+
             return q.promise;
+
+            function geoLocateTO()
+            {
+                console.log("geoLocate timeout");
+                q.reject("geoLocate timeout");
+
+            }
 
             function geoSuccess(position) {
 
@@ -102,14 +84,15 @@
 
                 //note: google canary and firefor do not stringify position object, but regular chrome does
                 //so, to be careful, create my own object
-                var tsPos = {ts: Date.now(), tsLat: position.coords.latitude, tsLon: position.coords.longitude};
+                var tsPos = { tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
-                //$localstorage.setObject("tsLatLon", tsPos);
-                $localstorage.setObject("tsLatLon", position.coords);
+                $localstorage.setObject("tsLatLon", tsPos);
+                //$localstorage.setObject("tsLatLon", position.coords);
 
                 settingsObj.viewLat = position.coords.latitude;
                 settingsObj.viewLon = position.coords.longitude;
 
+                $timeout.cancel(to);
                 q.resolve(tsPos);
 
             }
@@ -117,6 +100,7 @@
             function geoError(error) {
 
                 console.log("getlocation error: " + error);
+                $timeout.cancel(to);
                 q.reject(error);
             }
         }
@@ -127,7 +111,7 @@
 
             if (tsZip != undefined) {
 
-                settingsObj.viewzip = tsZip.tsZip;
+                settingsObj.viewzip = tsZip;
                 $localstorage.setObject("settings", settingsObj);
 
                 return $q.when(settingsObj);

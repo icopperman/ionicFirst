@@ -67,7 +67,7 @@
         }
 
         function stateChangeError(event, toState, toParams, fromState, fromParams, error) {
-            console.log('state change error here');
+            console.log('state change error: ' + error.message + ',' + fromState.name + ',' + toState.name);
         }
     }
 

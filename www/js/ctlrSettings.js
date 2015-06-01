@@ -18,13 +18,69 @@
         vm.handleClick = handleClick;
         vm.navTitle    = 'v2 ' + 'Change movie search criteria';
         vm.settingsObj = settingsObj;
+        vm.showDates = [ {val:0, txt:'Today', checked: true}, {val:1, txt: 'Tomorrow', checked: false}];
+        vm.clZip = { inError: false};
+        vm.phZip = 'Enter zip';
+        vm.clMiles = { inError: false};
+        vm.phMiles = 'Enter miles';
+
         vm.tsOptions   = [{name: 'none', value: 0},
             {name: '15 min', value: 15},
             {name: '30 min', value: 30},
             {name: '1 hour', value: 60}
         ];
 
-        function handleClick(orientation) {
+        function validateInput(form) {
+
+            var rc = true;
+
+            if (form.$invalid == false) return rc;
+
+            rc = false;
+
+            if (form.viewzip.$error.required == true) {
+
+                //vm.viewzip = 'Required';
+                vm.clZip = {inError: true};
+                vm.phZip = 'Zip required';
+
+            }
+
+            if (form.viewzip.$error.pattern == true) {
+
+                vm.clZip = {inError: true};
+                vm.settingsObj.viewzip = "";
+                vm.phZip = 'Must be 5 digits';
+
+            }
+
+            if (form.viewmiles.$error.required == true) {
+
+                //vm.viewzip = 'Required';
+                vm.clMiles = {inError: true};
+                vm.phMiles = 'Miles required';
+
+            }
+
+            if (form.viewmiles.$error.pattern == true) {
+
+                vm.clMiles = {inError: true};
+                vm.settingsObj.viewmiles = "";
+                vm.phMiles = 'Must be 1,2 digits';
+
+            }
+
+            return rc;
+
+
+        }
+
+        function handleClick(orientation, form) {
+
+            var rc = validateInput(form);
+            if (rc == false) return;
+
+
 
             var d = new Date();
 

@@ -4,7 +4,12 @@ body {
 
 /*
  * http://docs.angularjs.org/api/ng/directive/ngShow#usage_animations
+
+.formSettings input.ng-invalid { background-color: red !important;}
+.formSettings input.ng-pristinex { background-color: green !important;}
  */
+.inError { background-color: transparent  !important;  font-size: large; font-weight: bold;}
+
 .list .item.item-accordion {
     line-height: 38px;
     padding-top: 0;
