@@ -4,7 +4,7 @@
         <h1 class="title">Movies : {{vm.totMovies}}, {{vm.totTheaters}}, {{vm.totExcludedMovies}}, {{vm.totExcludedTheaters}}</h1>
     </div>
 
-    <ion-content delegate-handle="root1-scroll-handle">
+    <ion-content delegate-handle="root1-scroll-handle" class="has-subheader">
 
         <ion-list delegate-handle="listDelegate" >
             <div ng-repeat="atTime in vm.moviesAtSpecificTimes">
