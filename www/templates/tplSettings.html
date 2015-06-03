@@ -3,22 +3,36 @@
     <ion-content delegate-handle="root1-scroll-handle">
         <form novalidate name="formSettings" class="formSettings">
 
+            <div class="button-bar" style="width:50%;">
+                <div class="input-label" style="padding-left: 16px;">Date</div>
+                <a ng-class="vm.selectedDate" ng-click="vm.whichDate('today')">Today</a>
+                <a ng-class="vm.notSelectedDate" ng-click="vm.whichDate('tomorrow')">Tomorrow</a>
 
+            </div>
+            <div class="button-bar" style="width:50%;">
+                <div class="input-label" style="padding-left: 16px;">Orientation</div>
+                <a ng-class="vm.selectedOrient" ng-click="vm.orient('vert')">Vertical</a>
+                <a ng-class="vm.notSelectedOrient" ng-click="vm.orient('hort')">Horizontal</a>
+
+            </div>
             <div class="list">
-                <label class="item item-input"><span class="input-label">Date</span>
-                <select ng-model="vm.settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">
-                <option value="today" selected>Today</option>
-                <option value="tomorrow">Tomorrow</option>
-                </select>
-                <!--&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;-->
-                <!--</label>-->
-                <!--<label class="item item-radio" ><span class="input-label">Date</span>-->
-                    <!--<input type="radio" value="today" id="viewDataChar0" name="viewDateChar" checked>-->
-                    <!--<input type="radio" value="tomorrow" id="viewDataChar1" name="viewDateChar" >-->
 
-                    <!--&lt;!&ndash;<span ng-repeat-end>{{item.txt}}</span>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;-->
-                </label>
+
+                <!--<label class="item item-input"><span class="input-label">Date</span>-->
+
+                <!--&lt;!&ndash;<select ng-model="vm.settingsObj.viewDateChar" id="viewDateChar" name="viewDateChar" style="width: 50%; text-align: left;">&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="today" selected>Today</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="tomorrow">Tomorrow</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;</select>&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="item item-radio" ><span class="input-label">Date</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="radio" value="today" id="viewDataChar0" name="viewDateChar" checked>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="radio" value="tomorrow" id="viewDataChar1" name="viewDateChar" >&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;&lt;!&ndash;<span ng-repeat-end>{{item.txt}}</span>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<input required type="text" placeholder="Date" ng-model="vm.settingsObj.viewdate" id="viewdate" name="viewdate"/> &ndash;&gt;&ndash;&gt;-->
+                <!--</label>-->
                 <label class="item item-input"><span class="input-label">Zip</span><input maxlength="5" required type="text"
                       placeholder="{{vm.phZip}}" ng-class="vm.clZip" ng-pattern="/^[0-9]{5,5}$/"
                       ng-model-options="{ updateOn: blur }" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>

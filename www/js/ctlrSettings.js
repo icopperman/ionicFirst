@@ -23,6 +23,15 @@
         vm.phZip = 'Enter zip';
         vm.clMiles = { inError: false};
         vm.phMiles = 'Enter miles';
+        vm.whichDate = whichDate;
+        vm.orient = orient;
+        vm.direction = "";
+
+        vm.selectedDate = "button button-small selectedDate";
+        vm.notSelectedDate = "button button-small notSelectedDate";
+
+        vm.selectedOrient = "button button-small selectedDate";
+        vm.notSelectedOrient = "button button-small notSelectedDate";
 
         vm.tsOptions   = [{name: 'none', value: 0},
             {name: '15 min', value: 15},
@@ -30,6 +39,35 @@
             {name: '1 hour', value: 60}
         ];
 
+        function orient(direction)
+        {
+            vm.direction = direction;
+
+            if ( direction == 'vert') {
+                vm.selectedOrient = "button button-small selectedDate";
+                vm.notSelectedOrient = "button button-small notSelectedDate";
+                vm.direction = "";
+            }
+            else {
+                vm.selectedOrient = "button button-small notSelectedDate";
+                vm.notSelectedOrient = "button button-small selectedDate";
+                vm.direction = "Hor";
+            }
+
+        }
+        function whichDate(theDate) {
+
+            if ( theDate == 'today') {
+                vm.selectedDate = "button button-small selectedDate";
+                vm.notSelectedDate = "button button-small notSelectedDate";
+
+            }
+            else {
+                vm.selectedDate = "button button-small notSelectedDate";
+                vm.notSelectedDate = "button button-small selectedDate";
+            }
+
+        }
         function validateInput(form) {
 
             var rc = true;
@@ -119,9 +157,10 @@
                 $localstorage.deleteObject("tsExcluded");
             }
 
-            var sfx = "";
-            if (orientation == 'hor') sfx = "Hor";
-            $state.go("tplMovieTimes" + sfx);
+            //var sfx = "";
+            //if (orientation == 'hor') sfx = "Hor";
+
+            $state.go("tplMovieTimes" + vm.direction);
 
         }
 
