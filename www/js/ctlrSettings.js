@@ -18,6 +18,9 @@
         vm.handleClick = handleClick;
         vm.navTitle    = 'v2 ' + 'Change movie search criteria';
         vm.settingsObj = settingsObj;
+        vm.settingsObj.viewbegintime = new Date(settingsObj.viewbegintime);
+        vm.settingsObj.viewendtime = new Date(settingsObj.viewendtime);
+
         vm.showDates = [ {val:0, txt:'Today', checked: true}, {val:1, txt: 'Tomorrow', checked: false}];
         vm.clZip = { inError: false};
         vm.phZip = 'Enter zip';

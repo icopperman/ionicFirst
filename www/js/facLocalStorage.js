@@ -29,11 +29,16 @@
             }
 
             var d     = new Date();
-            var d1  = new Date();
+            var d1;//  = new Date();
             var n     = d.getTimezoneOffset();
             var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
             var d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
-            //var d1 = d1.setHours(d2.getHours() + 3);
+            if ( d2.getHours() + 3  < 24) {
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
+                d1.setHours(d1.getHours() + 3);
+
+
+            }
 
             return {
 
@@ -44,7 +49,7 @@
                 //viewbegintime : d.getHours(),
                 viewbegintime : d2, //.toTimeString().substr(0, 8),
 
-                viewendtime   : "",
+                viewendtime   : d1,
                 viewstartsWith: "",
                 viewLat       : "",
                 viewLon       : "",

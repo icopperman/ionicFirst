@@ -4,9 +4,9 @@
         .module('MovieApp')
         .factory('GetMovieData', getMovieData);
 
-    getMovieData.$inject = ['$q', '$localstorage', '$http', 'constants'];
+    getMovieData.$inject = ['$q', '$localstorage', '$http', 'constants', '$ionicLoading'];
 
-    function getMovieData($q, $localstorage, $http, constants) {
+    function getMovieData($q, $localstorage, $http, constants, $ionicLoading) {
 
         console.log("getMovieData factory");
 
@@ -16,10 +16,15 @@
 
         function getMoviesFn() {
 
+            $ionicLoading.show( {
+                template: 'Loading...'
+            });
+
             var settingsObj = $localstorage.init();
             var tsMovies = $localstorage.getObject("tsMovies");
 
             if (tsMovies != undefined) {
+                //$ionicLoading.hide();
                 return $q.when(tsMovies);
             }
 
@@ -41,6 +46,8 @@
             return q.promise;
 
             function httpErr(err) {
+                //$ionicLoading.hide();
+
                 console.log('error response from jsonp');
                 q.reject(err);
             }
@@ -95,6 +102,7 @@
 
                 $localstorage.setObject("tsMovies", response.data);
                 $localstorage.setObject("tsTheaterNames", theaterNames);
+                //$ionicLoading.hide();
 
                 q.resolve(response.data);
 
