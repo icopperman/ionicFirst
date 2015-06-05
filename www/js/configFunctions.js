@@ -7,10 +7,22 @@
         .config(configFunctions);
 
     configFunctions.$inject = ['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',
-        '$compileProvider', '$httpProvider'];
+        '$compileProvider', '$httpProvider', '$provide'];
+
+    decExceptionHandler.$inject = ['$delegate'];
+
+    function decExceptionHandler($delegate) {
+
+        return function(exception, cause) {
+            $delegate(exception, cause)
+            alert(exception.message);
+        }
+    }
 
     function configFunctions($stateProvider, $urlRouterProvider, $ionicConfigProvider,
-                             $compileProvider, $httpProvider) {
+                             $compileProvider, $httpProvider, $provide) {
+
+        $provide.decorator('$exceptionHandler', decExceptionHandler);
 
         $httpProvider.interceptors.push('myinterceptors');
 

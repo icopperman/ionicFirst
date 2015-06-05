@@ -78,7 +78,7 @@
 
             if ( fromState.name == "tplSettings")
             {
-                var c = $injector.get("SettingsController");
+                var c = 0;//$injector.get("SettingsController");
 
             }
 
