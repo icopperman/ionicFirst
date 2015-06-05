@@ -23,20 +23,22 @@
 
         function initSettings() {
 
+            //var n     = d.getTimezoneOffset();
             var settings = getObjectFn("settings");
+
             if (settings != undefined) {
                 return settings;
             }
 
-            var d     = new Date();
             var d1;//  = new Date();
-            var n     = d.getTimezoneOffset();
+            var d     = new Date();
             var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-            var d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
+            var d2    = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
+
             if ( d2.getHours() + 3  < 24) {
+
                 d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
                 d1.setHours(d1.getHours() + 3);
-
 
             }
 
@@ -53,7 +55,7 @@
                 viewstartsWith: "",
                 viewLat       : "",
                 viewLon       : "",
-                viewTimeSpan  : "60",
+                viewTimeSpan  : "0",
                 viewCacheTime : "4"
             };
 

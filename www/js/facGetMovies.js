@@ -8,6 +8,8 @@
 
     function getMovieData($q, $localstorage, $http, constants, $ionicLoading) {
 
+        var tsMovies;// = {};
+
         console.log("getMovieData factory");
 
         return {
@@ -20,8 +22,8 @@
                 template: 'Loading...'
             });
 
-            var settingsObj = $localstorage.init();
-            var tsMovies = $localstorage.getObject("tsMovies");
+            //var settingsObj = $localstorage.init();
+            //var tsMovies = $localstorage.getObject("tsMovies");
 
             if (tsMovies != undefined) {
                 //$ionicLoading.hide();

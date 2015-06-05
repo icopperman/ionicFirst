@@ -6,15 +6,21 @@
         .module('MovieApp')
         .run(runFunctions);
 
-    runFunctions.$inject = ['$ionicPlatform', '$rootScope', '$ionicLoading'];
+    runFunctions.$inject = ['$ionicPlatform', '$rootScope', '$ionicLoading', '$controller'];
 
-    function runFunctions($ionicPlatform, $rootScope, $ionicLoading) {
+    function runFunctions($ionicPlatform, $rootScope, $ionicLoading, $controller) {
 
-        function logViewEvent(viewevent, data) {
-            console.log(viewevent.name
+        function logViewEvent(eventAndScopes, data) {
+            console.log(eventAndScopes.name
                 + "," + data.historyId
+                + "," + data.fromCache
                 + "," + data.stateId
                 + "," + data.stateName);
+
+            if ( eventAndScopes.name == "$ionicView.enter") {
+
+                var i = 0;
+            }
         }
 
         $rootScope.$on('$ionicView.loaded', logViewEvent);
@@ -68,6 +74,14 @@
 
         function stateChangeError(event, toState, toParams, fromState, fromParams, error) {
             console.log('state change error: ' + error.message + ',' + fromState.name + ',' + toState.name);
+            if ( fromState.name == "tplSettings")
+            {
+                var c = $controller(fromState.controller);
+
+            }
+
+            $ionicLoading.hide()
+
         }
     }
 

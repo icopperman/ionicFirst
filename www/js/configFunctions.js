@@ -33,8 +33,8 @@
         $stateProvider
             .state('tplSettings', {
                 url        : '/tplSettings',
-                cache      : false,
-                templateUrl: 'templates/tplSettings.html',
+                cache      : true,
+                templateUrl: 'templates/tplSettings1.html',
                 controller : 'SettingsController as vm',
                 //controllerAs: 'vm',
                 onEnter    : function () {

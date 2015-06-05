@@ -9,8 +9,8 @@ body {
 .formSettings input.ng-pristinex { background-color: green !important;}
  */
 .inError { background-color: transparent  !important;  font-size: large; font-weight: bold;}
-.selectedDate { background-color: grey !important; color: red !important;}
-.notSelectedDate {}
+.notSelectedDate { background-color: grey !important; color: red !important;}
+.selectedDate {}
 
 .list .item.item-accordion {
     line-height: 38px;

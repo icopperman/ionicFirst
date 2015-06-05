@@ -21,44 +21,47 @@
         vm.settingsObj.viewbegintime = new Date(settingsObj.viewbegintime);
         vm.settingsObj.viewendtime = new Date(settingsObj.viewendtime);
 
-        vm.showDates = [ {val:0, txt:'Today', checked: true}, {val:1, txt: 'Tomorrow', checked: false}];
+        //vm.showDates = [ {val:0, txt:'Today', checked: true}, {val:1, txt: 'Tomorrow', checked: false}];
         vm.clZip = { inError: false};
         vm.phZip = 'Enter zip';
+
         vm.clMiles = { inError: false};
         vm.phMiles = 'Enter miles';
+
         vm.whichDate = whichDate;
-        vm.orient = orient;
+        vm.whichOrient = whichOrient;
+        vm.whichInterval = whichInterval;
+
+        vm.selectedDate       = "button button-small selectedDate";
+        vm.notSelectedDate    = "button button-small notSelectedDate";
+        vm.selectedOrient     = "button button-small selectedDate";
+        vm.notSelectedOrient  = "button button-small notSelectedDate";
+        vm.selectedInterval0  = "button button-small selectedDate";
+        vm.selectedInterval15 = vm.selectedInterval30 = vm.selectedInterval60 = 'button button-small notSelectedDate';
+
         vm.direction = "";
+        vm.showDate = "today";
+        vm.showInterval = "none";
 
-        vm.selectedDate = "button button-small selectedDate";
-        vm.notSelectedDate = "button button-small notSelectedDate";
-
-        vm.selectedOrient = "button button-small selectedDate";
-        vm.notSelectedOrient = "button button-small notSelectedDate";
-
-        vm.tsOptions   = [{name: 'none', value: 0},
-            {name: '15 min', value: 15},
-            {name: '30 min', value: 30},
-            {name: '1 hour', value: 60}
-        ];
-
-        function orient(direction)
+        function whichOrient(direction)
         {
             vm.direction = direction;
 
-            if ( direction == 'vert') {
+            if ( direction == '') {
                 vm.selectedOrient = "button button-small selectedDate";
                 vm.notSelectedOrient = "button button-small notSelectedDate";
-                vm.direction = "";
+
             }
             else {
                 vm.selectedOrient = "button button-small notSelectedDate";
                 vm.notSelectedOrient = "button button-small selectedDate";
-                vm.direction = "Hor";
             }
 
         }
+
         function whichDate(theDate) {
+
+            vm.showDate = theDate;
 
             if ( theDate == 'today') {
                 vm.selectedDate = "button button-small selectedDate";
@@ -71,6 +74,30 @@
             }
 
         }
+        function whichInterval(theInterval) {
+
+            vm.showInterval = theInterval;
+            switch (theInterval) {
+                case 'none':
+                    vm.selectedInterval0 = 'button button-small selectedDate';
+                    vm.selectedInterval15 = vm.selectedInterval30 = vm.selectedInterval60 = 'button button-small notSelectedDate';
+                    break;
+                case '15':
+                    vm.selectedInterval15 = 'button button-small selectedDate';
+                    vm.selectedInterval0 = vm.selectedInterval30 = vm.selectedInterval60 = 'button button-small notSelectedDate';
+                    break;
+                case '30':
+                    vm.selectedInterval30 = 'button button-small selectedDate';
+                    vm.selectedInterval0 = vm.selectedInterval15 = vm.selectedInterval60 = 'button button-small notSelectedDate';
+                    break;
+                case '60':
+                    vm.selectedInterval60 = 'button button-small selectedDate';
+                    vm.selectedInterval0 = vm.selectedInterval15 = vm.selectedInterval30 = 'button button-small notSelectedDate';
+                    break;
+            }
+
+        }
+
         function validateInput(form) {
 
             var rc = true;
@@ -121,8 +148,6 @@
             var rc = validateInput(form);
             if (rc == false) return;
 
-
-
             var d = new Date();
 
             if (settingsObj.viewDateChar.toLowerCase() == "tomorrow") {
@@ -167,6 +192,11 @@
 
         }
 
+        //vm.tsOptions   = [{name: 'none', value: 0},
+        //    {name: '15 min', value: 15},
+        //    {name: '30 min', value: 30},
+        //    {name: '1 hour', value: 60}
+        //];
     }
 
 })();
