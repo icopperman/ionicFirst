@@ -4,37 +4,58 @@
         .module('MovieApp')
         .factory('GetMovieData', getMovieData);
 
-    getMovieData.$inject = ['$q', '$localstorage', '$http', 'constants', '$ionicLoading'];
+    getMovieData.$inject
+        = ['$q', '$localstorage', '$http', 'constants', '$ionicLoading', 'facSettings', 'refreshCache'];
 
-    function getMovieData($q, $localstorage, $http, constants, $ionicLoading) {
+    function getMovieData($q, $localstorage, $http, constants, $ionicLoading, facSettings, refreshCache) {
 
-        var tsMovies;// = {};
+        var movieData = {
+            status: "ok",
+            errMsg: "",
+            tsMovies : null,
+            tsTheaterNames : null,
+            tsMovieName : null,
+            tsExcluded : null
+        };
 
         console.log("getMovieData factory");
 
         return {
             getMovies: getMoviesFn
+            //,clearMovies: clearMoviesFn
         };
+
+        function clearMoviesFn() {
+
+            movieData.tsMovies = null;
+            movieData.tsTheaterNames = null;
+            movieData.tsMovieName = null;
+        }
 
         function getMoviesFn() {
 
-            $ionicLoading.show( {
-                template: 'Loading...'
+            $ionicLoading.show({
+                template: 'Getting movies...'
             });
 
-            //var settingsObj = $localstorage.init();
-            //var tsMovies = $localstorage.getObject("tsMovies");
+            var settingsObj = facSettings.getSettingsObj();
 
-            if (tsMovies != undefined) {
+            //var tsMovies = $localstorage.getObject("tsMovies");
+            if ( refreshCache.refresh == true) {
+
+                clearMoviesFn();
+            }
+
+            if (movieData.tsMovies != null) {
                 //$ionicLoading.hide();
-                return $q.when(tsMovies);
+                return $q.when(movieData);
             }
 
             var q = $q.defer();
 
             //var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
             var mtURL = constants.serviceURL;
-            var xx = settingsObj;
+            var xx    = settingsObj;
 
             var config = {
                 method: "JSONP",
@@ -51,18 +72,25 @@
                 //$ionicLoading.hide();
 
                 console.log('error response from jsonp');
-                q.reject(err);
+                //q.reject(err);
+                movieData.status = "error";
+                movieData.errMsg = "error response from jsonp:" + err;
+                q.resolve(movieData);
             }
 
             function httpSuccess(response) {
 
                 console.log('response from jsonp');
+                //movieData.status = "error";
+                //movieData.errMsg = "error response from jsonp:";
+                //q.resolve(movieData);
+                //return;
 
-                var errs = response.data.ErrMessage;
-                var movieTimes = response.data.MovieTimes;
+                var errs          = response.data.ErrMessage;
+                //var movieTimes    = response.data.MovieTimes;
                 var movieTimesIdx = response.data.movieTimesIdx;
-                var theaterNames = response.data.theaterNames.sort();
-                var movieNames = response.data.movieNames.sort();
+                var theaterNames  = response.data.theaterNames.sort();
+                var movieNames    = response.data.movieNames.sort();
 
                 var movieTimesNew = [];
 
@@ -70,12 +98,12 @@
 
                     var movieTimeIdx = movieTimesIdx[i];
 
-                    var movieIdx = movieTimeIdx.m;
+                    var movieIdx   = movieTimeIdx.m;
                     var theaterIdx = movieTimeIdx.t;
-                    var showTime = movieTimeIdx.s;
+                    var showTime   = movieTimeIdx.s;
 
-                    var movieName = movieNames[movieIdx].m;
-                    var runTime = movieNames[movieIdx].r;
+                    var movieName   = movieNames[movieIdx].m;
+                    var runTime     = movieNames[movieIdx].r;
                     var theaterName = theaterNames[theaterIdx];
 
                     var obj = {
@@ -91,22 +119,11 @@
 
                 response.data.MovieTimesNew = movieTimesNew;
 
-                //var tsMovies = {ts: Date.now(), movies: response.data};
-                //var tsMoviesIdx    = { ts: Date.now(), movieTimesIdx: movieTimesIdx};
-                //var tsMovieNames   = { ts: Date.now(), movieNames: movieNames };
-                //var tsTheaterNames = {ts: Date.now(), theaterNames: theaterNames};
-
-                //$localstorage.setObject("tsMovies", tsMovies);
-
-                //$localstorage.setObject("tsMoviesIdx", tsMoviesIdx);
-                //$localstorage.setObject("tsMovieNames", tsMovieNames);
-                //$localstorage.setObject("tsTheaterNames", tsTheaterNames);
-
-                $localstorage.setObject("tsMovies", response.data);
-                $localstorage.setObject("tsTheaterNames", theaterNames);
+                movieData.tsMovies = response.data;
+                movieData.tsTheaterNames = theaterNames;
                 //$ionicLoading.hide();
 
-                q.resolve(response.data);
+                q.resolve(movieData);
 
             }
         }

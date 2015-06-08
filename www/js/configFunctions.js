@@ -70,17 +70,17 @@
 
                 }
             })
-            .state('tplMovieTimes', {
-                url        : '/tplMovieTimes',
-                templateUrl: 'templates/tplMovieTimes.html',
+            .state('tplMovieTimesVer', {
+                url        : '/tplMovieTimesVer',
+                templateUrl: 'templates/tplMovieTimesVer.html',
                 controller : 'MovieTimesController as vm',
                 //controllerAs: 'movieTimes',
                 cache      : false,
-                resolve    : {
-                    getMovies: function (GetMovieData) {
-                        return GetMovieData.getMovies();
-                    }
-                },
+                //resolve    : {
+                //    getMovies: function (GetMovieData) {
+                //        return GetMovieData.getMovies();
+                //    }
+                //},
                 onEnter    : function () {
                     console.log("tplMovieTimes onenter");
                 },

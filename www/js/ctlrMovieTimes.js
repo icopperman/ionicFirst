@@ -6,21 +6,21 @@
         .module('MovieApp')
         .controller("MovieTimesController", MovieTimesController);
 
-    MovieTimesController.$inject = ['$state', '$localstorage', 'getMovies', '$ionicLoading'];
+    MovieTimesController.$inject = ['$state', '$localstorage', '$ionicLoading', 'facSettings', 'GetMovieData'];
 
-    function MovieTimesController($state, $localstorage, getMovies, $ionicLoading) {
+    function MovieTimesController($state, $localstorage, $ionicLoading, facSettings, GetMovieData) {
 
         var vm = this;
 
-        if ($state.current.name.indexOf('Hor') != -1) {
-
-            var els = $('.outerdiv');
-
-            //angular.forEach(els, function (el) {
-            //
-            //    console.log('here');
-            //});
-        }
+        //if ($state.current.name.indexOf('Hor') != -1) {
+        //
+        //    var els = $('.outerdiv');
+        //
+        //    //angular.forEach(els, function (el) {
+        //    //
+        //    //    console.log('here');
+        //    //});
+        //}
 
 
         //$scope.movieCount = allMovieTimes.MovieTimes.length;
@@ -42,19 +42,29 @@
         //vm.moveItem           = moveItem;
         //vm.onItemDelete       = onItemDelete;
 
-        var settingsObj   = $localstorage.getObject("settings");
-        var allMovieTimes = getMovies;
+        var settingsObj   = facSettings.getSettingsObj();//.getObject("settings");
+        GetMovieData.getMovies().then(function(allMovieTimes) {
+
         var rc            = allMovieTimes.Status;
 
         if (rc == "fail") {
 
             angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
-                console.log(key);
+                console.log(value);
             });
 
             vm.navTitle = 'Movie Times -- error';
+            return;
+
         }
-        else {
+
+        if (allMovieTimes.status == "error") {
+
+
+            vm.navTitle = 'Movie Times -- error' + allMovieTimes.errMsg;
+            return;
+
+        }
 
             var movieData = allMovieTimes.MovieTimesNew;
 
@@ -70,10 +80,11 @@
             vm.moviesAtSpecificTimes = moviesAtSpecificTimes(filteredMovieData, settingsObj.viewTimeSpan);
             vm.totMovies             = movieData.length;
             vm.totTheaters           = theaterNames.length;
-        }
+
 
         $ionicLoading.hide();
         var scrollcnt = 0;
+        });
 
         function filterMovieList() {
 

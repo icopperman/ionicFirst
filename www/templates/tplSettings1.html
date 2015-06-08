@@ -9,8 +9,8 @@
                 </div>
                 <div class="col ">
                     <div class="button-bar" style="width:70%;">
-                        <a ng-class="vm.selectedDate" ng-click="vm.whichDate('today')">Today</a>
-                        <a ng-class="vm.notSelectedDate" ng-click="vm.whichDate('tomorrow')">Tomorrow</a>
+                        <a ng-class="vm.clToday" ng-click="vm.whichDate('today')">Today</a>
+                        <a ng-class="vm.clTomorrow" ng-click="vm.whichDate('tomorrow')">Tomorrow</a>
                     </div>
                 </div>
             </div>
@@ -20,8 +20,8 @@
                 </div>
                 <div class="col">
                     <div class="button-bar" style="width:70%;">
-                        <a ng-class="vm.selectedOrient" ng-click="vm.whichOrient('')">Vertical</a>
-                        <a ng-class="vm.notSelectedOrient" ng-click="vm.whichOrient('Hor')">Horizontal</a>
+                        <a ng-class="vm.clVer" ng-click="vm.whichOrient('Ver')">Vertical</a>
+                        <a ng-class="vm.clHor" ng-click="vm.whichOrient('Hor')">Horizontal</a>
                     </div>
                 </div>
             </div>
@@ -32,7 +32,8 @@
                 <div class="col">
                     <input maxlength="5" required type="text"
                            placeholder="{{vm.phZip}}" ng-class="vm.clZip" ng-pattern="/^[0-9]{5,5}$/"
-                           ng-model-options="{ updateOn: blur }" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/>
+                           ng-model-options="{ updateOn: blur }"
+                           ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/>
                 </div>
             </div>
             <div class="row">
@@ -41,7 +42,9 @@
                 </div>
                 <div class="col">
                     <input required maxlength="2"
-                           ng-pattern="/^[0-9]{1,2}$/"  type="text" ng-class="vm.clZip" placeholder="{{vm.phMiles}}" ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/>
+                           ng-pattern="/^[0-9]{1,2}$/"  type="text" ng-class="vm.clZip"
+                           placeholder="{{vm.phMiles}}"
+                           ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/>
 
                 </div>
             </div>
@@ -50,7 +53,9 @@
                     <div class="input-label" style="padding-left: 16px;">Time Begin</div>
                 </div>
                 <div class="col">
-                    <input type="time" step="3600" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/>
+                    <input type="time" step="3600" placeholder="Begin Time"
+                           ng-model="vm.settingsObj.viewbegintime"
+                           id="viewbegintime" name="viewbegintime"/>
                 </div>
             </div>
 
@@ -59,7 +64,9 @@
                     <div class="input-label" style="padding-left: 16px;">Time End</div>
                 </div>
                 <div class="col">
-                    <input type="time" step="3600" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/>
+                    <input type="time" step="3600" placeholder="End Time"
+                           ng-model="vm.settingsObj.viewendtime"
+                           id="viewendtime" name="viewendtime"/>
                 </div>
             </div>
 
@@ -68,7 +75,9 @@
                     <div class="input-label" style="padding-left: 16px;">Title</div>
                 </div>
                 <div class="col">
-                    <input type="text" placeholder="Title Starts With" ng-model="vm.settingsObj.viewstartsWith" id="viewstartsWith" name="viewstartsWith"/>
+                    <input type="text" placeholder="Title Starts With"
+                           ng-model="vm.settingsObj.viewstartsWith"
+                           id="viewstartsWith" name="viewstartsWith"/>
                 </div>
             </div>
 
@@ -77,7 +86,9 @@
                     <div class="input-label" style="padding-left: 16px;">Cache</div>
                 </div>
                 <div class="col">
-                    <input type="text" placeholder="Refresh period" ng-model="vm.settingsObj.viewCacheTime" id="viewCacheTime" name="viewCacheTime"/>
+                    <input type="text" placeholder="Refresh period"
+                           ng-model="vm.settingsObj.viewCacheTime"
+                           id="viewCacheTime" name="viewCacheTime"/>
                 </div>
             </div>
 
@@ -87,10 +98,10 @@
                 </div>
                 <div class="col">
                     <div class="button-bar" style="width:70%;">
-                        <a ng-class="vm.selectedInterval0"    ng-click="vm.whichInterval('none')">None</a>
-                        <a ng-class="vm.selectedInterval15" ng-click="vm.whichInterval('15')">15 min</a>
-                        <a ng-class="vm.selectedInterval30" ng-click="vm.whichInterval('30')">30 min</a>
-                        <a ng-class="vm.selectedInterval60" ng-click="vm.whichInterval('60')">60 min</a>
+                        <a ng-class="vm.clInt0"  ng-click="vm.whichInterval('0')">None</a>
+                        <a ng-class="vm.clInt15" ng-click="vm.whichInterval('15')">15 min</a>
+                        <a ng-class="vm.clInt30" ng-click="vm.whichInterval('30')">30 min</a>
+                        <a ng-class="vm.clInt60" ng-click="vm.whichInterval('60')">60 min</a>
 
                     </div>
                     <!--<select ng-model="vm.settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" style="width: 50%; text-align: left;">-->
@@ -104,16 +115,26 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col">{{vm.errMsg}}</div>
+            </div>
+            <div class="row">
+                <div class="col col-offset-33">
+                    <a class="button button-positive " ng-click="vm.handleClick('ver', '', formSettings)" >Movie Times</a>
+                    <a class="button button-positive" ng-click="vm.handleClick('', 'theaters', formSettings)">Theaters</a>
+                </div>
+                <!--<div class="col">-->
+                <!--</div>-->
+                <!--<div class="col"></div>-->
+                    <!--<a class="button button-positive" ng-click="vm.handleClick('hor', formSettings)">Movie Times1</a>
+
                     <div class="input-label" style="padding-left: 16px;" >{{vm.errorMessage}}</div>
+                    -->
+
                 </div>
 
             </div>
 
             <!--<div class="button-bar">-->
-            <a class="button button-positive button-block" ng-click="vm.handleClick('ver', formSettings)" >Movie Times</a>
-            <!--<a class="button button-positive" ng-click="vm.handleClick('hor', formSettings)">Movie Times1</a>-->
-            <!--<a class="button button-positive" ui-sref="tplMovieTheaters">Theaters</a>-->
 
             <!--</div>-->
         </form>

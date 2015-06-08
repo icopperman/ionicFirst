@@ -4,54 +4,65 @@
 
     angular
         .module('MovieApp')
-        .factory('setting', settingsFn);
+        .factory('facSettings', settingsFn);
 
     function settingsFn() {
 
-        var obj = {
-            init        : initSettings,
+        var settingsObj1 = null;
+
+        return {
+
+            getSettingsObj: getSettingsFn,
+            setSettingsObj: setSettingsFn
 
         };
 
-        return obj;
+        function setSettingsFn(asettingObj) {
 
-        function initSettings() {
+            settingsObj1 = asettingObj;
+
+        }
+
+        function getSettingsFn() {
 
             //var n     = d.getTimezoneOffset();
-            var settings = getObjectFn("settings");
+            //var settings = getObjectFn("settings");
 
-            if (settings != undefined) {
-                return settings;
+            if (settingsObj1 != null) {
+                return settingsObj1;
             }
 
-            var d1;//  = new Date();
-            var d     = new Date();
-            var adate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-            var d2    = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
+            var endTime;//  = new Date();
+            var d         = new Date();
+            var adate     = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            var startTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
 
-            if ( d2.getHours() + 3  < 24) {
+            if (startTime.getHours() + 3 < 24) {
 
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0,0);
-                d1.setHours(d1.getHours() + 3);
+                endTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
+                endTime.setHours(endTime.getHours() + 3);
 
             }
 
-            return {
+            settingsObj1 = {
 
-                viewDateChar  : "today",
-                viewdate      : adate,
-                viewzip       : "99999",
-                viewmiles     : "10",
+                viewDateChar: "today",
+                viewdate: adate,
+                viewzip: "",
+                viewmiles: "10",
                 //viewbegintime : d.getHours(),
-                viewbegintime : d2, //.toTimeString().substr(0, 8),
+                viewbegintime: startTime, //.toTimeString().substr(0, 8),
 
-                viewendtime   : d1,
+                viewendtime: endTime,
                 viewstartsWith: "",
-                viewLat       : "",
-                viewLon       : "",
-                viewTimeSpan  : "0",
-                viewCacheTime : "4"
+                viewLat: "",
+                viewLon: "",
+                viewTimeSpan: "0",
+                viewCacheTime: "4",
+                viewOrientation: 'Ver'
             };
+
+            return settingsObj1;
 
         }
 
@@ -69,7 +80,7 @@
 
         function setObjectFn(key, value) {
 
-            if ( key == 'settings') {
+            if (key == 'settings') {
                 var i = 0;
             }
             var tsObj = {ts: Date.now(), objToCache: value};
@@ -81,9 +92,9 @@
 
             var xx = $window.localStorage[key];
 
-            if ( xx == undefined ) return;
+            if (xx == undefined) return;
 
-            var theObj    = JSON.parse(xx); // || '{}');
+            var theObj = JSON.parse(xx); // || '{}');
 
             //if ( key == 'settings') return theObj;
 

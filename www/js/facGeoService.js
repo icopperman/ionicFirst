@@ -10,7 +10,8 @@
 
         console.log("geoservice factory");
 
-        var settingsObj = $localstorage.init();
+        //var settingsObj = $localstorage.init();
+        var theLocation = null;
 
         return {
             getZip            : getZipFn,
@@ -22,6 +23,13 @@
 
             console.log("factory getzip");
 
+            if ( theLocation != null) {
+
+               return $q.when(theLocation);
+
+            }
+
+            theLocation = {};
             var aprom1 = _getLocation();                //returns promise with tsPos: lat, lon
             var aprom2 = aprom1.then(_reverseGeocode);  //returns settingsObj
 
@@ -54,13 +62,16 @@
 
             console.log("getlocation");
 
-            var tsPos = $localstorage.getObject("tsLatLon");
-            if (tsPos != undefined) {
-                return $q.when(tsPos);
+            // $localstorage.getObject("tsLatLon");
+            if ( theLocation != undefined) {
+
+                if (theLocation.hasOwnProperty('tsPos') == true) {
+                    return $q.when(theLocation.tsPos);
+                }
             }
 
             //if we recompute lat, long we will have to recompute zip
-            $localstorage.deleteObject("tsZip");
+            //$localstorage.deleteObject("tsZip");
 
             var q = $q.defer();
             var geoOptions = {enableHighAccuracy: false, timeout: 3000, maximumAge: 0};
@@ -74,8 +85,10 @@
             function geoLocateTO()
             {
                 console.log("geoLocate timeout");
-                q.reject("geoLocate timeout");
-
+                //q.reject("geoLocate timeout");
+                theLocation.status = "error";
+                theLocation.errMsg = "geoLocate timeout";
+                q.resolve(theLocation);
             }
 
             function geoSuccess(position) {
@@ -86,11 +99,14 @@
                 //so, to be careful, create my own object
                 var tsPos = { tsLat: position.coords.latitude, tsLon: position.coords.longitude};
 
-                $localstorage.setObject("tsLatLon", tsPos);
+                theLocation = {};
+                theLocation.tsPos = tsPos;
+
+                //$localstorage.setObject("tsLatLon", tsPos);
                 //$localstorage.setObject("tsLatLon", position.coords);
 
-                settingsObj.viewLat = position.coords.latitude;
-                settingsObj.viewLon = position.coords.longitude;
+                //settingsObj.viewLat = position.coords.latitude;
+                //settingsObj.viewLon = position.coords.longitude;
 
                 $timeout.cancel(to);
                 q.resolve(tsPos);
@@ -101,29 +117,37 @@
 
                 console.log("getlocation error: " + error);
                 $timeout.cancel(to);
-                q.reject(error);
+                //q.reject(error);
+                theLocation.status = "error";
+                theLocation.errMsg = "geoLocate error:" + error;
+                q.resolve(theLocation);
             }
         }
 
         function _reverseGeocode(tsPos) {
 
-            var tsZip = $localstorage.getObject("tsZip");
+            var tsZip = theLocation.tsZip;//.getObject("tsZip");
 
             if (tsZip != undefined) {
 
-                settingsObj.viewzip = tsZip;
-                $localstorage.setObject("settings", settingsObj);
+                //settingsObj.viewzip = tsZip;
+                //$localstorage.setObject("settings", settingsObj);
 
-                return $q.when(settingsObj);
+                return $q.when(theLocation);
             }
 
-            var lat = tsPos.tsLat;
-            var lon = tsPos.tsLon;
+            if ( theLocation.status == 'error') {
+
+                return $q.when(theLocation);
+            }
+
+            var lat = theLocation.tsPos.tsLat;
+            var lon = theLocation.tsPos.tsLon;
 
             var q = $q.defer();
 
             console.log("reverseGeocode:" + lat + ", " + lon);
-            $localstorage.setObject('settings', settingsObj);
+            //$localstorage.setObject('settings', settingsObj);
 
             var geocoder = new google.maps.Geocoder();
             var geoReq = {'latLng': new google.maps.LatLng(lat, lon)};
@@ -131,7 +155,6 @@
             geocoder.geocode(geoReq, geoResults);
 
             return q.promise;
-
 
             function geoResults(geoResults, status) {
 
@@ -141,6 +164,9 @@
 
                     console.log('reverse fail', geoResults, status);
                     q.reject(geoResults);
+                    theLocation.status = "error";
+                    theLocation.errMsg = "reverse geocode error: " + status;
+                    q.resolve(theLocation);
                 }
                 else {
 
@@ -174,9 +200,11 @@
 
                             if (aAddrCompo == null) continue;
 
-                            var xx = $localstorage.getObject("settings");
-                            settingsObj.viewzip = zip = aAddrCompo.short_name;
-                            $localstorage.setObject("settings", settingsObj);
+                            zip = aAddrCompo.short_name;
+                            //var xx = $localstorage.getObject("settings");
+                            //settingsObj.viewzip =
+                            //$localstorage.setObject("settings", settingsObj);
+                            theLocation.tsZip = zip;
 
                             break;
 
@@ -188,9 +216,11 @@
 
                     //var tsZip = {ts: Date.now(), tsZip: zip};
                     //$localstorage.setObject("tsZip", tsZip);
-                    $localstorage.setObject("tsZip", zip);
+                    //$localstorage.setObject("tsZip", zip);
+                    theLocation.tsZip = zip;
+                    theLocation.status = "ok";
 
-                    q.resolve(settingsObj);
+                    q.resolve(theLocation);
 
 
                 } //end if geocoder ok

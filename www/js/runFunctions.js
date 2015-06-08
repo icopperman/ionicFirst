@@ -74,6 +74,7 @@
 
         function stateChangeError(event, toState, toParams, fromState, fromParams, error) {
             console.log('state change error: ' + error.message + ',' + fromState.name + ',' + toState.name);
+            console.log('stacktrace:' + error.stack);
             $ionicLoading.hide();
 
             if ( fromState.name == "tplSettings")
