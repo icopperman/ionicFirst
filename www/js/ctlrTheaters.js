@@ -6,42 +6,45 @@
         .module('MovieApp')
         .controller('MovieTheaterController', MovieTheaterController);
 
-    MovieTheaterController.$inject = ['$localstorage'];
+    MovieTheaterController.$inject = ['$localstorage', 'GetMovieData','$ionicLoading'];
 
-    function MovieTheaterController($localstorage) {
+    function MovieTheaterController($localstorage, GetMovieData, $ionicLoading) {
 
         var vm = this;
 
         var theaters         = [];
-        var excludedTheaters = [];
+        var excludedTheaters = null;
 
         vm.theaterList   = createTheaterList();
         vm.saveExclusion = saveExclusion;
 
         function createTheaterList() {
 
-            var tsTheaterNames     = $localstorage.getObject("tsTheaterNames");
-            var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
+            var tsTheaterNames     = GetMovieData.getTheaterNames(); //.getObject("tsTheaterNames");
+            //var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
 
-            if (tsExcludedTheaters != undefined) {
-                excludedTheaters = tsExcludedTheaters.theaterNames;
-            }
+            if (excludedTheaters != null) {
 
-            var theaterNames = tsTheaterNames.theaterNames;
+                for (var i = 0; i < excludedTheaters.length; i++) {
 
-            for (var i = 0; i < theaterNames.length; i++) {
+                    var aname   = tsTheaterNames[i];
+                    var include = true;
 
-                var aname   = theaterNames[i];
-                var include = true;
+                    var excludedIdx = _.indexOf(excludedTheaters, aname);
 
-                var excludedIdx = _.indexOf(excludedTheaters, aname);
+                    if (excludedIdx != -1) {
+                        include = false;
+                    }
 
-                if (excludedIdx != -1) {
-                    include = false;
+                    theaters.push({theaterName: aname, include: include});
                 }
-
-                theaters.push({theaterName: aname, include: include});
             }
+            else {
+
+                theaters = tsTheaterNames;
+            }
+
+            $ionicLoading.hide();
 
             return theaters;
 
@@ -52,8 +55,10 @@
             var xx            = vm.theaterList;
             var exclusionList = _.pluck(_.where(xx, {include: false}), "theaterName");
 
+            excludedTheaters = exclusionList;
+
             //$localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames: exclusionList});
-            $localstorage.setObject("tsExcluded", exclusionList);
+            //$localstorage.setObject("tsExcluded", exclusionList);
 
         }
 

@@ -46,9 +46,7 @@
 
         GetMovieData.getMovies().then(function (allMovieTimes) {
 
-            var rc = allMovieTimes.status;
-
-            if (rc != "ok") {
+            if (allMovieTimes.status != "ok") {
 
                 angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
                     console.log(value);
@@ -60,14 +58,13 @@
 
             }
 
-            var movieData = allMovieTimes.tsMovies.MovieTimesNew;
+            var movieData = allMovieTimes.tsMovieShowTimes;
 
-            var filteredMovieData = [];
             var excludedTheaters  = [];
 
-            filteredMovieData = filterMovieList(movieData);
+            var filteredMovieData = filterMovieList(movieData, excludedTheaters);
 
-            var theaterNames = allMovieTimes.tsMovies.theaterNames;
+            var theaterNames = allMovieTimes.tsTheaterNames;
 
             vm.totExcludedTheaters   = excludedTheaters.length;
             vm.totExcludedMovies     = movieData.length - filteredMovieData.length;
@@ -86,7 +83,7 @@
             var endTimeHour   = 26;
             var titleFilter   = "";
             var exList        = null;//$localstorage.getObject("tsExcluded");
-
+            var filteredMovieData = [];
 
             if (exList != null) {
 
@@ -97,10 +94,12 @@
                 var xx        = new Date(settingsObj.viewbegintime).getHours();
                 beginTimeHour = parseInt(xx);
             }
+
             if (( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
                 var yy      = new Date(settingsObj.viewendtime).getHours();
                 endTimeHour = parseInt(yy);
             }
+
             if (( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "")) {
                 titleFilter = settingsObj.viewstartsWith;
             }

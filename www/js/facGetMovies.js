@@ -21,10 +21,16 @@
         console.log("getMovieData factory");
 
         return {
-            getMovies: getMoviesFn
+            getMovies: getMoviesFn,
+            getTheaterNames: getTheaterNamesFn
             //,clearMovies: clearMoviesFn
         };
 
+        function getTheaterNamesFn()
+        {
+            return movieData.tsTheaterNames
+
+        }
         function clearMoviesFn() {
 
             movieData.tsMovieShowTimes = null;
@@ -48,6 +54,8 @@
 
             if (movieData.tsMovieShowTimes != null) {
                 //$ionicLoading.hide();
+                refreshCache.refresh = false;
+                $ionicLoading.hide();
                 return $q.when(movieData);
             }
 
@@ -71,10 +79,12 @@
             function httpErr(err) {
                 //$ionicLoading.hide();
 
-                console.log('error response from jsonp');
+                console.log('error response from jsonp: ' + err);
                 //q.reject(err);
                 movieData.status = "error";
                 movieData.errMsg = "error response from jsonp: " + err;
+                refreshCache.refresh = true;
+                $ionicLoading.hide();
                 q.resolve(movieData);
             }
 
@@ -87,9 +97,11 @@
                 //return;
 
                 movieData.status = response.data.Status;
-                movieDate.errMsg = response.data.ErrMessage;
+                movieData.errMsg = response.data.ErrMessage;
 
                 if (movieData.status != "ok") {
+
+                    refreshCache.refresh = true;
 
                     return;
 
@@ -124,12 +136,14 @@
                     movieTimesNew.push(obj);
                 }
 
-                response.data.MovieTimesNew = movieTimesNew;
+                //response.data.MovieTimesNew = movieTimesNew;
 
                 movieData.tsMovieShowTimes = movieTimesNew;//response.data;
                 movieData.tsTheaterNames   = theaterNames;
                 movieData.tsMovieNames     = movieNames;
-                //$ionicLoading.hide();
+                movieData.tsExcludedTheaters = [];
+                $ionicLoading.hide();
+                refreshCache.refresh = false;
 
                 q.resolve(movieData);
 

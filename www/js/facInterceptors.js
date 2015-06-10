@@ -52,7 +52,7 @@
         }
 
         function responseErrorFn(rejection) {
-            console.log("response error interceptor:" + rejection);
+            console.log("response error interceptor: " + rejection.statusText);
             return $q.reject(rejection);
         }
 

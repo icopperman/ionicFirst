@@ -6,9 +6,9 @@
         .module('MovieApp')
         .controller("SettingsController", SettingsController);
 
-    SettingsController.$inject = ['$localstorage', '$state', 'getZip', 'GetMovieData', 'facSettings', 'refreshCache'];
+    SettingsController.$inject = ['$localstorage', '$state', 'getZip', 'GetMovieData', 'facSettings', 'refreshCache', '$ionicLoading'];
 
-    function SettingsController($localstorage, $state, getZip, GetMovieData, facSettings, refreshCache) {
+    function SettingsController($localstorage, $state, getZip, GetMovieData, facSettings, refreshCache, $ionicLoading) {
 
         console.log("main controller");
 
@@ -101,6 +101,10 @@
 
             //get saved settings
             //var savedSettings   = savedSettings; //.getObject("settings");
+
+            //since this controller may be cached, refresh saveSettings
+            savedSettings = facSettings.getSettingsObj();
+
             var userSettings    = vm.settingsObj;
             var invalidateCache = false;
 
@@ -141,13 +145,18 @@
 
         function success(resultFromGetMovies) {
             console.log("success");
+            $ionicLoading.hide();
             if (resultFromGetMovies.status == "ok") {
                 if (vm.template == 'theaters') {
 
+                    $ionicLoading.show({
+                        template: 'Getting theaters...'
+                    });
                     $state.go("tplMovieTheaters");
                 }
                 else {
-                    refreshCache.refresh = false;
+                    //refreshCache.refresh = false;
+
                     $state.go("tplMovieTimes" + vm.settingsObj.viewOrientation);
 
                 }
@@ -158,6 +167,7 @@
         }
 
         function failure() {
+            $ionicLoading.hide();
             console.log("failure");
         }
 
