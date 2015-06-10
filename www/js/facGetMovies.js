@@ -10,12 +10,12 @@
     function getMovieData($q, $localstorage, $http, constants, $ionicLoading, facSettings, refreshCache) {
 
         var movieData = {
-            status: "ok",
-            errMsg: "",
-            tsMovies : null,
-            tsTheaterNames : null,
-            tsMovieName : null,
-            tsExcluded : null
+            status            : "",
+            errMsg            : "",
+            tsMovieShowTimes  : null,
+            tsTheaterNames    : null,
+            tsMovieNames      : null,
+            tsExcludedTheaters: null
         };
 
         console.log("getMovieData factory");
@@ -27,9 +27,9 @@
 
         function clearMoviesFn() {
 
-            movieData.tsMovies = null;
-            movieData.tsTheaterNames = null;
-            movieData.tsMovieName = null;
+            movieData.tsMovieShowTimes = null;
+            movieData.tsTheaterNames   = null;
+            movieData.tsMovieNames     = null;
         }
 
         function getMoviesFn() {
@@ -41,12 +41,12 @@
             var settingsObj = facSettings.getSettingsObj();
 
             //var tsMovies = $localstorage.getObject("tsMovies");
-            if ( refreshCache.refresh == true) {
+            if (refreshCache.refresh == true) {
 
                 clearMoviesFn();
             }
 
-            if (movieData.tsMovies != null) {
+            if (movieData.tsMovieShowTimes != null) {
                 //$ionicLoading.hide();
                 return $q.when(movieData);
             }
@@ -58,9 +58,9 @@
             var xx    = settingsObj;
 
             var config = {
-                method: "JSONP",
-                url: mtURL,
-                params: xx,
+                method : "JSONP",
+                url    : mtURL,
+                params : xx,
                 timeout: 5000
             };
 
@@ -74,7 +74,7 @@
                 console.log('error response from jsonp');
                 //q.reject(err);
                 movieData.status = "error";
-                movieData.errMsg = "error response from jsonp:" + err;
+                movieData.errMsg = "error response from jsonp: " + err;
                 q.resolve(movieData);
             }
 
@@ -86,11 +86,18 @@
                 //q.resolve(movieData);
                 //return;
 
-                var errs          = response.data.ErrMessage;
+                movieData.status = response.data.Status;
+                movieDate.errMsg = response.data.ErrMessage;
+
+                if (movieData.status != "ok") {
+
+                    return;
+
+                }
                 //var movieTimes    = response.data.MovieTimes;
                 var movieTimesIdx = response.data.movieTimesIdx;
-                var theaterNames  = response.data.theaterNames.sort();
-                var movieNames    = response.data.movieNames.sort();
+                var theaterNames  = response.data.theaterNames;//.sort();
+                var movieNames    = response.data.movieNames;///.sort();
 
                 var movieTimesNew = [];
 
@@ -107,11 +114,11 @@
                     var theaterName = theaterNames[theaterIdx];
 
                     var obj = {
-                        cnt: i + 1,
-                        time: showTime,
+                        cnt    : i + 1,
+                        time   : showTime,
                         theater: theaterName,
                         runtime: runTime,
-                        title: movieName
+                        title  : movieName
                     };
 
                     movieTimesNew.push(obj);
@@ -119,8 +126,9 @@
 
                 response.data.MovieTimesNew = movieTimesNew;
 
-                movieData.tsMovies = response.data;
-                movieData.tsTheaterNames = theaterNames;
+                movieData.tsMovieShowTimes = movieTimesNew;//response.data;
+                movieData.tsTheaterNames   = theaterNames;
+                movieData.tsMovieNames     = movieNames;
                 //$ionicLoading.hide();
 
                 q.resolve(movieData);
