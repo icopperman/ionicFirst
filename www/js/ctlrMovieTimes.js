@@ -42,38 +42,32 @@
         //vm.moveItem           = moveItem;
         //vm.onItemDelete       = onItemDelete;
 
-        var settingsObj   = facSettings.getSettingsObj();//.getObject("settings");
-        GetMovieData.getMovies().then(function(allMovieTimes) {
+        var settingsObj = facSettings.getSettingsObj();//.getObject("settings");
 
-        var rc            = allMovieTimes.Status;
+        GetMovieData.getMovies().then(function (allMovieTimes) {
 
-        if (rc == "fail") {
+            var rc = allMovieTimes.status;
 
-            angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
-                console.log(value);
-            });
+            if (rc != "ok") {
 
-            vm.navTitle = 'Movie Times -- error';
-            return;
-
-        }
-
-        if (allMovieTimes.status == "error") {
+                angular.forEach(allMovieTimes.ErrMessage, function (value, key) {
+                    console.log(value);
+                });
 
 
-            vm.navTitle = 'Movie Times -- error' + allMovieTimes.errMsg;
-            return;
+                vm.navTitle = 'Movie Times -- error' + allMovieTimes.errMsg;
+                return;
 
-        }
+            }
 
-            var movieData = allMovieTimes.MovieTimesNew;
+            var movieData = allMovieTimes.tsMovies.MovieTimesNew;
 
             var filteredMovieData = [];
             var excludedTheaters  = [];
 
-            filteredMovieData = filterMovieList();
+            filteredMovieData = filterMovieList(movieData);
 
-            var theaterNames = allMovieTimes.theaterNames;
+            var theaterNames = allMovieTimes.tsMovies.theaterNames;
 
             vm.totExcludedTheaters   = excludedTheaters.length;
             vm.totExcludedMovies     = movieData.length - filteredMovieData.length;
@@ -82,28 +76,29 @@
             vm.totTheaters           = theaterNames.length;
 
 
-        $ionicLoading.hide();
-        var scrollcnt = 0;
+            $ionicLoading.hide();
+            var scrollcnt            = 0;
         });
 
-        function filterMovieList() {
+        function filterMovieList(movieData, excludedTheaters) {
 
-            var beginTimeHour   = -1;
-            var endTimeHour     = 26;
-            var titleFilter = "";
-            var exList      = $localstorage.getObject("tsExcluded");
+            var beginTimeHour = -1;
+            var endTimeHour   = 26;
+            var titleFilter   = "";
+            var exList        = null;//$localstorage.getObject("tsExcluded");
 
-            if (exList != undefined) {
+
+            if (exList != null) {
 
                 excludedTheaters = exList.theaterNames;
             }
 
             if (( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
-                var xx = new Date(settingsObj.viewbegintime).getHours();
+                var xx        = new Date(settingsObj.viewbegintime).getHours();
                 beginTimeHour = parseInt(xx);
             }
             if (( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
-                var yy = new Date(settingsObj.viewendtime).getHours();
+                var yy      = new Date(settingsObj.viewendtime).getHours();
                 endTimeHour = parseInt(yy);
             }
             if (( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "")) {
@@ -118,20 +113,32 @@
                 var theaterName  = amovie.theater;
                 var hour         = parseInt(showTimeHour);
 
-                if ( hour < beginTimeHour ) continue;
-                if ( hour > endTimeHour   ) continue;
+                if (hour < beginTimeHour) continue;
+                if (hour > endTimeHour) continue;
 
                 if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false) continue;
 
-                var exIdx = _.indexOf(excludedTheaters, theaterName);
-                if (exIdx != -1) continue;
+                if (excludedTheaters != null) {
+                    var exIdx = _.indexOf(excludedTheaters, theaterName);
+                    if (exIdx != -1) continue;
+                }
 
                 var sfx;
 
-                if ( hour == 0  ) { sfx = "AM"; showTimeHour = "12"; }
-                if ( hour <  12 ) { sfx = "AM"; }
-                if ( hour == 12 ) { sfx = "PM"; }
-                if ( hour >  12 ) { showTimeHour = parseInt(showTimeHour) - 12; sfx = "PM"; }
+                if (hour == 0) {
+                    sfx          = "AM";
+                    showTimeHour = "12";
+                }
+                if (hour < 12) {
+                    sfx = "AM";
+                }
+                if (hour == 12) {
+                    sfx = "PM";
+                }
+                if (hour > 12) {
+                    showTimeHour = parseInt(showTimeHour) - 12;
+                    sfx          = "PM";
+                }
 
                 amovie.time = showTimeHour + ":" + showTimeMin + sfx;
 
