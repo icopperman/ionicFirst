@@ -19,7 +19,8 @@
 
         function setSettingsFn(asettingObj) {
 
-            settingsObj1 = asettingObj;
+            //have to be careful here, settingsObj1 = asettingObj does not work
+            angular.copy(asettingObj, settingsObj1);
 
         }
 

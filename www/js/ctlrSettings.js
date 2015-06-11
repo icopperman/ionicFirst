@@ -58,8 +58,8 @@
         function whichOrient(direction) {
             vm.settingsObj.viewOrientation = direction;
 
-            vm.clVer = ( savedSettings.viewOrientation == 'Ver'      ) ? selected : notSelected;
-            vm.clHor = ( savedSettings.viewOrientation == 'Hor'      ) ? selected : notSelected;
+            vm.clVer = ( vm.settingsObj.viewOrientation == 'Ver'      ) ? selected : notSelected;
+            vm.clHor = ( vm.settingsObj.viewOrientation == 'Hor'      ) ? selected : notSelected;
 
         }
 
@@ -67,8 +67,8 @@
 
             vm.settingsObj.viewDateChar = theDate;
 
-            vm.clToday    = ( savedSettings.viewDateChar == 'today'    ) ? selected : notSelected;
-            vm.clTomorrow = ( savedSettings.viewDateChar == 'tomorrow' ) ? selected : notSelected;
+            vm.clToday    = ( vm.settingsObj.viewDateChar == 'today'    ) ? selected : notSelected;
+            vm.clTomorrow = ( vm.settingsObj.viewDateChar == 'tomorrow' ) ? selected : notSelected;
 
         }
 
@@ -76,10 +76,10 @@
 
             vm.settingsObj.viewTimeSpan = theInterval;
 
-            vm.clInt0  = ( savedSettings.viewTimeSpan == '0'        ) ? selected : notSelected;
-            vm.clInt15 = ( savedSettings.viewTimeSpan == '15'       ) ? selected : notSelected;
-            vm.clInt30 = ( savedSettings.viewTimeSpan == '30'       ) ? selected : notSelected;
-            vm.clInt60 = ( savedSettings.viewTimeSpan == '60'       ) ? selected : notSelected;
+            vm.clInt0  = ( vm.settingsObj.viewTimeSpan == '0'        ) ? selected : notSelected;
+            vm.clInt15 = ( vm.settingsObj.viewTimeSpan == '15'       ) ? selected : notSelected;
+            vm.clInt30 = ( vm.settingsObj.viewTimeSpan == '30'       ) ? selected : notSelected;
+            vm.clInt60 = ( vm.settingsObj.viewTimeSpan == '60'       ) ? selected : notSelected;
 
         }
 

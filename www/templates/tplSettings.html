@@ -38,8 +38,8 @@
                       ng-model-options="{ updateOn: blur }" ng-model="vm.settingsObj.viewzip" id="viewzip" name="viewzip"/> </label>
                 <label class="item item-input"><span class="input-label">Miles</span><input required maxlength="2"
                       ng-pattern="/^[0-9]{1,2}$/"  type="text" ng-class="vm.clZip" placeholder="{{vm.phMiles}}" ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/> </label>
-                <label class="item item-input"><span class="input-label">Time Begin</span><input type="time" step="3600" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
-                <label class="item item-input"><span class="input-label">Time End</span><input type="time" step="3600" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
+                <label class="item item-input"><span class="input-label">Showing between</span><input type="time" step="3600" placeholder="Begin Time" ng-model="vm.settingsObj.viewbegintime" id="viewbegintime" name="viewbegintime"/> </label>
+                <label class="item item-input"><span class="input-label">and</span><input type="time" step="3600" placeholder="End Time" ng-model="vm.settingsObj.viewendtime" id="viewendtime" name="viewendtime"/> </label>
                 <label class="item item-input"><span class="input-label">Title</span><input type="text" placeholder="Title Starts With" ng-model="vm.settingsObj.viewstartsWith" id="viewstartsWith" name="viewstartsWith"/> </label>
                 <label class="item item-input"><span class="input-label">Cache</span><input type="text" placeholder="Refresh period" ng-model="vm.settingsObj.viewCacheTime" id="viewCacheTime" name="viewCacheTime"/> </label>
                 <label class="item item-input"><span class="input-label">Time Span</span>
