@@ -60,7 +60,7 @@
 
             var movieData = allMovieTimes.tsMovieShowTimes;
 
-            var excludedTheaters  = [];
+            var excludedTheaters  = GetMovieData.getExcludedTheaters();
 
             var filteredMovieData = filterMovieList(movieData, excludedTheaters);
 
@@ -82,13 +82,13 @@
             var beginTimeHour = -1;
             var endTimeHour   = 26;
             var titleFilter   = "";
-            var exList        = null;//$localstorage.getObject("tsExcluded");
+            //var exList        = null;//$localstorage.getObject("tsExcluded");
             var filteredMovieData = [];
 
-            if (exList != null) {
-
-                excludedTheaters = exList.theaterNames;
-            }
+            //if (exList != null) {
+            //
+            //    excludedTheaters = exList.theaterNames;
+            //}
 
             if (( settingsObj.viewbegintime != undefined) && ( settingsObj.viewbegintime != "")) {
                 var xx        = new Date(settingsObj.viewbegintime).getHours();
@@ -98,6 +98,7 @@
             if (( settingsObj.viewendtime != undefined) && ( settingsObj.viewendtime != "" )) {
                 var yy      = new Date(settingsObj.viewendtime).getHours();
                 endTimeHour = parseInt(yy);
+                if (endTimeHour == 0) endTimeHour = 24;
             }
 
             if (( settingsObj.viewstartsWith != undefined) && ( settingsObj.viewstartsWith != "")) {
@@ -113,7 +114,7 @@
                 var hour         = parseInt(showTimeHour);
 
                 if (hour < beginTimeHour) continue;
-                if (hour > endTimeHour) continue;
+                if (hour >= endTimeHour) continue;
 
                 if (_.startsWith(amovie.title.toLowerCase(), titleFilter) == false) continue;
 

@@ -22,13 +22,27 @@
 
         return {
             getMovies: getMoviesFn,
-            getTheaterNames: getTheaterNamesFn
+            getTheaterNames: getTheaterNamesFn,
+            getExcludedTheaters: getExcludedTheatersFn,
+            setExcludedTheaters: setExcludedTheatersFn
+
             //,clearMovies: clearMoviesFn
         };
 
         function getTheaterNamesFn()
         {
             return movieData.tsTheaterNames
+
+        }
+
+        function getExcludedTheatersFn()
+        {
+            return movieData.tsExcludedTheaters;
+
+        }
+        function setExcludedTheatersFn(xx)
+        {
+            movieData.tsExcludedTheaters = xx;
 
         }
         function clearMoviesFn() {

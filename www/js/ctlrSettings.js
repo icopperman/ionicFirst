@@ -146,6 +146,8 @@
         function success(resultFromGetMovies) {
             console.log("success");
             $ionicLoading.hide();
+            vm.errMsg = "";
+
             if (resultFromGetMovies.status == "ok") {
                 if (vm.template == 'theaters') {
 

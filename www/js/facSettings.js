@@ -32,17 +32,14 @@
                 return settingsObj1;
             }
 
-            var endTime;//  = new Date();
             var d         = new Date();
             var adate     = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
             var startTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
+            var endTime   = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
 
-            if (startTime.getHours() + 3 < 24) {
+            var endHour = (startTime.getHours() + 3 >= 24) ? 24 :  startTime.getHours() + 3;
 
-                endTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
-                endTime.setHours(endTime.getHours() + 3);
-
-            }
+            endTime.setHours(endHour);
 
             settingsObj1 = {
 

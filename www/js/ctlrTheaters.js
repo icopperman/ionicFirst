@@ -13,38 +13,31 @@
         var vm = this;
 
         var theaters         = [];
-        var excludedTheaters = null;
+        var excludedTheaters = GetMovieData.getExcludedTheaters();
 
         vm.theaterList   = createTheaterList();
         vm.saveExclusion = saveExclusion;
+
+        $ionicLoading.hide();
 
         function createTheaterList() {
 
             var tsTheaterNames     = GetMovieData.getTheaterNames(); //.getObject("tsTheaterNames");
             //var tsExcludedTheaters = $localstorage.getObject("tsExcluded");
 
-            if (excludedTheaters != null) {
-
-                for (var i = 0; i < excludedTheaters.length; i++) {
+                for (var i = 0; i < tsTheaterNames.length; i++) {
 
                     var aname   = tsTheaterNames[i];
-                    var include = true;
+                    var exclude = false;
 
-                    var excludedIdx = _.indexOf(excludedTheaters, aname);
+                    if ( excludedTheaters != null) {
 
-                    if (excludedIdx != -1) {
-                        include = false;
+                        exclude = _.contains(excludedTheaters, aname);
+
                     }
 
-                    theaters.push({theaterName: aname, include: include});
+                    theaters.push({theaterName: aname, exclude: exclude});
                 }
-            }
-            else {
-
-                theaters = tsTheaterNames;
-            }
-
-            $ionicLoading.hide();
 
             return theaters;
 
@@ -53,9 +46,10 @@
         function saveExclusion() {
 
             var xx            = vm.theaterList;
-            var exclusionList = _.pluck(_.where(xx, {include: false}), "theaterName");
+            var exclusionList = _.pluck(_.where(xx, {exclude: true}), "theaterName");
 
             excludedTheaters = exclusionList;
+            GetMovieData.setExcludedTheaters(excludedTheaters);
 
             //$localstorage.setObject("tsExcluded", {ts: Date.now(), theaterNames: exclusionList});
             //$localstorage.setObject("tsExcluded", exclusionList);
