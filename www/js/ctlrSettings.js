@@ -32,6 +32,7 @@
         vm.whichDate     = whichDate;
         vm.whichOrient   = whichOrient;
         vm.whichInterval = whichInterval;
+        vm.refreshMovies = refreshMovies;
 
         var selected    = "button button-small selectedDate";
         var notSelected = "button button-small notSelectedDate";
@@ -46,16 +47,32 @@
         vm.clInt60    = ( savedSettings.viewTimeSpan == '60'       ) ? selected : notSelected;
 
         vm.errMsg       = "";
-        var theLocation = getZip;
-        if (theLocation.status == 'error') {
-            vm.errMsg = theLocation.errMsg;
-            return;
+        vm.settingsObj.viewzip = getTheZip();
+
+        function getTheZip() {
+            var theLocation = getZip;
+            if (theLocation.status == 'error') {
+                vm.errMsg = theLocation.errMsg;
+                return;
+            }
+
+            var zip                = theLocation.tsZip;
+            return zip;
+
         }
 
-        var zip                = theLocation.tsZip;
-        vm.settingsObj.viewzip = zip;
+        function refreshMovies() {
+
+            refreshCache.refresh = true;
+            vm.settingsObj.viewzip = getTheZip();
+            vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);
+            vm.settingsObj.viewendtime   = new Date(savedSettings.viewendtime);
+
+
+        }
 
         function whichOrient(direction) {
+
             vm.settingsObj.viewOrientation = direction;
 
             vm.clVer = ( vm.settingsObj.viewOrientation == 'Ver'      ) ? selected : notSelected;
@@ -69,6 +86,17 @@
 
             vm.clToday    = ( vm.settingsObj.viewDateChar == 'today'    ) ? selected : notSelected;
             vm.clTomorrow = ( vm.settingsObj.viewDateChar == 'tomorrow' ) ? selected : notSelected;
+
+            var d = new Date();
+
+            if (vm.settingsObj.viewDateChar == "tomorrow") {
+
+                d.setDate(d.getDate() + 1);
+
+            }
+
+            var adate               = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            vm.settingsObj.viewdate = adate;
 
         }
 
@@ -88,16 +116,7 @@
             var rc = validateInput(form);
             if (rc == false) return;
 
-            var d = new Date();
 
-            if (vm.settingsObj.viewDateChar == "tomorrow") {
-
-                d.setDate(d.getDate() + 1);
-
-            }
-
-            var adate               = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-            vm.settingsObj.viewdate = adate;
 
             //get saved settings
             //var savedSettings   = savedSettings; //.getObject("settings");

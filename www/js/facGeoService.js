@@ -115,11 +115,11 @@
 
             function geoError(error) {
 
-                console.log("getlocation error: " + error);
+                console.log("getlocation error: " + error.code + "," + error.message);
                 $timeout.cancel(to);
                 //q.reject(error);
                 theLocation.status = "error";
-                theLocation.errMsg = "geoLocate error:" + error;
+                theLocation.errMsg = "geoLocate error:" + error.code + "," + error.message;
                 q.resolve(theLocation);
             }
         }

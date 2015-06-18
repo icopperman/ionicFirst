@@ -5,9 +5,9 @@
         .factory('GetMovieData', getMovieData);
 
     getMovieData.$inject
-        = ['$q', '$localstorage', '$http', 'constants', '$ionicLoading', 'facSettings', 'refreshCache'];
+        = ['$q', '$localstorage', '$http', '$timeout',  'constants', '$ionicLoading', 'facSettings', 'refreshCache'];
 
-    function getMovieData($q, $localstorage, $http, constants, $ionicLoading, facSettings, refreshCache) {
+    function getMovieData($q, $localstorage, $http, $timeout, constants, $ionicLoading, facSettings, refreshCache) {
 
         var movieData = {
             status            : "",
@@ -52,6 +52,7 @@
             movieData.tsMovieNames     = null;
         }
 
+
         function getMoviesFn() {
 
             $ionicLoading.show({
@@ -75,6 +76,9 @@
 
             var q = $q.defer();
 
+            var toDeferred = $q.defer();
+            var timedOut = false;
+
             //var mtURL = "http://emptywebapiazure.azurewebsites.net/api/values?callback=JSON_CALLBACK";
             var mtURL = constants.serviceURL;
             var xx    = settingsObj;
@@ -83,20 +87,34 @@
                 method : "JSONP",
                 url    : mtURL,
                 params : xx,
-                timeout: 5000
+                timeout: toDeferred.promise
             };
 
             $http(config).then(httpSuccess, httpErr);
+
+            $timeout(function() {
+                timedOut = true;
+                toDeferred.resolve();
+            }, 1000);
 
             return q.promise;
 
             function httpErr(err) {
                 //$ionicLoading.hide();
 
-                console.log('error response from jsonp: ' + err);
-                //q.reject(err);
-                movieData.status = "error";
-                movieData.errMsg = "error response from jsonp: " + err;
+                if ( timedOut == true)
+                {
+                    console.log('timed out ' + err);
+                    movieData.status = "error";
+                    movieData.errMsg = "error jsonp timeout: " + err;
+                }
+                else {
+                    console.log('error response from jsonp: ' + err);
+                    //q.reject(err);
+                    movieData.status = "error";
+                    movieData.errMsg = "error response from jsonp: " + err;
+                }
+
                 refreshCache.refresh = true;
                 $ionicLoading.hide();
                 q.resolve(movieData);

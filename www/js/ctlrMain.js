@@ -6,9 +6,9 @@
         .module('MovieApp')
         .controller("MainCtrl", MainCtrl);
 
-    MainCtrl.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$ionicActionSheet'];
+    MainCtrl.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$ionicActionSheet', 'refreshCache'];
 
-    function MainCtrl($scope, $ionicModal, $ionicPopup, $ionicActionSheet) {
+    function MainCtrl($scope, $ionicModal, $ionicPopup, $ionicActionSheet, refreshCache) {
 
         //$scope.defaultPrimaryButtonClick = function () {
         //    $ionicPopup.show({
@@ -32,6 +32,8 @@
             $scope.modal = modal;
         });
 
+        $scope.refreshMovies = refreshMovies;
+
         $scope.defaultSecondaryButtonClick = function () {
             $scope.modal.show();
             //$ionicActionSheet.show({
@@ -39,6 +41,13 @@
             //    cancelText: 'Cancel Nav Bar Default Secondary'
             //});
         };
+
+        function refreshMovies() {
+
+            refreshCache.refresh = true;
+
+
+        }
     }
 
 })();

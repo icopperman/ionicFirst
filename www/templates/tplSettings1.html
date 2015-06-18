@@ -1,11 +1,14 @@
 <ion-view view-title="{{vm.navTitle}}">
-
+    <ion-nav-buttons side="primary">
+        <button class="button button-icon icon ion-refresh" ng-click="vm.refreshMovies()"></button>
+    </ion-nav-buttons>
     <ion-content delegate-handle="root1-scroll-handle">
+
         <form novalidate name="formSettings" class="formSettings">
 
             <div class="row">
                 <div class="col col-33">
-                    <div class="input-label" style="padding-left: 16px;">Date</div>
+                    <div class="input-label" style="padding-left: 16px;">Date : {{vm.settingsObj.viewdate}}</div>
                 </div>
                 <div class="col ">
                     <div class="button-bar" style="width:70%;">
@@ -42,7 +45,7 @@
                 </div>
                 <div class="col">
                     <input required maxlength="2"
-                           ng-pattern="/^[0-9]{1,2}$/"  type="text" ng-class="vm.clZip"
+                           ng-pattern="/^[0-9]{1,2}$/" type="text" ng-class="vm.clZip"
                            placeholder="{{vm.phMiles}}"
                            ng-model="vm.settingsObj.viewmiles" id="viewmiles" name="viewmiles"/>
 
@@ -98,17 +101,17 @@
                 </div>
                 <div class="col">
                     <div class="button-bar" style="width:70%;">
-                        <a ng-class="vm.clInt0"  ng-click="vm.whichInterval('0')">None</a>
+                        <a ng-class="vm.clInt0" ng-click="vm.whichInterval('0')">None</a>
                         <a ng-class="vm.clInt15" ng-click="vm.whichInterval('15')">15 min</a>
                         <a ng-class="vm.clInt30" ng-click="vm.whichInterval('30')">30 min</a>
                         <a ng-class="vm.clInt60" ng-click="vm.whichInterval('60')">60 min</a>
 
                     </div>
                     <!--<select ng-model="vm.settingsObj.viewTimeSpan" id="viewTimeSpan" name="viewTimeSpan" style="width: 50%; text-align: left;">-->
-                        <!--<option value="0" >none</option>-->
-                        <!--<option value="15">15 minutes</option>-->
-                        <!--<option value="30">30 minutes</option>-->
-                        <!--<option value="60" selected>60 minutes</option>-->
+                    <!--<option value="0" >none</option>-->
+                    <!--<option value="15">15 minutes</option>-->
+                    <!--<option value="30">30 minutes</option>-->
+                    <!--<option value="60" selected>60 minutes</option>-->
 
                     <!--</select>-->
 
@@ -119,18 +122,18 @@
             </div>
             <div class="row">
                 <div class="col col-offset-33">
-                    <a class="button button-positive " ng-click="vm.handleClick('ver', '', formSettings)" >Movie Times</a>
-                    <a class="button button-positive" ng-click="vm.handleClick('', 'theaters', formSettings)">Theaters</a>
+                    <a class="button button-positive " ng-click="vm.handleClick('ver', '', formSettings)">Movie
+                        Times</a>
+                    <a class="button button-positive"
+                       ng-click="vm.handleClick('', 'theaters', formSettings)">Theaters</a>
                 </div>
                 <!--<div class="col">-->
                 <!--</div>-->
                 <!--<div class="col"></div>-->
-                    <!--<a class="button button-positive" ng-click="vm.handleClick('hor', formSettings)">Movie Times1</a>
+                <!--<a class="button button-positive" ng-click="vm.handleClick('hor', formSettings)">Movie Times1</a>
 
-                    <div class="input-label" style="padding-left: 16px;" >{{vm.errorMessage}}</div>
-                    -->
-
-                </div>
+                <div class="input-label" style="padding-left: 16px;" >{{vm.errorMessage}}</div>
+                -->
 
             </div>
 
