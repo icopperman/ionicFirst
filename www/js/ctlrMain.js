@@ -6,10 +6,11 @@
         .module('MovieApp')
         .controller("MainCtrl", MainCtrl);
 
-    MainCtrl.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$ionicActionSheet', 'refreshCache'];
+    MainCtrl.$inject = ['$scope', '$ionicModal', '$ionicPopup', '$ionicActionSheet', '$state', 'refreshCache'];
 
-    function MainCtrl($scope, $ionicModal, $ionicPopup, $ionicActionSheet, refreshCache) {
+    function MainCtrl($scope, $ionicModal, $ionicPopup, $ionicActionSheet, $state, refreshCache) {
 
+        console.log("MainCtlr entering");
         //$scope.defaultPrimaryButtonClick = function () {
         //    $ionicPopup.show({
         //        template: '<input type="password" ng-model="data.wifi">',
@@ -44,7 +45,9 @@
 
         function refreshMovies() {
 
-            refreshCache.refresh = true;
+            console.log("main controller, starting refresh");
+            //refreshCache.refresh = true;
+            $state.go("tplSettings",{}, { reload: true});
 
 
         }

@@ -10,6 +10,8 @@
 
     function localStoreFns($window) {
 
+        console.log("localstorage factory");
+
         var obj = {
             init        : initSettings,
             set         : setFn,

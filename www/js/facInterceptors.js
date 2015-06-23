@@ -10,6 +10,8 @@
 
     function interceptorFn($rootScope, $q, constants) {
 
+        console.log("interceptor factory");
+
         return {
 
             request      : requestFn,
@@ -19,6 +21,7 @@
         };
 
         function requestFn(config) {
+
             console.log("request interceptor:" + config.url);
 
             //only broadcast event if request is to backend (i.e., not for loading templates)

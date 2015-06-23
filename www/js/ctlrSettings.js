@@ -6,11 +6,11 @@
         .module('MovieApp')
         .controller("SettingsController", SettingsController);
 
-    SettingsController.$inject = ['$localstorage', '$state', 'getZip', 'GetMovieData', 'facSettings', 'refreshCache', '$ionicLoading'];
+    SettingsController.$inject = ['$localstorage', '$state', 'getZip', 'GeoService', 'GetMovieData', 'facSettings', 'refreshCache', '$ionicLoading'];
 
-    function SettingsController($localstorage, $state, getZip, GetMovieData, facSettings, refreshCache, $ionicLoading) {
+    function SettingsController($localstorage, $state, getZip, GeoService, GetMovieData, facSettings, refreshCache, $ionicLoading) {
 
-        console.log("main controller");
+        console.log("settings controller entering");
 
         var vm            = this;
         var savedSettings = facSettings.getSettingsObj();
@@ -21,6 +21,15 @@
 
         vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);
         vm.settingsObj.viewendtime   = new Date(savedSettings.viewendtime);
+        vm.errMsg       = "";
+
+        //if user typed in a zip, use it; otherwise use geolocated zip
+        if ( savedSettings.viewzipuser == "") {
+            vm.settingsObj.viewzip = getTheZip();
+        }
+        else {
+            vm.settingsObj.viewzip = savedSettings.viewzipuser;
+        }
 
         //vm.showDates = [ {val:0, txt:'Today', checked: true}, {val:1, txt: 'Tomorrow', checked: false}];
         vm.clZip = {inError: false};
@@ -39,18 +48,17 @@
 
         vm.clToday    = ( savedSettings.viewDateChar == 'today'    ) ? selected : notSelected;
         vm.clTomorrow = ( savedSettings.viewDateChar == 'tomorrow' ) ? selected : notSelected;
-        vm.clVer      = ( savedSettings.viewOrientation == 'Ver'      ) ? selected : notSelected;
-        vm.clHor      = ( savedSettings.viewOrientation == 'Hor'      ) ? selected : notSelected;
+        vm.clVer      = ( savedSettings.viewOrientation == 'Ver'   ) ? selected : notSelected;
+        vm.clHor      = ( savedSettings.viewOrientation == 'Hor'   ) ? selected : notSelected;
         vm.clInt0     = ( savedSettings.viewTimeSpan == '0'        ) ? selected : notSelected;
         vm.clInt15    = ( savedSettings.viewTimeSpan == '15'       ) ? selected : notSelected;
         vm.clInt30    = ( savedSettings.viewTimeSpan == '30'       ) ? selected : notSelected;
         vm.clInt60    = ( savedSettings.viewTimeSpan == '60'       ) ? selected : notSelected;
 
-        vm.errMsg       = "";
-        vm.settingsObj.viewzip = getTheZip();
-
         function getTheZip() {
-            var theLocation = getZip;
+
+            var theLocation = getZip; //from resolve and geolocate svc
+
             if (theLocation.status == 'error') {
                 vm.errMsg = theLocation.errMsg;
                 return;
@@ -64,7 +72,9 @@
         function refreshMovies() {
 
             refreshCache.refresh = true;
-            vm.settingsObj.viewzip = getTheZip();
+            savedSettings = facSettings.getSettingsObj();
+
+            vm.settingsObj.viewzip = GeoService.getZip().then();
             vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);
             vm.settingsObj.viewendtime   = new Date(savedSettings.viewendtime);
 
@@ -134,7 +144,12 @@
                 //$localstorage.setObject("tsZip", curr.viewzip);
                 refreshCache.refresh = true;
 
+                //if user typed in a new zip, save it
+                if ( userSettings.viewzip != savedSettings.viewzip  ) {
+                    savedSettings.viewzipuser = userSettings.viewzip;
+                }
             }
+
             vm.template = template;
 
             //$localstorage.setObject("settings", vm.settingsObj);
@@ -163,7 +178,7 @@
         //];
 
         function success(resultFromGetMovies) {
-            console.log("success");
+            console.log("settings controller, return from getMovies: success");
             $ionicLoading.hide();
             vm.errMsg = "";
 
@@ -189,7 +204,8 @@
 
         function failure() {
             $ionicLoading.hide();
-            console.log("failure");
+            console.log("settings controller, return from getMovies: failure");
+
         }
 
         function validateInput(form) {

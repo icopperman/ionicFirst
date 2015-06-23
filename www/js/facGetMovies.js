@@ -9,6 +9,8 @@
 
     function getMovieData($q, $localstorage, $http, $timeout, constants, $ionicLoading, facSettings, refreshCache) {
 
+        console.log("getMovieData factory");
+
         var movieData = {
             status            : "",
             errMsg            : "",
@@ -17,8 +19,6 @@
             tsMovieNames      : null,
             tsExcludedTheaters: null
         };
-
-        console.log("getMovieData factory");
 
         return {
             getMovies: getMoviesFn,
@@ -55,6 +55,7 @@
 
         function getMoviesFn() {
 
+            console.log("movie factory, getMovies function")
             $ionicLoading.show({
                 template: 'Getting movies...'
             });
@@ -64,11 +65,13 @@
             //var tsMovies = $localstorage.getObject("tsMovies");
             if (refreshCache.refresh == true) {
 
+                console.log("clearing cache");
                 clearMoviesFn();
             }
 
             if (movieData.tsMovieShowTimes != null) {
                 //$ionicLoading.hide();
+                console.log("returning movies from factory variable");
                 refreshCache.refresh = false;
                 $ionicLoading.hide();
                 return $q.when(movieData);
@@ -90,12 +93,13 @@
                 timeout: toDeferred.promise
             };
 
+            console.log("getting movies from server");
             $http(config).then(httpSuccess, httpErr);
 
             $timeout(function() {
                 timedOut = true;
                 toDeferred.resolve();
-            }, 1000);
+            }, 10000);
 
             return q.promise;
 
@@ -106,7 +110,7 @@
                 {
                     console.log('timed out ' + err);
                     movieData.status = "error";
-                    movieData.errMsg = "error jsonp timeout: " + err;
+                    movieData.errMsg = "<b>Timed out retrieving Movie times, try again later...</b>";
                 }
                 else {
                     console.log('error response from jsonp: ' + err);
@@ -122,19 +126,23 @@
 
             function httpSuccess(response) {
 
-                console.log('response from jsonp');
+                console.log('response from jsonp : ' + response.data.Source + ',' + response.data.Status);
                 //movieData.status = "error";
                 //movieData.errMsg = "error response from jsonp:";
                 //q.resolve(movieData);
                 //return;
 
                 movieData.status = response.data.Status;
-                movieData.errMsg = response.data.ErrMessage;
+                movieData.errMsg = "";
 
                 if (movieData.status != "ok") {
 
                     refreshCache.refresh = true;
-
+                    angular.forEach(response.data.ErrMessage, function (value, key) {
+                        console.log(value);
+                        movieData.errMsg += value + "<br/>";
+                    });
+                    q.resolve(movieData);
                     return;
 
                 }

@@ -10,6 +10,8 @@
 
     function MovieTheaterController($localstorage, GetMovieData, $ionicLoading) {
 
+        console.log("MovieTheater Ctlr entering");
+
         var vm = this;
 
         var theaters         = [];

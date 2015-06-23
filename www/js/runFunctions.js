@@ -10,6 +10,8 @@
 
     function runFunctions($ionicPlatform, $rootScope, $ionicLoading, $injector) {
 
+        console.log("run functions");
+
         function logViewEvent(eventAndScopes, data) {
             console.log(eventAndScopes.name
                 + "," + data.historyId
@@ -38,6 +40,9 @@
         $rootScope.$on('$stateChangeStart', stateChangeStart);
         $rootScope.$on('$stateChangeSuccess', stateChangeSuccess);
         $rootScope.$on('$stateChangeError', stateChangeError);
+        $rootScope.$on('$viewContentLoading', viewContentLoading);
+        $rootScope.$on('$viewContentLoaded', viewContentLoaded);
+
         $ionicPlatform.ready(platformReady);
 
         function platformReady() {
@@ -60,16 +65,24 @@
             $ionicLoading.hide()
         }
 
+        function viewContentLoading(event, viewConfig) {
+            console.log('view content loading');
+        }
+
+        function viewContentLoaded(event) {
+            console.log('view content loaded');
+        }
+
         function stateChangeStart(event, toState, toParams, fromState, fromParams) {
-            console.log("start change start here");
+            console.log("state change start from, to: " + fromState.name + ',' + toState.name);
         }
 
         function stateNotFound(event, unfoundState, fromState, fromParams) {
-            console.log("state not found here"); // "lazy.state"
+            console.log("state not found from, notfound: "  + fromState.name + ',' + unfoundState);
         }
 
         function stateChangeSuccess(event, toState, toParams, fromState, fromParams) {
-            console.log("state change success here");
+            console.log("state change success from, to: " + fromState.name + ',' + toState.name);
         }
 
         function stateChangeError(event, toState, toParams, fromState, fromParams, error) {

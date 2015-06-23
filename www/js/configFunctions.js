@@ -22,6 +22,8 @@
     function configFunctions($stateProvider, $urlRouterProvider, $ionicConfigProvider,
                              $compileProvider, $httpProvider, $provide) {
 
+        console.log("config functions entering");
+
         $provide.decorator('$exceptionHandler', decExceptionHandler);
 
         $httpProvider.interceptors.push('myinterceptors');
@@ -45,15 +47,15 @@
         $stateProvider
             .state('tplSettings', {
                 url        : '/tplSettings',
-                cache      : true,
+                cache      : false, //true,
                 templateUrl: 'templates/tplSettings1.html',
                 controller : 'SettingsController as vm',
                 //controllerAs: 'vm',
                 onEnter    : function () {
-                    console.log("tplSettings onenter");
+                    console.log("config function tplSettings onenter");
                 },
                 onExit     : function () {
-                    console.log("tplSettings onexit");
+                    console.log("config function tplSettings onexit");
                 },
                 resolve    : {
 
@@ -82,10 +84,10 @@
                 //    }
                 //},
                 onEnter    : function () {
-                    console.log("tplMovieTimes onenter");
+                    console.log("config function tplMovieTimes onenter");
                 },
                 onExit     : function () {
-                    console.log("tplMovieTimes onexit");
+                    console.log("config function tplMovieTimes onexit");
                 }
 
             })
@@ -101,7 +103,7 @@
                     }
                 },
                 onEnter    : function () {
-                    console.log("tplMovieTimesHor onenter");
+                    console.log("config function tplMovieTimesHor onenter");
                     //var els = jQuery('.outerdiv');
 
                     //angular.forEach(els, function (el) {
@@ -110,7 +112,7 @@
                     //});
                 },
                 onExit     : function () {
-                    console.log("tplMovieTimesHor onexit");
+                    console.log("config function tplMovieTimesHor onexit");
                 }
 
             })
@@ -125,10 +127,10 @@
                 //    }
                 //},
                 onEnter    : function () {
-                    console.log("tplMovieTheaters onenter");
+                    console.log("config function tplMovieTheaters onenter");
                 },
                 onExit     : function () {
-                    console.log("tplMovieTheaters onexit");
+                    console.log("config function tplMovieTheaters onexit");
                 }
 
             });

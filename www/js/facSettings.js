@@ -6,7 +6,11 @@
         .module('MovieApp')
         .factory('facSettings', settingsFn);
 
-    function settingsFn() {
+    settingsFn.$inject = ["refreshCache"];
+
+    function settingsFn(refreshCache) {
+
+        console.log("settings factory");
 
         var settingsObj1 = null;
 
@@ -19,6 +23,7 @@
 
         function setSettingsFn(asettingObj) {
 
+            console.log("settings factory set, current zip, new zip = " + settingsObj1.viewzip + "," + asettingObj.viewzip);
             //have to be careful here, settingsObj1 = asettingObj does not work
             angular.copy(asettingObj, settingsObj1);
 
@@ -29,10 +34,18 @@
             //var n     = d.getTimezoneOffset();
             //var settings = getObjectFn("settings");
 
+            //if (refreshCache.refresh == true) {
+            //
+            //    settingsObj1 = null;
+            //}
+            console.log("settings factory get");
+
             if (settingsObj1 != null) {
+                console.log("settings factory get from cache");
                 return settingsObj1;
             }
 
+            console.log("settings factory creating new settings");
             var d         = new Date();
             var adate     = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
             var startTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
@@ -47,6 +60,7 @@
                 viewDateChar: "today",
                 viewdate: adate,
                 viewzip: "",
+                viewzipuser: "",
                 viewmiles: "10",
                 //viewbegintime : d.getHours(),
                 viewbegintime: startTime, //.toTimeString().substr(0, 8),

@@ -12,7 +12,7 @@
 
         var vm = this;
         //var setingsObj = $localstorage.getObject("settings");
-
+        console.log("MovieTimeCtlrHor entering");
 
         var allMovieTimes = getMovies;
         var rc            = allMovieTimes.Status;

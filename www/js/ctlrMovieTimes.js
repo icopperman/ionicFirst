@@ -24,6 +24,7 @@
 
 
         //$scope.movieCount = allMovieTimes.MovieTimes.length;
+        console.log("MovieTimeCtlr entering");
         vm.totMovies           = 0;
         vm.totTheaters         = 0;
         vm.totExcludedMovies   = 0;

@@ -21,7 +21,7 @@
 
         function getZipFn() {
 
-            console.log("factory getzip");
+            console.log("geoservice factory getzip");
 
             if ( theLocation != null) {
 
@@ -37,33 +37,12 @@
 
         }
 
-        function getPositionFn() {
-
-            console.log("factory getPosition");
-
-            var aprom1 = _getLocation();
-
-            return aprom1;
-
-        }
-
-        function getZipFromPositionFn(position) {
-
-            console.log("factory getzipfromposotion");
-
-            var aprom1 = _reverseGeocode(position);
-
-            return aprom1;
-
-        }
-
-
         function _getLocation() {
 
-            console.log("getlocation");
+            console.log("geoservice getlocation");
 
             // $localstorage.getObject("tsLatLon");
-            if ( theLocation != undefined) {
+            if ( theLocation != null) {
 
                 if (theLocation.hasOwnProperty('tsPos') == true) {
                     return $q.when(theLocation.tsPos);
@@ -126,12 +105,15 @@
 
         function _reverseGeocode(tsPos) {
 
+            console.log("geoservice reverseGeocode");
+
             var tsZip = theLocation.tsZip;//.getObject("tsZip");
 
             if (tsZip != undefined) {
 
                 //settingsObj.viewzip = tsZip;
                 //$localstorage.setObject("settings", settingsObj);
+                console.log("geoservice reverseGeocode, zip from cache");
 
                 return $q.when(theLocation);
             }
@@ -228,6 +210,26 @@
                 //return q.promise;
 
             } //end function result,status
+        }
+
+        function getPositionFn() {
+
+            console.log("geoservice factory getPosition");
+
+            var aprom1 = _getLocation();
+
+            return aprom1;
+
+        }
+
+        function getZipFromPositionFn(position) {
+
+            console.log("geoservice factory getzipfromposotion");
+
+            var aprom1 = _reverseGeocode(position);
+
+            return aprom1;
+
         }
     }
 
