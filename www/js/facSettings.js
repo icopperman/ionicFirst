@@ -6,9 +6,9 @@
         .module('MovieApp')
         .factory('facSettings', settingsFn);
 
-    settingsFn.$inject = ["refreshCache"];
+    settingsFn.$inject = ["refreshCache", "GeoService"];
 
-    function settingsFn(refreshCache) {
+    function settingsFn(refreshCache, GeoService) {
 
         console.log("settings factory");
 
@@ -45,7 +45,6 @@
                 return settingsObj1;
             }
 
-            console.log("settings factory creating new settings");
             var d         = new Date();
             var adate     = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
             var startTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), 0, 0);
@@ -55,11 +54,30 @@
 
             endTime.setHours(endHour);
 
+            var geoZip = "";
+            var geoErr = "";
+
+            console.log("settings factory: getting zip from geoservice");
+
+            GeoService.getZip().then(
+                function(theLocation) {
+                    console.log("settings factory: got zip = " + theLocation.tsZip );
+                    geoZip = theLocation.tsZip;
+
+            },
+                function(theLocation) {
+                    console.log("settings factory: getzip error = " + theLocation.errMsg);
+                    geoErr = theLocation.errMsg;
+
+            });
+
+            console.log("settings factory creating new settings");
+
             settingsObj1 = {
 
                 viewDateChar: "today",
                 viewdate: adate,
-                viewzip: "",
+                viewzip: geoZip,
                 viewzipuser: "",
                 viewmiles: "10",
                 //viewbegintime : d.getHours(),

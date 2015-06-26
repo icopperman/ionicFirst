@@ -25,6 +25,7 @@
 
             if ( theLocation != null) {
 
+                console.log("geoservice factory getzip from cache");
                return $q.when(theLocation);
 
             }
@@ -39,11 +40,12 @@
 
         function _getLocation() {
 
-            console.log("geoservice getlocation");
+            console.log("geoservice factory _getlocation");
 
             // $localstorage.getObject("tsLatLon");
             if ( theLocation != null) {
 
+                console.log("geoservice factory _getlocation from cache");
                 if (theLocation.hasOwnProperty('tsPos') == true) {
                     return $q.when(theLocation.tsPos);
                 }
@@ -140,7 +142,7 @@
 
             function geoResults(geoResults, status) {
 
-                var zip = "66666";
+                var zip = "";
 
                 if (status != google.maps.GeocoderStatus.OK) {
 
