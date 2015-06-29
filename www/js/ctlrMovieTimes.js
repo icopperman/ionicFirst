@@ -108,7 +108,7 @@
 
             for (var i = 0; i < movieData.length; i++) {
 
-                var amovie       = movieData[i];
+                var amovie       = angular.copy(movieData[i]);
                 var showTimeHour = amovie.time.substr(0, 2);
                 var showTimeMin  = amovie.time.substr(3, 2);
                 var theaterName  = amovie.theater;

@@ -146,7 +146,8 @@
 
                 //if user typed in a new zip, save it
                 if ( userSettings.viewzip != savedSettings.viewzip  ) {
-                    savedSettings.viewzipuser = userSettings.viewzip;
+                    userSettings.viewzipuser = userSettings.viewzip;
+
                 }
             }
 
