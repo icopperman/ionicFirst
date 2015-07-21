@@ -52,6 +52,18 @@
             movieData.tsMovieNames     = null;
         }
 
+        function getMoviesFromGoogle() {
+
+            var aurl = "http://www.google.com/movies?near=10065&date=0&view=list&callback=JSON_CALLBACK"
+            $http.jsonp(aurl)
+                .success(function (data, status, headers, config) {
+                    console.log("here");
+                })
+                .error(function( data, status, headers, config) {
+                    console.log('here');
+
+                });
+        }
 
         function getMoviesFn() {
 
@@ -60,6 +72,7 @@
                 template: 'Getting movies...'
             });
 
+            //getMoviesFromGoogle();
             var settingsObj = facSettings.getSettingsObj();
 
             //var tsMovies = $localstorage.getObject("tsMovies");

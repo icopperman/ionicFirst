@@ -74,9 +74,21 @@
             refreshCache.refresh = true;
             savedSettings = facSettings.getSettingsObj();
 
-            vm.settingsObj.viewzip = GeoService.getZip().then();
-            vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);
-            vm.settingsObj.viewendtime   = new Date(savedSettings.viewendtime);
+            GeoService.getZip().then(
+                function(theLocation) {
+                    console.log("refreshmovies: got zip = " + theLocation.tsZip );
+                    vm.settingsObj.viewzip = theLocation.tsZip;
+                    vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);
+                    vm.settingsObj.viewendtime   = new Date(savedSettings.viewendtime);
+
+
+                },
+                function(theLocation) {
+                    console.log("refreshmovies: getzip error = " + theLocation.errMsg);
+                    vm.settingsObj.viewzip = "";
+
+                });
+
 
 
         }

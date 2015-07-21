@@ -17,17 +17,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col col-33">
-                    <div class="input-label" style="padding-left: 16px;">Orientation</div>
-                </div>
-                <div class="col">
-                    <div class="button-bar" style="width:70%;">
-                        <a ng-class="vm.clVer" ng-click="vm.whichOrient('Ver')">Vertical</a>
-                        <a ng-class="vm.clHor" ng-click="vm.whichOrient('Hor')">Horizontal</a>
-                    </div>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="col col-33">
                     <div class="input-label" style="padding-left: 16px;">ZipCode</div>
@@ -84,16 +74,16 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col col-33">
-                    <div class="input-label" style="padding-left: 16px;">Cache</div>
-                </div>
-                <div class="col">
-                    <input type="text" placeholder="Refresh period"
-                           ng-model="vm.settingsObj.viewCacheTime"
-                           id="viewCacheTime" name="viewCacheTime"/>
-                </div>
-            </div>
+            <!--<div class="row">-->
+                <!--<div class="col col-33">-->
+                    <!--<div class="input-label" style="padding-left: 16px;">Cache</div>-->
+                <!--</div>-->
+                <!--<div class="col">-->
+                    <!--<input type="text" placeholder="Refresh period"-->
+                           <!--ng-model="vm.settingsObj.viewCacheTime"-->
+                           <!--id="viewCacheTime" name="viewCacheTime"/>-->
+                <!--</div>-->
+            <!--</div>-->
 
             <div class="row">
                 <div class="col col-33">
@@ -117,6 +107,19 @@
 
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col col-33">
+                    <div class="input-label" style="padding-left: 16px;">Orientation</div>
+                </div>
+                <div class="col">
+                    <div class="button-bar" style="width:70%;">
+                        <a ng-class="vm.clVer" ng-click="vm.whichOrient('Ver')">Vertical</a>
+                        <a ng-class="vm.clHor" ng-click="vm.whichOrient('Hor')">Horizontal</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col" ><p ng-bind-html="vm.errMsg"</p></div>
             </div>
