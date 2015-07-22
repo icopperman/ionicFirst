@@ -1,4 +1,4 @@
-<ion-view view-title="{{navTitle}}">
+<ion-view view-title="{{vm.navTitle}}">
 
     <div class="bar bar-subheader">
         <h1 class="title">Movies : {{vm.totMovies}}, {{vm.totTheaters}}, {{vm.totExcludedMovies}},
@@ -33,11 +33,11 @@
 
     </ion-content>
 
-    <ion-footer-bar align-title="center" class="bar-assertive">
+    <ion-footer-bar align-title="center" class="bar-stable">
         <div class="title">
-            <div class="buttons">
-                <button class="button" ng-click="vm.showTheaters()">Show List of Theaters</button>
-            </div>
+            <!--<div class="buttons">-->
+                <button class="button button-large button-dark" ng-click="vm.showTheaters()">Show List of Theaters</button>
+            <!--</div>-->
         </div>
     </ion-footer-bar>
 

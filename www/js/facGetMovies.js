@@ -67,7 +67,7 @@
 
         function getMoviesFn() {
 
-            console.log("movie factory, getMovies function")
+            console.log("movie factory, getMovies function");
             $ionicLoading.show({
                 template: 'Getting movies...'
             });
@@ -112,7 +112,7 @@
             $timeout(function() {
                 timedOut = true;
                 toDeferred.resolve();
-            }, 10000);
+            }, 30000);
 
             return q.promise;
 

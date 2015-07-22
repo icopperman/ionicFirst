@@ -16,7 +16,7 @@
         var savedSettings = facSettings.getSettingsObj();
 
         vm.handleClick = handleClick;
-        vm.navTitle    = 'Change movie search criteria';
+        vm.navTitle    = 'Movie showtimes search criteria';
         vm.settingsObj = angular.copy(savedSettings);
 
         vm.settingsObj.viewbegintime = new Date(savedSettings.viewbegintime);

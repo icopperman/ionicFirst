@@ -1,12 +1,16 @@
-<ion-view>
-    <ion-footer-bar align-title="center" class="bar-assertive">
-        <div class="title">
-            <div class="buttons">
-                <button class="button" ng-click="vm.saveExclusion()">Save Exclusion List</button>
-            </div>
-        </div>
-    </ion-footer-bar>
+<ion-view view-title="{{vm.navTitle}}">
+    <!--<ion-footer-bar align-title="center" class="bar-assertive">-->
+        <!--<div class="title">-->
+            <!--<div class="buttons">-->
+                <!--<button class="button" ng-click="vm.saveExclusion()">Save Exclusion List</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</ion-footer-bar>-->
     <ion-content>
+        <div class="buttons" >
+        <button class="button" style="float:right; margin: 10px; " ng-click="vm.saveExclusion()">Save Exclusion List</button>
+        </div>
+        <div style="clear:both;"></div>
         <div class="list">
             <!--<div class="item item-divider"> Theaters</div>-->
             <ion-toggle ng-repeat="atheater in vm.theaterList" ng-model="atheater.exclude" ng-checked="atheater.exclude">

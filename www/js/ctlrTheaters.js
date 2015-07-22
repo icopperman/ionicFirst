@@ -20,6 +20,7 @@
         vm.theaterList   = createTheaterList();
         vm.saveExclusion = saveExclusion;
 
+        vm.navTitle = "List of Theaters";
         $ionicLoading.hide();
 
         function createTheaterList() {
